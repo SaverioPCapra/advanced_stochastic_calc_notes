@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{lindrew}
+\usepackage{adjustbox}
+\usepackage{parskip}
+\usepackage[backend=biber, style=authoryear]{biblatex}
+
+\addbibresource{references.bib}
+
+\title{Advanced Stochastic Calculus with Applications}
+\author{\textbf{Lecturers: Tiziano De Angelis, Luca Regis} \\ Notes by: Saverio Pietro Capra}
+\date{Spring 2025}
+
+
+\begin{document}
+
+\maketitle
+
+\newpage
+\input{lectures/lecture1_preliminaries}
+
+\newpage
+\input{lectures/lecture2_markovprocesses}
+
+\newpage
+\input{lectures/lecture3_discrete_optimal_stopping}
+
+\newpage
+\input{lectures/lecture4_discrete_stochastic_control.tex}
+
+\newpage
+\nocite{*}
+\printbibliography
+
+\end{document}

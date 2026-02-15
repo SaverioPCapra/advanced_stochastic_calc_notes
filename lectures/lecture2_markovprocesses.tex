@@ -1,0 +1,286 @@
+\section{Basic facts about Markov processes}
+
+Taken from Chapter 6 of \cite{baldi2017stochastic}.
+
+\begin{definition}[Markov transition function]
+    Let $(E, \mathcal{E})$ be a measurable space. A MTF is a mapping $p: [0, \infty) \times [0, \infty) \times E \times \mathcal{E} \to [0,1]$ s.t.
+    \begin{enumerate}
+        \item $x \mapsto p(s,t,x,A)$ is Borel measurable.
+        \item $A \mapsto p(s,t,x,A)$ is a probability measure on $(E, \mathcal{E})$.
+        \item \vocab{Chapman-Kolmogorov}: for $s < u < t$,
+        $$p(s,t,x,A) = \int_E p(s,u,x,dy)p(u,t,y,A).$$
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}[Markov process]
+    Let $\mu$ be a probability measure on $\mathcal{E}$. 
+    
+    A Markov process with MTF $p$ is a stochastic process $\mathbb{X} := (\Omega, \mathcal{F}, (\mathcal{F}_t)_{t \ge 0}, (X_t)_{t \ge 0}, \mathbb{P})$ s.t.
+    \begin{enumerate}
+        \item $\mathbb{P}(X_0 \in dy) = \mu(dy)$.
+        \item For every bounded measurable $f: E \to \mathbb{R}$ it holds:
+        $$\mathbb{E}[f(X_t) | \mathcal{F}_s] = \int_E f(y)p(s,t,X_s,dy)$$
+        (notice that for $f(y) = 1_A(y), A \in \mathcal{E} \implies \mathbb{P}(X_t \in A | \mathcal{F}_s) = p(s,t,X_s,A)$).
+    \end{enumerate}
+\end{definition}
+
+\begin{remark}
+    In general $(\mathcal{F}_t)_{t \ge 0}$ is a filtration that contains $(\sigma(X_s, s \le t))_{t \ge 0}$ but w.l.o.g. we could just consider $\mathcal{F}_t = \sigma(X_s, s \le t)$.
+\end{remark}
+
+\begin{homework}
+    Show that $x \mapsto \int_E f(y)p(s,t,x,dy)$ is measurable.
+    
+    \textbf{Hint:} take simple functions $f(\cdot)$. Approximate with the \vocab{Monotone Convergence Theorem}.
+\end{homework}
+
+\begin{theorem}
+    Given a probability measure $\mu$ on $(E, \mathcal{E})$ and a MTF, there exists a Markov process with initial distribution $\mu$ and transition function $p$.
+\end{theorem}
+
+We want to be able to start our process from any time $s \in [0, \infty)$ and any position $x \in E$. Then we consider a measurable space $(\Omega, \mathcal{F})$ endowed with a \underline{family of filtrations} $(\mathcal{F}_t^s)_{s \le t, t \ge 0}$ and a \underline{family of probability measures} $(\mathbb{P}_{s,x})_{s \ge 0, x \in E}$. Then a realisation of the Markov process reads:
+$$\mathbb{X} := (\Omega, \mathcal{F}, (\mathcal{F}_t^s)_{t \ge s, s \ge 0}, (X)_{t \ge s}, (\mathbb{P}_{s,x})_{x \in E, s \ge 0})$$
+and it holds:
+\begin{enumerate}
+    \item $\mathbb{P}_{s,x}(X_s = x) = 1$.
+    \item $\mathbb{E}_{s,x}[f(X_t) | \mathcal{F}_u^s] = \int_E f(y)p(u,t,X_u,dy), \quad s \le u \le t$.
+\end{enumerate}
+(notice that $\mathbb{E}_{s,x}[f(X_t) | \mathcal{F}_s^s] = \int_E f(y)p(s,t,x,dy)$).
+\textit{Note: here we lose track of $s \ge 0$ then $\int_E f(y)p(u,t,X_u,dy) = \mathbb{E}_{u,z}[f(X_t)|\mathcal{F}_u^s]$ for $s < u < t$.}
+
+\subsection*{Markov process on canonical space}
+
+It's convenient to define MP on a "space of paths". The regularity of paths depends on the specific applications. Generally one considers either:
+\begin{enumerate}
+    \item[(a)] Continuous paths: $\Omega = C(\mathbb{R}_+; \mathbb{R}^d) \hookrightarrow \{f: \mathbb{R}_+ \to \mathbb{R}^d \text{ s.t. } f \text{ is continuous}\}$.
+    \item[(b)] Right-continuous with left limits (RCLL/càdlàg): $\Omega = D(\mathbb{R}_+; \mathbb{R}^d) \hookrightarrow \{f: \mathbb{R}_+ \to \mathbb{R}^d \text{ s.t. } f(t) = f(t+) \forall t \ge 0 \text{ and } f(t-) \text{ exists } \forall t > 0\}$.
+\end{enumerate}
+
+\begin{itemize}
+    \item On either such space, the canonical process is
+    \begin{align*}
+        X: \mathbb{R}_+ \times \Omega &\to \mathbb{R}^d \\
+        (t, \omega) &\mapsto \omega(t)
+    \end{align*}
+    here $\omega \in \Omega$ is a function $t \mapsto \omega(t)$ and $X_t(\omega) = \omega(t)$.
+    
+    \item We introduce a shift-operator $(\theta_h)_{h \ge 0}$ that acts on paths $\theta_h: \Omega \to \Omega$ as $\theta_h \omega(\cdot) = \omega(h + \cdot)$.
+    
+    Notice that $\theta_h X_t(\omega) = X_t(\theta_h \omega) = \omega(h+t)$.
+    
+    \item The filtration is the canonical filtration $\mathcal{F}_t^s = \sigma(X_u, s \le u \le t)$.
+    
+    \item MP on canonical space:
+    $$\mathbb{X} = (\Omega, \mathcal{F}, (\mathcal{F}_t^s)_{t \ge s, s \ge 0}, (X_t), (\theta_t), (\mathbb{P}_{s,x})_{s \ge 0, x \in \mathbb{R}^d})$$
+\end{itemize}
+
+\begin{remark}[Homogeneous MP]
+    A MTF is homogeneous if $p(s,t,x,A) = p(0, t-s, x, A)$. In this case $\mathbb{P}_{s,x}(X_t \in A) = \mathbb{P}_{0,x}(X_{t-s} \in A)$ and therefore it suffices to consider a MTF $p: \mathbb{R}_+ \times E \times \mathcal{E} \to [0,1]$, $p(t,x,A)$ and a family $(\mathbb{P}_x)_{x \in E}$.
+\end{remark}
+
+Something with a flavour of the freezing lemma holds:
+
+\begin{proposition}
+    Let $Y$ be bounded and $\sigma(X_s, s \ge t)$-measurable. Then $\mathbb{E}_{s,x}[Y | \mathcal{F}_t^s] = \mathbb{E}_{t, X_t}[Y] := (\mathbb{E}_{t,z}[Y])|_{z=X_t(\omega)}$.
+\end{proposition}
+
+\begin{proof}
+    The $\sigma$-algebra $\sigma(X_s, s \ge t)$ is generated by the $\pi$-system
+    $$\left(\{X_{t_1}^{-1}(A_1) \cap X_{t_2}^{-1}(A_2) \cap \dots \cap X_{t_n}^{-1}(A_n)\}, \forall (t_i, A_i) \in [t, \infty) \times \mathcal{B}(\mathbb{R}^d), i=1\dots n, n \in \mathbb{N} \right)$$
+    Let $\mathcal{H}$ be the class of bounded $\sigma(X_s, s \ge t)$-measurable random variables for which it holds
+    $$\mathbb{E}_{s,x}[Y | \mathcal{F}_t^s] = \mathbb{E}_{t, X_t}[Y]$$
+    Clearly, if $(Y_n)_{n \in \mathbb{N}} \subset \mathcal{H}$, $0 \le Y_n \le Y_{n+1}$ and $Y_n \uparrow Y$, then $Y \in \mathcal{H}$ by MON.
+
+    \begin{homework}
+        Verify the statement above.
+    \end{homework}
+    
+    It's obvious that $\mathcal{H}$ is a vector space and that $Y(\omega) = 1 \in \mathcal{H}$. It remains to show that $Y(\omega) = 1_A(\omega) \in \mathcal{H}$ for any $A$ from the $\pi$-system above.
+    
+    Take $Y(\omega) = 1_{\{X_{t_1} \in A_1\}} 1_{\{X_{t_2} \in A_2\}} \dots 1_{\{X_{t_n} \in A_n\}}$.
+    \begin{align*}
+        \mathbb{E}_{s,x}[Y | \mathcal{F}_t^s] &= \mathbb{E}_{s,x}\left[\prod_{i=1}^{n-1} 1_{\{X_{t_i} \in A_i\}} \cdot 1_{\{X_{t_n} \in A_n\}}\right] \\
+        &= \mathbb{E}_{s,x}\left[\prod_{i=1}^{n-1} 1_{\{X_{t_i} \in A_i\}} \mathbb{E}_{s,x}[1_{\{X_{t_n} \in A_n\}} | \mathcal{F}_{t_{n-1}}^s]\right] \\
+        &= \mathbb{E}_{s,x}\left[\prod_{i=1}^{n-1} 1_{\{X_{t_i} \in A_i\}} \underbrace{\mathbb{P}_{s,x}(X_{t_n} \in A_n | \mathcal{F}_{t_{n-1}}^s)}_{= p(t_{n-1}, t_n, X_{t_{n-1}}, A_n) =: \tilde{f}_{n-1}(X_{t_{n-1}})}\right] \\
+        &= \mathbb{E}_{s,x}\left[\prod_{i=1}^{n-2} 1_{\{X_{t_i} \in A_i\}} \underbrace{\mathbb{E}_{s,x}[1_{\{X_{t_{n-1}} \in A_{n-1}\}} \tilde{f}_{n-1}(X_{t_{n-1}}) | \mathcal{F}_{t_{n-2}}^s]}_{= \int_{A_{n-1}} \tilde{f}_{n-1}(y) p(t_{n-2}, t_{n-1}, X_{t_{n-2}}, dy) =: \tilde{f}_{n-2}(X_{t_{n-2}})}\right] \\
+        &= \dots \text{iterating} \dots = \mathbb{E}_{s,x}[1_{\{X_{t_1} \in A_1\}} \tilde{f}_1(X_{t_1}) | \mathcal{F}_t^s] \\
+        &= \int_{A_1} \tilde{f}_1(y) p(t, t_1, X_t, dy) = \mathbb{E}_{t, X_t}[\tilde{f}_1(X_{t_1}) 1_{\{X_{t_1} \in A_1\}}] \\
+        &= \mathbb{E}_{t, X_t}\left[1_{\{X_{t_1} \in A_1\}} \int_E 1_{A_2}(y) \tilde{f}_2(y) p(t_1, t_2, X_{t_1}, dy)\right] \\
+        &= \mathbb{E}_{t, X_t}\left[1_{\{X_{t_1} \in A_1\}} \mathbb{E}_{t, X_t}[1_{\{X_{t_2} \in A_2\}} \tilde{f}_2(X_{t_2}) | \mathcal{F}_{t_1}^t]\right] \\
+        &= \mathbb{E}_{t, X_t}\left[1_{\{X_{t_1} \in A_1\}} 1_{\{X_{t_2} \in A_2\}} \underbrace{\mathbb{E}_{t_2, X_{t_2}}[1_{\{X_{t_3} \in A_3\}} \tilde{f}_3(X_{t_3}) | \mathcal{F}_{t_2}^t]}_{= \mathbb{E}_{t, X_t}[1_{\{X_{t_3} \in A_3\}} \tilde{f}_3(X_{t_3}) | \mathcal{F}_{t_2}^t]}\right] \\
+        &= \dots \text{iterating} \dots = \mathbb{E}_{t, X_t}\left[\prod_{i=1}^n 1_{\{X_{t_i} \in A_i\}}\right] = \mathbb{E}_{t, X_t}[Y].
+    \end{align*}
+    Then we can apply the MCT.
+\end{proof}
+
+\begin{definition}[Strong Markov property]
+    A MP is Strong MP if for any $(\mathcal{F}_t^s)_{t \ge s}$-stopping time $\tau$ ($\tau < \infty$)
+    $$\mathbb{P}_{s,x}(X_{\tau+h} \in A | \mathcal{F}_\tau^s) = p(\tau, \tau+h, X_\tau, A) \quad \mathbb{P}_{s,x}\text{-a.s.}$$
+\end{definition}
+
+\begin{remark}
+    On the canonical space, if $Y \in m\mathcal{F}_\infty^s$ then $Y = f((X_t)_{t \ge s})$. So, given a stopping time $\tau$ we have $Y \circ \theta_\tau = f((X_t \circ \theta_\tau)_{t \ge s}) = f((X_{t+\tau})_{t \ge 0}) \in \mathcal{F}_\infty^\tau$.
+\end{remark}
+
+\begin{proposition}
+    If $Y \in m\mathcal{F}_\infty^s$ bounded or positive and $\mathbb{X}$ is Strong Markov, then
+    $$\mathbb{E}_{s,x}[Y \circ \theta_\tau | \mathcal{F}_\tau^s] = \mathbb{E}_{\tau, X_\tau}[Y] := (\mathbb{E}_{t,z}[Y])|_{t=\tau(\omega), z=X_\tau(\omega)}.$$
+\end{proposition}
+
+\begin{proof}
+    (HW) using the same tricks as before.
+\end{proof}
+
+Given a time-homogeneous MTF, the expectation is a linear operator that satisfies the semi-group property:
+$\forall$ bounded measurable $f: \mathbb{R}^d \to \mathbb{R}$
+$$(P_t f)(x) := \int_E f(y)p(t,x,dy) = \mathbb{E}_x[f(X_t)]$$
+satisfies $[P_s(P_t f)](x) = \int_E p(s,x,dy) \int_E f(z)p(t,y,dz)$
+$$= \int_E \int_E f(z)p(t,y,dz)p(s,x,dy) = \mathbb{E}_x[\mathbb{E}_{X_s}[f(X_t)]]$$
+$$\overset{\text{Chapman-Kolmogorov eq.}}{=} \int_E f(z)p(t+s, x, dz) = \mathbb{E}_x[f(X_{t+s})]$$
+$$= (P_{t+s} f)(x)$$
+Semigroup property: $P_t P_s = P_{t+s}$.
+
+\vocab{Infinitesimal generator:}
+$$(\mathcal{L}f)(x) := \lim_{t \downarrow 0} \frac{(P_t f)(x) - f(x)}{t} \quad \text{if the limit exists}$$
+\begin{itemize}
+    \item Domain of $\mathcal{L}$, $D(\mathcal{L}) \dots$
+    \item Unbounded operator \dots
+    \item Limit in suitable norms \dots
+\end{itemize}
+We will only be concerned with SDEs and their infinitesimal generators.
+
+An important \underline{class of Strong MPs} is the solutions of \underline{SDEs}.
+
+\subsection*{Stability estimates for SDEs}
+
+Here we consider $(X_t)_{t \ge 0} \in \mathbb{R}^d$ solution of
+$$X_t = x + \int_0^t \mu(X_s)ds + \int_0^t \sigma(X_s)dW_s$$
+for Lipschitz coefficients $\mu: \mathbb{R}^d \to \mathbb{R}^d$, $\sigma: \mathbb{R}^d \to \mathbb{R}^{d \times d'}$ and $(W_t)_{t \ge 0}$ a $d'$-dimensional B.m.
+
+\vocab{Standard estimates via Gronwall's inequality} (HW)
+
+\begin{enumerate}
+    \item[(i)] $\mathbb{E}\left[\sup_{0 \le t \le T} \|X_t\|^p\right] \le C(p,T)(1 + \|x\|^p)$
+    \item[(ii)] $\mathbb{E}\left[\sup_{0 \le t \le T} \|X_t - x\|^p\right] \le C(p,T)(1 + \|x\|^p) \cdot T^{p/2}$
+    \item[(iii)] $\mathbb{E}\left[\sup_{0 \le t \le T} \|X_t^{x_1} - X_t^{x_2}\|^p\right] \le C(p,T)\|x_1 - x_2\|^p$
+    \item[(iv)] $\mathbb{E}\left[\sup_{0 \le t \le T} \|X_{t+h} - X_t\|^p\right] \le C(p,T)(1 + \|x\|^p)h^{p/2} \quad h \ge 0$
+\end{enumerate}
+where $p \in [2, \infty)$.
+
+From (i) we deduce an important fact:
+$t \mapsto \int_0^t \sigma(X_s)dW_s$ is a martingale with
+$$\mathbb{E}\left[\sup_{0 \le t \le T} \left|\int_0^t \sigma(X_s)dW_s\right|^p\right] < \infty$$
+Moreover:
+$$\mathbb{E}[\|X_t^x - X_s^y\|^p] \le C(p,T)(1 + \|x\|^p + \|y\|^p)(|t-s|^{p/2} + |x-y|^p)$$
+So, for $\frac{p}{2} > 1$ we can invoke Kolmogorov's continuity theorem and deduce $(x,t) \mapsto X_t^x(\omega)$ is continuous $\forall \omega \in \Omega$.
+(there exists a continuous modification \dots) [\textit{for time-in-homogeneous case $(x,s,t) \mapsto X_t^{s,x}(\omega)$ is continuous}]
+
+\begin{lemma}
+    Let $\mathcal{H}_t := \sigma(W_u - W_t, u \ge t)$. Assume $(Y_t)_{t \ge 0} \in L^2(0,T)$ is such that $Y_u \in m\mathcal{H}_t, \forall u \ge t$. Then,
+    $\forall v \ge t, \quad \int_t^v Y_u dW_u \in \mathcal{H}_t$ and therefore $\int_t^v Y_u dW_u \indep \sigma(W_s, s \le t)$.
+    
+    \textit{Recall that $Y$ is $\sigma(W_s, s \le t)$ adapted.}
+\end{lemma}
+
+\begin{proof}
+    When we constructed the stoch. integral we proved that $(Y_t)_{t \ge 0}$ can be approximated by simple processes $(Y_u^n)_{t \ge 0}, n \in \mathbb{N}$ s.t. $Y_u^n \in m\mathcal{H}_t, \forall u \ge t, \forall n \in \mathbb{N}$ and $\lim_{n \to \infty} \mathbb{E}[\int_0^T |Y_u^n - Y_u|^2 du] = 0$.
+    Then, it suffices to prove the claim for simple processes $Y_u(\omega) := \sum_{i=1}^m X_{t_i}(\omega) 1_{[t_i, t_{i+1})}(u)$ with $X_{t_i} \in m\mathcal{H}_t \cap m\mathcal{F}_{t_i}, \forall i=1 \dots m$ and $t \le t_1 < t_2 < \dots < t_m \le v$.
+    For such process $\int_t^v Y_u dW_u = \sum_{i=1}^m \underbrace{X_{t_i}}_{\in m\mathcal{H}_t} \underbrace{(W_{t_{i+1}} - W_{t_i})}_{\in m\mathcal{H}_t} \in m\mathcal{H}_t$.
+\end{proof}
+
+\begin{remark}
+    The next result holds in greater generality but we only prove it for Lipschitz coefficients.
+\end{remark}
+
+\begin{proposition}
+    Let $\mu: \mathbb{R}^d \to \mathbb{R}^d, \sigma: \mathbb{R}^d \to \mathbb{R}^{d \times d'}$ be Lipschitz and $(W_t)_{t \ge 0} \in \mathbb{R}^{d'}$ be a B.m. Let $(X_t)_{t \ge s}$ be the unique strong solution of $X_t = x + \int_s^t \mu(X_u)du + \int_s^t \sigma(X_u)dW_u$. Denote it $(X_t^{s,x})_{t \ge s}$.
+    Then $X_t^{s,x} \in m\mathcal{H}_s, \forall t \ge s \implies X_t^{s,x} \indep \sigma(W_u, u \le s)$.
+\end{proposition}
+
+\begin{proof}
+    Recall that $(X_t^{s,x})_{t \ge s}$ is constructed by Picard iteration
+    $X_t^0 := x, \forall t \ge 0$ and $X_t^{n+1} = x + \int_s^t \mu(X_u^n)du + \int_s^t \sigma(X_u^n)dW_u, \forall n \ge 0$.
+    and $\lim_{n \to \infty} \mathbb{E}[\sup_{s \le t \le T} |X_t^n - X_t|^2] = 0, \forall T > 0. \quad (*)$
+    
+    It is clear that $X_t^0 \in m\mathcal{H}_s, \forall t \ge s$. Then $\int_s^t \mu(X_u^0)du \in m\mathcal{H}_s$ and $\int_s^t \sigma(X_u^0)dW_u \in m\mathcal{H}_s$.
+    Now, by induction, assume $(X_t^n)_{t \ge s} \subset m\mathcal{H}_s$. Then
+    $$X_t^{n+1} = x + \underbrace{\int_s^t \mu(X_u^n)du}_{\in m\mathcal{H}_s} + \underbrace{\int_s^t \sigma(X_u^n)dW_u}_{\in m\mathcal{H}_s} \in m\mathcal{H}_s, \quad \forall t \ge s.$$
+    From $(*)$ we know $\exists (X_t^{n_j})_{t \ge s}$ s.t. $\mathbb{P}(\lim_{j \to \infty} \sup_{s \le t \le T} |X_t^{n_j} - X_t| = 0) = 1$ so $(X_t^{s,x})_{t \ge s} \in m\mathcal{H}_s$ because we assume $\mathcal{H}_s$ completed with null sets.
+\end{proof}
+
+Let's go back to considering the unique strong solution of the SDE. Since we are working with strong solutions, then $\sigma(X_r, r \le t) \subseteq \sigma(W_r, r \le t)$ and it suffices for our aims to consider $\mathcal{F}_t := \sigma(W_r, r \le t)$ (it would be equivalent to consider $\sigma(X_r, r \le t)$).
+
+\begin{align*}
+    X_t^{0,x} &= x + \int_0^t \mu(X_u)du + \int_0^t \sigma(X_u)dW_u \\
+    &= \underbrace{x + \int_0^s \mu(X_u)du + \int_0^s \sigma(X_u)dW_u}_{= X_s^{0,x}} \\
+    &\quad + \int_s^t \mu(X_u)du + \int_s^t \sigma(X_u)dW_u \\
+    &= \underbrace{X_s^{0,x}}_{\in m\mathcal{F}_s} + \underbrace{\int_s^t \mu(X_u)du + \int_s^t \sigma(X_u)dW_u}_{\in m\mathcal{H}_s \indep \mathcal{F}_s} =: X_s^{0,x} + Z_{s,t} = X_t^{s, X_s^{0,x}}
+\end{align*}
+
+\begin{proposition}
+    For any bounded measurable function $f: \mathbb{R}^d \to \mathbb{R}$
+    $$\mathbb{E}[f(X_t) | \mathcal{F}_s] = \mathbb{E}[f(X_t) | \sigma(X_s)], \quad \forall t \ge s.$$
+\end{proposition}
+
+\begin{proof}
+    From the discussion preceding the proposition we have $\mathbb{E}[f(X_t) | \mathcal{F}_s] = \mathbb{E}[f(\underbrace{X_s}_{\in m\mathcal{F}_s} + \underbrace{Z_{s,t}}_{\indep \mathcal{F}_s}) | \mathcal{F}_s]$ then we can use the freezing lemma to claim:
+    $\mathbb{E}[f(X_s + Z_{s,t}) | \mathcal{F}_s] = \psi(X_s)$ where $\psi(x) := \mathbb{E}[f(x + Z_{s,t})]$.
+    For any $A \in \sigma(X_s)$ we have
+    $$\mathbb{E}[1_A f(X_t)] = \mathbb{E}[1_A \underbrace{\mathbb{E}[f(X_t) | \mathcal{F}_s]}_{\text{by tower property}}] = \mathbb{E}[\psi(X_s) 1_A]$$
+    and therefore, by definition of conditional expectation,
+    $$\psi(X_s) = \mathbb{E}[f(X_t) | \sigma(X_s)].$$
+    Then $\mathbb{E}[f(X_t) | \sigma(X_s)] = \mathbb{E}[f(X_t) | \mathcal{F}_s]$ as claimed.
+\end{proof}
+
+\begin{corollary}
+    The solution $(X_t^{0,x})_{t \ge 0}$ of the SDE above is a Markov process.
+\end{corollary}
+
+\begin{proof}
+    Given $\Gamma \in \mathbb{R}^d$, set $f(x) = 1_\Gamma(x)$. Then
+    \begin{align*}
+        \mathbb{P}(X_t \in \Gamma | \mathcal{F}_s) &= \mathbb{P}(X_t \in \Gamma | \sigma(X_s)) = \psi(X_s) = \mathbb{P}(y + Z_{s,t} \in \Gamma)|_{y=X_s} \\
+        &= \mathbb{P}(X_t^{s,y} \in \Gamma)|_{y=X_s} \doteq p(s,t,y,\Gamma)|_{y=X_s} = p(s,t,X_s,\Gamma).
+    \end{align*}
+\end{proof}
+
+\begin{remark}
+    For any bounded and continuous $f: \mathbb{R}^d \to \mathbb{R}$ we have, by continuity of $(t,s,x) \mapsto X_s^{t,x}(\omega)$ and DOM:
+    \begin{align*}
+        \int_{\mathbb{R}^d} f(y)p(t,s,x,dy) &= \mathbb{E}[f(X_s^{t,x})] \\
+        &= \mathbb{E}[\lim_{n \to \infty} f(X_{s_n}^{t_n, x_n})] = \lim_{n \to \infty} \mathbb{E}[f(X_{s_n}^{t_n, x_n})] \\
+        &= \lim_{n \to \infty} \int_{\mathbb{R}^d} f(y)p(t_n, s_n, x_n, dy) \quad \text{for any } (t_n, s_n, x_n) \to (t,s,x)
+    \end{align*}
+    That is, \vocab{the Feller property} holds:
+    $$(t,x,s) \mapsto \int_{\mathbb{R}^d} f(y)p(t,s,x,dy) \text{ is continuous } \forall f \in C_b(\mathbb{R}^d).$$
+    It thus follows that $(X_t)_{t \ge 0}$ is actually Strong-Markov!
+\end{remark}
+
+\begin{proposition}
+    The solution $(X_t)_{t \ge 0}$ of the SDE is strong Markov.
+\end{proposition}
+
+\begin{proof}
+    Let $\tau$ be a (bounded) stopping time and $f$ a bounded measurable function. We must prove that for any $\Gamma \in \mathcal{F}_\tau$ it holds (notice that $t \mapsto X_t(\omega)$ is progr. meas $\implies X_\tau(\omega) \in m\mathcal{F}_\tau$)
+    $$\mathbb{E}[1_\Gamma 1_{\{X_{\tau+h} \in A\}}] = \mathbb{E}[1_\Gamma p(\tau, \tau+h, X_{\tau+h}, A)].$$
+    We can approximate $\tau$ with a decreasing sequence of stopping times $\tau_n \downarrow \tau$ as $n \to \infty$ with $\tau_n$ taking finitely many values.
+    \begin{align*}
+        \mathbb{E}[1_\Gamma 1_{\{X_{\tau_n+h} \in A\}}] &= \sum_{i=1}^N \mathbb{E}[1_\Gamma 1_{\{X_{t_i+h} \in A\}} 1_{\{\tau_n = t_i\}}] \\
+        &= \sum_{i=1}^N \mathbb{E}[\mathbb{E}[\underbrace{1_\Gamma \cap \{\tau_n = t_i\}}_{\in \mathcal{F}_{t_i} \text{ because } \{\tau_n=t_i\} \subseteq \{\tau \le t_i\} \text{ and } \Gamma \in \mathcal{F}_\tau} 1_{\{X_{t_i+h} \in A\}} | \mathcal{F}_{t_i}]] \\
+        &= \sum_{i=1}^N \mathbb{E}[1_{\Gamma \cap \{\tau_n = t_i\}} \mathbb{P}(X_{t_i+h} \in A | \mathcal{F}_{t_i})] \\
+        &= \sum_{i=1}^N \mathbb{E}[1_{\Gamma \cap \{\tau_n = t_i\}} p(t_i, t_i+h, X_{t_i+h}, A)] \\
+        &= \sum_{i=1}^N \mathbb{E}[1_{\Gamma \cap \{\tau_n = t_i\}} p(\tau_n, \tau_n+h, X_{\tau_n+h}, A)] \\
+        &= \mathbb{E}[1_\Gamma p(\tau_n, \tau_n+h, X_{\tau_n+h}, A)]
+    \end{align*}
+    Now, for any continuous, bounded function,
+    $$\mathbb{E}[1_\Gamma f(X_{\tau_n+h})] = \mathbb{E}[1_\Gamma \int_{\mathbb{R}^d} f(\tau_n, \tau_n+h, X_{\tau_n+h}, dy)]$$
+    Using DOM and Feller property we have
+    \begin{align*}
+        \mathbb{E}[1_\Gamma f(X_{\tau+h})] &= \lim_{n \to \infty} \mathbb{E}[1_\Gamma f(X_{\tau_n+h})] \\
+        &= \lim_{n \to \infty} \mathbb{E}[1_\Gamma \int_{\mathbb{R}^d} f(\tau_n, \tau_n+h, X_{\tau_n+h}, dy)] \\
+        &= \mathbb{E}[1_\Gamma \int_{\mathbb{R}^d} f(\tau, \tau+h, X_{\tau+h}, dy)]
+    \end{align*}
+    $$\implies \mathbb{E}[1_\Gamma f(X_{\tau+h})] = \mathbb{E}[1_\Gamma \int_{\mathbb{R}^d} f(\tau, \tau+h, X_{\tau+h}, dy)] \quad (*)$$
+    Any bounded measurable function can be approximated by bounded continuous functions:
+    $f \in B_b(\mathbb{R}^d) \implies \exists (f_n)_n \subseteq C_b(\mathbb{R}^d)$ s.t. $\|f_n\|_\infty < 1 + \|f\|_\infty$ and $f_n(x) \to f(x)$ for all $x \in \mathbb{R}^d$. Then $(*)$ extends to bounded measurable functions by approximation.
+\end{proof}

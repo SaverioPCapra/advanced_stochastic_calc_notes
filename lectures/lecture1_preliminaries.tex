@@ -1,0 +1,159 @@
+
+\section{Preliminaries about Stochastic Processes}
+
+Let $(\Omega, \mathcal{F}, (\mathcal{F}_{t})_{t \geq 0}, \mathbb{P})$ be the probability space on which we're going to work. 
+
+
+Let $\mathbb{X}=(X_t)_{t \geq 0}$ be a stochastic process which is \textit{measurable}, \textit{adapted}, and \textit{progressively measurable}.
+
+\begin{definition}
+A stochastic process is $(t,\omega) \to X_t(\omega)$ is \vocab{$\mathcal{B}(\mathbb{R}_+) \times \mathcal{F}$-measurable} if $$\{(t, \omega): X_t(\omega) \in A\} \in \mathcal{B}(\mathbb{R_+)} \times \mathcal{F}, \forall A \in \mathcal{B}(\mathbb{R}^d)$$
+\end{definition}
+
+\begin{definition}
+    A stochastic process $\mathbb{X}$ is \vocab{adapted to $(\mathcal{F}_t)_{t \geq 0}$} if $X_t \in m\mathcal{F}_t, \forall t \geq 0$.
+
+    Note that $m\mathcal{F}_t$ denotes the set of measurable functions with respect to the $\sigma$-algebra $\mathcal{F}_{t}$ in the filtration $(\mathcal{F}_{t})_{t\geq0}$.
+\end{definition}
+
+\begin{definition}
+    A stochastic process $\mathbb{X}$ is \vocab{progressively measurable} if $\forall t \geq 0, \{(s, \omega) \in [0,t] \times \Omega: X_{s}(\omega) \in A\} \in \mathcal{B}([0,t]) \times \mathcal{F}_{t}, \forall A \in \mathcal{B}(\mathbb{R}^{d})$.
+\end{definition}
+
+\begin{homework}
+    Show that if $\mathbb{X}$ is progressively measurable, then it is also adapted.
+
+    \textbf{Hint:} use the properties of measurable functions for the product $\sigma$-algebra.
+\end{homework}
+
+\begin{proposition}
+    If $\mathbb{X}$ is adapted and right-continuous, then it is progressively measurable. 
+\end{proposition}
+
+\textbf{Proof}
+
+Fix $t > 0$, and define: 
+$$X_{s}^{n}= \begin{cases} 
+X_{\frac{k+1}{2^{n}}t},& s \in \left[\frac{k}{2^{n}}t, \frac{k+1}{2^{n}}t \right) 
+\\ X_{t}, & s=t
+\end{cases}$$
+
+\begin{homework}
+    Show that $X_{s}(\omega)= \lim_{n \to \infty} X^{n}_{s}(\omega),  \forall (s,\omega) \in [0,t] \times \Omega$.
+\end{homework}
+
+If we show that $(s,\omega) \to X^{n}_{s}(\omega)$ is $\mathcal{B}([0,t]) \times \mathcal{F}_{t}$-measurable then $(s,\omega) \to X_{s}(\omega)$ is also $\mathcal{B}([0,t]) \times \mathcal{F}_{t}$-measurable by pointwise limit.
+
+Since $t > 0$ is arbitrary, we conclude that $\mathbb{X}$ is progressively measurable. 
+
+Fix $A \in \mathcal{B}(\mathbb{R}^{d}): \{(s, \omega) \in [0,t] \times \Omega: X_{s}^{n}(\omega) \in A\}$
+$$= \bigcup^{2^{n}-1}_{k=0} \left( \left[\frac{k}{2^{n}}t, \frac{k+1}{2^{n}}t \right) \times  \left\{ \omega \in \Omega: X_{\frac{k+1}{2^{n}}t}(\omega) \in A \right\}  \right)  \bigcup \left(\{t\} \times \{\omega \in \Omega: X_{t}(\omega) \in A\}   \right)$$
+
+Then:
+$$\{(s, \omega) \in [0,t] \times \Omega: X_{s}^{n}(\omega) \in A\} \in \mathcal{B}([0,t]) \times \mathcal{F}_{t}$$
+
+$\blacksquare$
+
+\begin{remark}
+    If $\mathbb{X}$ is measurable and $\tau: \Omega \to [0, +\infty)$ is $\mathcal{F}$-measurable, then $\omega \to X_{\tau(\omega)}$ is $\mathcal{F}$-measurable as composition of measurable maps.
+
+    Adopt the notation $X_{t}(\omega)= X(t,\omega)$ so that $X^{-1}(A)= \left\{(t, \omega): X(t, \omega) \in A \right\}$.
+    Then, $\left\{\omega \in \Omega: X(\tau(\omega), \omega) \in A\right\} =  \left\{\omega \in \Omega: (\tau(\omega), \omega) \in \underset{\in \mathcal{B}(\mathbb{R}_{+}) \times \mathcal{F}}{X^{-1}(A)} \right\}$.
+
+    Notice that $\omega \to (\tau(\omega), \omega)$ is a mapping $\Omega \to \mathbb{R}_{+} \times \Omega$. For any $E \in \mathcal{B}(\mathbb{R}_{+})$ and $F \in \mathcal{F}$ we have $\left\{\omega \in \Omega: (\tau(\omega), \omega) \in E \times F \right\} = \left\{ \omega \in \Omega: \tau(\omega) \in E \right\} \cap F \in \mathcal{F}$.
+
+    This extends to $\left\{\omega: (\tau(\omega), \omega) \in B \right\} \in \mathcal{F}, \forall B \in \mathcal{B}(\mathbb{R}_{+}) \times \mathcal{F}$ because $\left\{E \times F, E \in \mathcal{B}(\mathbb{R}_{+}), F \in \mathcal{F} \right\}$ generates $\mathcal{B}(\mathbb{R}_{+}) \times \mathcal{F}$. 
+\end{remark}  
+
+In the definition below, let $\Pi$ be either $[0, + \infty)$ or $\mathbb{Z}^{+}$.
+
+\begin{definition}
+    Given a filtered probability space $(\Omega, \mathcal{F}, (\mathcal{F}_{t})_{t \in \Pi}, \mathbb{P})$ and a stopping time $\tau$, we define $$\mathcal{F}_{\tau} := \left\{A \in \mathcal{F}_{\infty}: A \cap \{\tau \leq t\} \in \mathcal{F}_{t}, \forall t \in \Pi \right\}$$
+\end{definition}
+
+\begin{homework}
+    Show that $\mathcal{F}_{\tau}$ is a $\sigma$-algebra on $\Omega$.
+\end{homework}
+
+\begin{proposition}
+    Let $\sigma, \tau$ be stopping times. Then: 
+    \begin{enumerate}
+        \item $\tau \in m\mathcal{F}_{\tau}$
+        \item $\tau \wedge \sigma$ and $\tau \vee \sigma$ are stopping times
+        \item $\sigma(\omega) \leq \tau(\omega), \forall \omega \in \Omega \implies \mathcal{F}_{\sigma} \subseteq \mathcal{F}_{\tau}$
+        \item $\mathcal{F}_{\sigma \wedge \tau}= \mathcal{F}_{\sigma} \cap \mathcal{F}_{\tau}$
+    \end{enumerate}
+\end{proposition}
+
+%%%
+
+\textbf{Proof}
+
+(ii) was proven in PFF and it's left as HW.
+
+(i) It suffices to show $\{\omega: \tau(\omega) \leq s\} \in \mathcal{F}_{\tau}, \forall s \in \Pi$.
+By def $\{\tau \leq s\} \in \mathcal{F}_s \subseteq \mathcal{F}_{\infty}$. Fix $t \in \Pi$. Then
+$$\{\tau \leq s\} \cap \{\tau \leq t\} = \{\tau \leq s \wedge t\} \in \mathcal{F}_{s \wedge t} \subseteq \mathcal{F}_t$$
+
+(iii) Take $F \in \mathcal{F}_{\sigma}$. Then $F \in \mathcal{F}_{\infty}$ and $F \cap \{\sigma \leq t\} \in \mathcal{F}_t, \forall t \in \Pi$.
+$$F \cap \{\tau \leq t\} = F \cap \underbrace{\{\sigma \leq t\}}_{\in \mathcal{F}_t} \cap \underbrace{\{\tau \leq t\}}_{\in \mathcal{F}_t} \quad \text{because } \sigma \leq \tau$$
+Then $F \in \mathcal{F}_{\tau}$.
+
+(iv) Take $F \in \mathcal{F}_{\sigma \wedge \tau}$. Then $F \in \mathcal{F}_{\infty}$ and $F \cap \{\sigma \wedge \tau \leq t\} \in \mathcal{F}_t, \forall t \in \Pi$. Now, $\forall t \in \Pi$,
+$$F \cap \{\tau \leq t\} = F \cap \underbrace{\{\sigma \wedge \tau \leq t\}}_{\in \mathcal{F}_t} \cap \underbrace{\{\tau \leq t\}}_{\in \mathcal{F}_t}$$
+$\implies F \in \mathcal{F}_{\tau}$ and by the same argument $F \in \mathcal{F}_{\sigma}$.
+Thus, $\mathcal{F}_{\sigma \wedge \tau} \subseteq \mathcal{F}_{\tau} \cap \mathcal{F}_{\sigma}$.
+
+Take $F \in \mathcal{F}_{\tau} \cap \mathcal{F}_{\sigma}$. Then $F \in \mathcal{F}_{\infty}$, $F \cap \{\tau \leq t\} \in \mathcal{F}_t$ and $F \cap \{\sigma \leq t\} \in \mathcal{F}_t, \forall t \in \Pi$. Now, for $t \in \Pi$,
+\begin{align*}
+F \cap \{\tau \wedge \sigma \leq t\} &= (F \cap \underbrace{\{\tau \leq t\}}_{\in \mathcal{F}_t} \cap \{\tau \wedge \sigma \leq t\}) \cup (F \cap \{\tau \wedge \sigma \leq t\} \cap \{\tau > t\}) \\
+&\qquad \qquad \qquad \qquad \qquad \qquad = \underbrace{F \cap \{\sigma \leq t\}}_{\in \mathcal{F}_t} \cap \underbrace{\{\tau > t\}}_{\in \mathcal{F}_t}
+\end{align*}
+$\implies F \in \mathcal{F}_{\tau \wedge \sigma} \implies \mathcal{F}_{\tau} \cap \mathcal{F}_{\sigma} \subseteq \mathcal{F}_{\tau \wedge \sigma}$. $\blacksquare$
+
+\begin{proposition}
+    If $\tau$ is a stopping time and $\mathbb{X}$ is progr. meas. then $X_{\tau} \in m\mathcal{F}_{\tau}$.
+\end{proposition}
+
+\textbf{Proof}
+
+We must prove that $\forall A \in \mathcal{B}(\mathbb{R}^d), \{\omega \in \Omega: X_{\tau}(\omega) \in A\} \in \mathcal{F}_{\tau}$.
+Clearly $\{\omega \in \Omega: X_{\tau}(\omega) \in A\} \in \mathcal{F}_{\infty}$. Now, for any $t \geq 0$,
+$$\{X_{\tau} \in A\} \cap \{\tau \leq t\} = \{X_{\tau \wedge t} \in A\} \cap \{\tau \leq t\}$$
+The random variable $\tau \wedge t: \Omega \to [0,t]$ is $\mathcal{F}_t$-measurable because, $\forall s \geq 0$,
+$$\{\tau \wedge t \leq s\} = \begin{cases} \Omega & \text{if } s \geq t \\ \{\tau \leq s\} & \text{if } s \in [0,t] \end{cases} \bigg\} \in \mathcal{F}_t$$
+
+Now, let $X^t(s, \omega) := X_{s \wedge t}(\omega)$.
+Then $\forall A \in \mathcal{B}(\mathbb{R}^d), \{\omega \in \Omega: X_{\tau \wedge t}(\omega) \in A\} = \{\omega \in \Omega: X^t(\tau(\omega), \omega) \in A\}$
+$$= \left\{\omega \in \Omega: (\tau(\omega), \omega) \in \underbrace{(X^t)^{-1}(A)}_{\in \mathcal{B}([0,t]) \times \mathcal{F}_t \text{ by progr. meas.}} \right\} \in \mathcal{F}_t \text{ because:}$$
+For sets of the form $[0,s] \times F, s \in [0,t], F \in \mathcal{F}_t$, we have
+$$\{\omega \in \Omega: (\tau(\omega), \omega) \in [0,s] \times F\} = \{\tau \leq s\} \cap F \in \mathcal{F}_t$$
+Since $\mathcal{B}([0,t]) \times \mathcal{F}_t = \sigma([0,s] \times F, s \in [0,t], F \in \mathcal{F}_t)$, the result extends to the whole $\sigma$-algebra. $\blacksquare$
+
+\begin{proposition}
+    Let $\mathbb{X}$ be continuous and $A \subseteq \mathbb{R}^d$ be an open set. Then $\tau_A := \inf\{t \geq 0: X_t \notin A\}$ is a stopping time.
+    If $A$ is closed and $\bigcap_{\epsilon > 0} \mathcal{F}_{t+\epsilon} = \mathcal{F}_{t^+} = \mathcal{F}_t$ then $\tau_A$ is a stopping time.
+\end{proposition}
+
+\textbf{Proof}
+
+If $A$ is open:
+\begin{itemize}
+    \item by continuity of $s \mapsto X_s \implies$ continuity of $s \mapsto \text{dist}(X_s, A^c)$ and $A^c$ is closed.
+\end{itemize}
+
+\begin{homework}
+    Fill in the details of this proof.
+\end{homework}
+
+$$\{\tau_A > t\} = \{\inf_{0 \leq s \leq t} \text{dist}(X_s, A^c) > 0\} = \bigcup_{n \in \mathbb{N}} \left\{\inf_{0 \leq s \leq t} \text{dist}(X_s, A^c) > \frac{1}{n}\right\}$$
+$$\overset{\text{indistinguishability}}{=} \bigcup_{n \in \mathbb{N}} \bigcap_{s \in [0,t] \cap \mathbb{Q}} \left\{\text{dist}(X_s, A^c) > \frac{1}{n}\right\} \in \mathcal{F}_t$$
+
+If $A$ is closed, let's approximate $A$ with open sets $A_n \downarrow A$ ($A_n \supseteq A_{n+1} \supseteq A$).
+Then $\{\tau_A < t\} = \bigcup_{n \in \mathbb{N}} \{\tau_{A_n} \leq t\} \in \mathcal{F}_t$.
+
+$\omega \in \{\tau_A < t\} \implies X_{\tau_A}(\omega) \in A^c \implies X_{\tau_A}(\omega) \in A_n^c$ for large $n$ (because $A^c$ is open and $\mathbb{X}$ continuous) $\implies \tau_{A_n}(\omega) \leq t$ for large $n$.
+
+$\omega \in \bigcup_{n \in \mathbb{N}} \{\tau_{A_n} \leq t\} \implies \exists n \in \mathbb{N}$ s.t. $\omega \in \{\tau_{A_n} \leq t\} \subseteq \{\tau_A < t\}$.
+
+Now: $\{\tau_A \leq t\} = \bigcap_{n \in \mathbb{N}} \underbrace{\{\tau_A < t + \frac{1}{n}\}}_{\in \mathcal{F}_{t + \frac{1}{n}}} \in \mathcal{F}_{t^+} = \mathcal{F}_t$. $\blacksquare$

@@ -1,0 +1,356 @@
+\section{Optimal Stopping in Discrete Time}
+
+Taken from Chapter 1 of \cite{peskir2006optimal}.
+
+\subsection{Introduction to Optimal Stopping}
+
+\begin{itemize}
+    \item Discrete time setting: $(\Omega, \mathcal{F}, (\mathcal{F}_n)_n, \PP)$
+    \item Gain process: $(G_n)_n$ adapted to $(\mathcal{F}_n)_n$
+    \item Finite-time horizon: $N$
+    \item Class of stopping times: $\mathcal{T} := \{\tau : \tau : \Omega \to \ZZ^+ \text{ is stopping time}\}$
+    \item For $n \le N$, $\mathcal{T}_{n,N} := \{\tau \in \mathcal{T} : n \le \tau \le N\}$
+\end{itemize}
+
+\vocab{The problem of interest:} $V_* = \sup_{\tau} \EE[G_\tau]$.
+We want to:
+\begin{enumerate}
+    \item Calculate $V_*$
+    \item Determine optimal $\tau_*$
+\end{enumerate}
+
+We distinguish two cases:
+\begin{itemize}
+    \item \textbf{Infinite-time horizon:} $\tau \in \mathcal{T}$. In this case $N = +\infty$ and we set $G_N(\omega) \equiv 0$. We need to define $G_\tau 1_{\{\tau = +\infty\}}$. The usual choice is:
+    $$G_\tau 1_{\{\tau = +\infty\}} := \limsup_{n \to \infty} G_n 1_{\{\tau = +\infty\}}$$
+    \item \textbf{Finite-time horizon:} $\tau \in \mathcal{T}_{0,N}$.
+\end{itemize}
+
+
+\textbf{Assumption:}
+$$\EE\left[ \sup_{0 \le n \le N} |G_n| \right] < \infty$$
+
+
+\textbf{Dynamic view of the problem:} $V_n^N := \sup_{\tau \in \mathcal{T}_{n,N}} \EE[G_\tau]$.
+
+\subsection{Method of backward induction}
+It works for $N < \infty$.
+
+Set $S_N^N(\omega) := G_N(\omega)$ and 
+$$S_n^N(\omega) := \max \left\{ G_n(\omega), \EE[S_{n+1}^N | \mathcal{F}_n](\omega) \right\}$$
+for $n \in \{0, 1, \dots, N-1\}$. Let $\tau_n^N := \inf \{n \le k \le N : S_k^N = G_k\}$ and notice that $S_N^N = G_N \implies \{n \le k \le N : S_k^N = G_k\} \neq \emptyset$.
+
+\begin{theorem}[OS1]
+    $\forall 0 \le n \le N$ we have, $\PP$-a.s.
+    \begin{equation} \label{eq:A}
+        \left.
+        \begin{aligned}
+            S_n^N &\ge \EE[G_\tau | \mathcal{F}_n] \quad \forall \tau \in \mathcal{T}_{n,N} \\
+            S_n^N &= \EE[G_{\tau_n^N} | \mathcal{F}_n]
+        \end{aligned}
+        \right\} \quad (A)
+    \end{equation}
+    Moreover:
+    \begin{enumerate}[label=(\roman*)]
+        \item $\tau_n^N$ is optimal for $V_n^N$, i.e., $V_n^N = \EE[G_{\tau_n^N}]$.
+        \item If $\tau_* \in \mathcal{T}_{n,N}$ is another optimal stopping time for $V_n^N$, then $\PP(\tau_* \ge \tau_n^N) = 1$ (i.e., $\tau_n^N$ is \vocab{minimal}).
+        \item $(S_k^N)_{n \le k \le N}$ is the smallest supermartingale which dominates $(G_k)_{n \le k \le N}$.
+        \item $(S_{k \wedge \tau_n^N}^N)_{n \le k \le N}$ is a martingale.
+    \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+    \vocab{Proof of (A):} For $n=N$ we have $S_N^N = G_N$ and $\tau_N^N = N$ so the claim holds. Now assume the claim holds for generic $n$. Take $\tau \in \mathcal{T}_{n-1, N}$ and set $\bar{\tau} := \tau \vee n$. Then $\bar{\tau} \in \mathcal{T}_{n,N}$ and
+    \begin{align*}
+        \EE[G_\tau | \mathcal{F}_{n-1}] &= \EE[G_\tau 1_{\{\tau = n-1\}} | \mathcal{F}_{n-1}] + \EE[G_\tau 1_{\{\tau > n-1\}} | \mathcal{F}_{n-1}] \\
+        &= G_{n-1} 1_{\{\tau = n-1\}} + \EE[G_{\bar{\tau}} | \mathcal{F}_{n-1}] 1_{\{\tau > n-1\}}
+    \end{align*}
+    By definition $S_{n-1}^N \ge G_{n-1}$. By the \vocab{induction hypothesis}:
+    $$\EE[G_{\bar{\tau}} | \mathcal{F}_{n-1}] = \EE[\EE[G_{\bar{\tau}} | \mathcal{F}_n] | \mathcal{F}_{n-1}] \le \EE[S_n^N | \mathcal{F}_{n-1}]$$
+    because $\bar{\tau} \in \mathcal{T}_{n,N}$.
+    Combining the above:
+    \begin{align*}
+        \EE[G_\tau | \mathcal{F}_{n-1}] &\le S_{n-1}^N 1_{\{\tau = n-1\}} + \underbrace{\EE[S_n^N | \mathcal{F}_{n-1}]}_{\le S_{n-1}^N \text{ by def of } (S_n^N)_n} 1_{\{\tau > n-1\}} \\
+        &\le S_{n-1}^N \quad \checkmark
+    \end{align*}
+    
+    Now we check the equality for $\tau_{n-1}^N$:
+    $$\EE[G_{\tau_{n-1}^N} | \mathcal{F}_{n-1}] = G_{n-1} 1_{\{\tau_{n-1}^N = n-1\}} + \EE[G_{\tau_{n-1}^N} 1_{\{\tau_{n-1}^N > n-1\}} | \mathcal{F}_{n-1}]$$
+    On $\{\tau_{n-1}^N = n-1\}$ we have $G_{n-1} = S_{n-1}^N$.
+    On $\{\tau_{n-1}^N > n-1\}$ we have $\tau_{n-1}^N = \tau_n^N$ and $S_{n-1}^N > G_{n-1}$. The latter implies $S_{n-1}^N = \EE[S_n^N | \mathcal{F}_{n-1}]$ by definition of $(S_n^N)_n$.
+    
+    Thus:
+    \begin{align*}
+        \EE[G_{\tau_{n-1}^N} | \mathcal{F}_{n-1}] &= S_{n-1}^N 1_{\{\tau_{n-1}^N = n-1\}} + \underbrace{\EE[G_{\tau_n^N} | \mathcal{F}_{n-1}]}_{= \EE[\EE[G_{\tau_n^N} | \mathcal{F}_n] | \mathcal{F}_{n-1}]} 1_{\{\tau_{n-1}^N > n-1\}} \\
+        &= S_{n-1}^N 1_{\{\tau_{n-1}^N = n-1\}} + \underbrace{\EE[S_n^N | \mathcal{F}_{n-1}]}_{\text{by inductive hypothesis}} 1_{\{\tau_{n-1}^N > n-1\}} \\
+        &= S_{n-1}^N 1_{\{\tau_{n-1}^N = n-1\}} + \underbrace{\EE[S_n^N | \mathcal{F}_{n-1}]}_{S_{n-1}^N} 1_{\{\tau_{n-1}^N > n-1\}} \\
+        &= S_{n-1}^N \quad \checkmark
+    \end{align*}
+
+    \vocab{Now we prove (i).} Since $S_n^N \ge \EE[G_\tau | \mathcal{F}_n] \quad \forall \tau \in \mathcal{T}_{n,N}$, then
+    $$\EE[S_n^N] \ge \EE[G_\tau] \quad \forall \tau \in \mathcal{T}_{n,N} \implies \EE[S_n^N] \ge V_n^N.$$
+    However, $S_n^N = \EE[G_{\tau_n^N} | \mathcal{F}_n] \implies \EE[S_n^N] = \EE[G_{\tau_n^N}] \le V_n^N$.
+    Thus \fbox{$V_n^N = \EE[G_{\tau_n^N}] = \EE[S_n^N]$} and $\tau_n^N$ is \vocab{optimal}.
+
+    \vocab{Now we prove (iii).} By definition $S_n^N \ge \EE[S_{n+1}^N | \mathcal{F}_n]$ and therefore $(S_n^N)_n$ is a supermartingale. Obviously $S_n^N \ge G_n$.
+    Let $(\tilde{S}_n)_n$ be another supermartingale s.t. $\tilde{S}_n \ge G_n \forall n$.
+    Then $\tilde{S}_N \ge G_N = S_N^N$. Assume $\tilde{S}_k \ge S_k^N$ for $n+1 \le k \le N$. Then
+    $$S_n^N = \max \{G_n, \EE[S_{n+1}^N | \mathcal{F}_n]\} \le \max \{\underbrace{G_n}_{\le \tilde{S}_n}, \underbrace{\EE[\tilde{S}_{n+1} | \mathcal{F}_n]}_{\le \tilde{S}_n}\} \le \tilde{S}_n. \quad \checkmark$$
+
+    \vocab{Now we prove (ii).} Let $\tau_* \in \mathcal{T}_{n,N}$ be optimal. Then $V_n^N = \EE[G_{\tau_*}]$. However $S_k^N \ge G_k, n \le k \le N$ implies $S_{\tau_*}^N \ge G_{\tau_*}$. Arguing by contradiction, assume $\PP(S_{\tau_*}^N > G_{\tau_*}) > 0$. Then $\EE[S_{\tau_*}^N - G_{\tau_*}] > 0$ and
+    $$V_n^N = \EE[G_{\tau_*}] < \EE[S_{\tau_*}^N] = \EE[\EE[S_{\tau_*}^N | \mathcal{F}_n]] \le \EE[S_n^N] = V_n^N$$
+    where the inequality follows by (iii) and optional sampling ($\tau_*$ is bounded).
+    Thus $V_n^N < V_n^N$, which is impossible.
+    So, it must be $S_{\tau_*}^N = G_{\tau_*}, \PP$-a.s. This implies $\tau_* \ge \tau_n^N$ because $\tau_* \in \mathcal{T}_{n,N}$.
+
+    \vocab{Now we prove (iv).} Take $n \le k \le N-1$.
+    \begin{align*}
+        \EE[S_{(k+1) \wedge \tau_n^N}^N | \mathcal{F}_k] &= \EE[S_{\tau_n^N}^N 1_{\{\tau_n^N \le k\}} + S_{k+1}^N 1_{\{\tau_n^N \ge k+1\}} | \mathcal{F}_k] \\
+        &= \EE[S_{k \wedge \tau_n^N}^N 1_{\{\tau_n^N \le k\}} | \mathcal{F}_k] + \EE[S_{k+1}^N | \mathcal{F}_k] 1_{\{\tau_n^N \ge k+1\}}
+    \end{align*}
+    where $\{\tau_n^N \ge k+1\} = \bigcap_{j=n}^k \{S_j^N > G_j\} \in \mathcal{F}_k$.
+    On the event $\{\tau_n^N \ge k+1\}$ we have $S_j^N > G_j$ for $n \le j \le k$ and therefore $S_k^N = \EE[S_{k+1}^N | \mathcal{F}_k]$ by definition. Then:
+    \begin{align*}
+        \EE[S_{(k+1) \wedge \tau_n^N}^N | \mathcal{F}_k] &= S_{k \wedge \tau_n^N}^N 1_{\{\tau_n^N \le k\}} + S_k^N 1_{\{\tau_n^N \ge k+1\}} \\
+        &= S_{k \wedge \tau_n^N}^N 1_{\{\tau_n^N \le k\}} + S_{k \wedge \tau_n^N}^N 1_{\{\tau_n^N \ge k+1\}} \\
+        &= S_{k \wedge \tau_n^N}^N. \quad \checkmark
+    \end{align*}
+\end{proof}
+
+\begin{remark}
+    Eq. (A) in Thm OS1 yields:
+    $$S_n^N = \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_{n,N}} \EE[G_\tau | \mathcal{F}_n]$$
+    and it characterises the so-called \vocab{Snell-envelope} of $(G_n)_n$: \underline{the smallest supermartingale that dominates} $(G_n)_n$.
+    Notice that $\mathcal{T}_{n,N}$ is an uncountable set.
+\end{remark}
+
+\subsection{Infinite Horizon}
+
+\vocab{Infinite horizon:} when $N = +\infty$ the backward induction fails.
+
+Let $\mathcal{T}_n := \{\tau \in \mathcal{T} : \tau \ge n\}$ and $V_n := \sup_{\tau \in \mathcal{T}_n} \EE[G_\tau]$.
+
+To solve the problem we consider a process $(S_n)_{n \in \ZZ^+}$ defined as
+$$S_n := \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_n} \EE[G_\tau | \mathcal{F}_n]$$
+and the stopping time
+$$\tau_n := \inf \{k \ge n : S_k = G_k\} \quad \text{with } \inf \emptyset = +\infty$$
+
+\begin{homework}
+    Prove that $\tau_n \in \mathcal{T}_n$.
+\end{homework}
+
+We always assume $\EE\left[ \sup_{n \ge 0} |G_n| \right] < \infty$.
+
+\begin{theorem}[OS2]
+    The process $(S_n)_{n \in \ZZ^+}$ satisfies
+    \begin{equation} \label{eq:A_inf}
+        S_n = \max \left( G_n, \EE[S_{n+1} | \mathcal{F}_n] \right) \quad \forall n \in \ZZ^+. \tag{A}
+    \end{equation}
+    Furthermore
+    \begin{equation} \label{eq:B_inf}
+        \left.
+        \begin{aligned}
+            S_n &\ge \EE[G_\tau | \mathcal{F}_n] \quad \forall \tau \in \mathcal{T}_n \\
+            S_n &= \EE[G_{\tau_n} | \mathcal{F}_n] \quad \text{if } \PP(\tau_n < \infty) = 1.
+        \end{aligned}
+        \right\} \quad (B)
+    \end{equation}
+    Finally:
+    \begin{enumerate}[label=(\roman*)]
+        \item $\tau_n$ is optimal if $\PP(\tau_n < \infty) = 1$.
+        \item If $\tau_*$ is an optimal stopping time, then $\PP(\tau_* \ge \tau_n) = 1$.
+        \item $(S_n)_{n \in \ZZ^+}$ is the smallest supermartingale that dominates $(G_n)_{n \in \ZZ^+}$.
+        \item $(S_{k \wedge \tau_n})_{k \ge n}$ is a martingale.
+    \end{enumerate}
+    If $\PP(\tau_n = +\infty) > 0$ then there is no optimal stopping time which is finite with probab. 1.
+\end{theorem}
+
+\begin{proof}
+    Let's start from (A). Take $\tau \in \mathcal{T}_n$ and set $\bar{\tau} := \tau \vee (n+1)$.
+    Since $\{\tau \ge n+1\} \in \mathcal{F}_n$ we have:
+    \begin{align*}
+        \EE[G_\tau | \mathcal{F}_n] &= \EE[G_\tau 1_{\{\tau = n\}} | \mathcal{F}_n] + \EE[G_\tau 1_{\{\tau \ge n+1\}} | \mathcal{F}_n] \\
+        &= G_n 1_{\{\tau = n\}} + \EE[G_{\bar{\tau}} 1_{\{\tau \ge n+1\}} | \mathcal{F}_n] \\
+        &= G_n 1_{\{\tau = n\}} + 1_{\{\tau \ge n+1\}} \EE[\underbrace{\EE[G_{\bar{\tau}} | \mathcal{F}_{n+1}]}_{\le \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_{n+1}} \EE[G_\tau | \mathcal{F}_{n+1}]} | \mathcal{F}_n] \\
+        &\le G_n 1_{\{\tau = n\}} + \EE[S_{n+1} | \mathcal{F}_n] 1_{\{\tau \ge n+1\}} \\
+        &\le \max \{G_n, \EE[S_{n+1} | \mathcal{F}_n]\}.
+    \end{align*}
+    Since $\tau \in \mathcal{T}_n$ was arbitrary, $\operatorname*{ess\,sup}_{\tau \in \mathcal{T}_n} \EE[G_\tau | \mathcal{F}_n] \le \max(G_n, \EE[S_{n+1} | \mathcal{F}_n])$.
+
+    Now we prove the reverse inequality. By definition $S_n \ge G_n$ and it remains to prove $S_n \ge \EE[S_{n+1} | \mathcal{F}_n]$.
+    Consider the family $\{\EE[G_\tau | \mathcal{F}_{n+1}], \tau \in \mathcal{T}_{n+1}\} =: \Gamma_{n+1}$.
+    Given $\tau_1, \tau_2 \in \mathcal{T}_{n+1}$ we set $\tau_3 := \tau_1 1_A + \tau_2 1_{A^c}$ with
+    $$A := \{\omega \in \Omega : \EE[G_{\tau_1} | \mathcal{F}_{n+1}](\omega) > \EE[G_{\tau_2} | \mathcal{F}_{n+1}](\omega)\}.$$
+    Since $A \in \mathcal{F}_{n+1}$ (HW) then $\tau_3 \in \mathcal{T}_{n+1}$ (HW). Moreover
+    $$\EE[G_{\tau_3} | \mathcal{F}_{n+1}] \ge \max \{\EE[G_{\tau_1} | \mathcal{F}_{n+1}], \EE[G_{\tau_2} | \mathcal{F}_{n+1}]\} \quad \text{(HW)}.$$
+    That implies: the family $\Gamma_{n+1}$ is upward directed and
+    $$\operatorname*{ess\,sup}_{\tau \in \mathcal{T}_{n+1}} \EE[G_\tau | \mathcal{F}_{n+1}] = \uparrow \lim_{k \to \infty} \EE[G_{\tau_k} | \mathcal{F}_{n+1}] \quad \text{for some } (\tau_k)_{k \in \NN} \in \mathcal{T}_{n+1}.$$
+    
+    By \underline{MON} we get
+    \begin{align*}
+        \EE[S_{n+1} | \mathcal{F}_n] &= \EE[\uparrow \lim_{k \to \infty} \EE[G_{\tau_k} | \mathcal{F}_{n+1}] | \mathcal{F}_n] \\
+        &= \uparrow \lim_{k \to \infty} \EE[\EE[G_{\tau_k} | \mathcal{F}_{n+1}] | \mathcal{F}_n] \\
+        &= \uparrow \lim_{k \to \infty} \underbrace{\EE[G_{\tau_k} | \mathcal{F}_n]}_{\le S_n \text{ because } \mathcal{T}_{n+1} \subset \mathcal{T}_n} \le S_n.
+    \end{align*}
+    \begin{homework}
+        Why can we use MON?
+    \end{homework}
+    Then $S_n \ge \max \{G_n, \EE[S_{n+1} | \mathcal{F}_n]\}$.
+
+    Now we prove (B). The inequality holds by definition of $S_n$.
+    In order to prove $S_n = \EE[G_{\tau_n} | \mathcal{F}_n]$ we first want to prove (iv).
+    We know that $S_n \ge \EE[S_{n+1} | \mathcal{F}_n]$ and therefore $(S_n)_{n \in \NN}$ is a supermartingale.
+    So we conclude $(S_{k \wedge \tau_n})_{k \ge n}$ is a supermartingale.
+    It remains to show $\EE[S_{k \wedge \tau_n}] = \EE[S_{(k+1) \wedge \tau_n}]$.
+
+    \begin{homework}
+        If $(X_n)_{n \in \ZZ^+}$ is a supermg s.t. $\EE[X_n] = \EE[X_{n+1}] \forall n \in \ZZ^+$ then $(X_n)_{n \in \ZZ^+}$ is a martingale.
+        
+        \textit{Sol:} $X_n \ge \EE[X_{n+1} | \mathcal{F}_n]$ so $\EE[X_n - X_{n+1}] = \EE[X_n - \EE[X_{n+1} | \mathcal{F}_n]] \ge 0$ but the equality implies $X_n = \EE[X_{n+1} | \mathcal{F}_n]$.
+    \end{homework}
+
+    \begin{align*}
+        \EE[S_{(k+1) \wedge \tau_n}] &= \EE[1_{\{\tau_n \le k\}} S_{\tau_n} + 1_{\{\tau_n \ge k+1\}} S_{k+1}] \\
+        &= \EE[1_{\{\tau_n \le k\}} S_{\tau_n \wedge k} + 1_{\{\tau_n \ge k+1\}} \underbrace{\EE[S_{k+1} | \mathcal{F}_k]}_{S_k}] \\
+        &\qquad \text{because } \{\tau_n \ge k+1\} = \bigcap_{j=n}^k \{S_j > G_j\} \in \mathcal{F}_k \\
+        &\qquad \text{and } S_k = \EE[S_{k+1} | \mathcal{F}_k] \text{ on that event.} \\
+        &= \EE[1_{\{\tau_n \le k\}} S_{\tau_n \wedge k} + 1_{\{\tau_n \ge k+1\}} S_{k \wedge \tau_n}] = \EE[S_{\tau_n \wedge k}].
+    \end{align*}
+    This proves (iv).
+
+    Set $G^* := \sup_{k \in \ZZ^+} |G_k|$. Then
+    $$|S_n| = \left| \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_n} \EE[G_\tau | \mathcal{F}_n] \right| \le \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_n} \EE[|G_\tau| | \mathcal{F}_n] \le \EE[G^* | \mathcal{F}_n]$$
+    Therefore $(S_n)_{n \in \ZZ^+}$ is bounded by the u.i. martingale $\{\EE[G^* | \mathcal{F}_n], n \in \ZZ^+\}$. That implies $(S_n)_{n \in \ZZ^+}$ is a u.i. supermartingale. It follows that $(S_{k \wedge \tau_n})_{k \ge n}$ is a u.i. martingale, with $\lim_{k \to \infty} S_{k \wedge \tau_n} = S_{\tau_n} = G_{\tau_n}$ on $\{\tau_n < \infty\}$. Then by the proposition on u.i. martingales ($M_n = \EE[M_\infty | \mathcal{F}_n]$)
+    $$S_n = \EE[S_{k \wedge \tau_n} | \mathcal{F}_n] = \EE[S_{\tau_n} | \mathcal{F}_n] = \EE[G_{\tau_n} | \mathcal{F}_n].$$
+    This proves (B).
+
+    Let's prove (i).
+    $$V_n = \sup_{\tau \in \mathcal{T}_n} \EE[G_\tau] = \sup_{\tau \in \mathcal{T}_n} \EE[\underbrace{\EE[G_\tau | \mathcal{F}_n]}_{\le S_n}] \le \EE[S_n]$$
+    On the other hand $V_n \ge \EE[G_{\tau_n}] = \EE[\EE[G_{\tau_n} | \mathcal{F}_n]] = \EE[S_n]$ if $\PP(\tau_n < \infty) = 1$.
+
+    Let's prove (ii). Assume $\tau_*$ is optimal, i.e.
+    $V_n = \EE[G_{\tau_*}]$. Since $G_k \le S_k \forall k \in \ZZ^+$ then
+    $$V_n = \EE[G_{\tau_*}] \le \EE[S_{\tau_*}] = \EE[\EE[S_{\tau_*} | \mathcal{F}_n]]$$
+    \underline{If}: $\EE[S_{\tau_*} | \mathcal{F}_n] \le S_n$ then: \hfill $(*)$
+    $$V_n = \EE[G_{\tau_*}] \le \EE[S_{\tau_*}] \le \EE[S_n] = V_n$$
+    Therefore $\EE[G_{\tau_*} - S_{\tau_*}] = 0 \implies S_{\tau_*} = G_{\tau_*} \implies \tau_* \ge \tau_n$.
+
+    It remains to prove (*).
+    \begin{align*}
+        \EE[S_{\tau_*} | \mathcal{F}_n] &= \EE[S_{\tau_*} + \EE[G^* | \mathcal{F}_{\tau_*}] - \EE[G^* | \mathcal{F}_{\tau_*}] | \mathcal{F}_n] \\
+        &= \EE[S_{\tau_*} + G^* | \mathcal{F}_n] - \EE[G^* | \mathcal{F}_n] \\
+        &= \EE[\liminf_{k \to \infty} (\underbrace{S_{\tau_* \wedge k} + G^*}_{\ge 0}) | \mathcal{F}_n] - \EE[G^* | \mathcal{F}_n] \\
+        &\le \liminf_{k \to \infty} \EE[S_{\tau_* \wedge k} + G^* | \mathcal{F}_n] - \EE[G^* | \mathcal{F}_n] \quad (\text{Fatou's lemma}) \\
+        &= \liminf_{k \to \infty} \EE[S_{\tau_* \wedge k} | \mathcal{F}_n] \le S_n, \text{ as needed.}
+    \end{align*}
+
+    Let's prove (iii). Assume that $(\tilde{S}_k)_{k \ge n}$ is another supermg that dominates $(G_k)_{k \ge n}$. Then
+    $$S_k = \EE[G_{\tau_k} | \mathcal{F}_k] \le \EE[\tilde{S}_{\tau_k} | \mathcal{F}_k] \le \tilde{S}_k.$$
+    \begin{homework}
+        Hint: $\tilde{S}_k \ge G_k \ge -|G_k| \ge -G^* \implies \tilde{S}_k + G^* \ge 0 \quad \forall k \ge n$.
+    \end{homework}
+\end{proof}
+
+\begin{remark}
+    It is clear that $V_n^N \le V_n^{N+1} \le V_n$ and $S_n^N \le S_n^{N+1} \le S_n \quad \forall N \in \NN, n \le N$. (HW)
+    
+    Then $V_n^\infty := \lim_{N \to \infty} V_n^N \le V_n$ and $S_n^\infty := \lim_{N \to \infty} S_n^N \le S_n$.
+
+    If $\PP(\tau_n < \infty) = 1$, then
+    \begin{align*}
+        S_n &= \EE[G_{\tau_n} | \mathcal{F}_n] = \EE\left[ G_{\tau_n} + \sup_{k \ge n} |G_k| \middle| \mathcal{F}_n \right] - \EE\left[ \sup_{k \ge n} |G_k| \middle| \mathcal{F}_n \right] \\
+        &= \EE\left[ \liminf_{N \to \infty} (G_{\tau_n \wedge N} + \underbrace{\sup_{k \ge n} |G_k|}_{\ge 0}) \middle| \mathcal{F}_n \right] - \EE\left[ \sup_{k \ge n} |G_k| \middle| \mathcal{F}_n \right] \\
+        &\overset{\text{Fatou's}}{\le} \liminf_{N \to \infty} \EE\left[ G_{\tau_n \wedge N} + \sup_{k \ge n} |G_k| \middle| \mathcal{F}_n \right] - \EE\left[ \sup_{k \ge n} |G_k| \middle| \mathcal{F}_n \right] \\
+        &= \liminf_{N \to \infty} \EE[G_{\tau_n \wedge N} | \mathcal{F}_n] \le \liminf_{N \to \infty} S_n^N, \quad \text{because } \tau_n \wedge N \in \mathcal{T}_{n,N}
+    \end{align*}
+    Then $S_n = \lim_{N \to \infty} S_n^N$ and by analogous arguments $V_n = \lim_{N \to \infty} V_n^N$.
+
+    Notice also that $\tau_n^N = \inf \{k \ge n : S_k^N = G_k\} \le \tau_n^{N+1} \le \tau_n \quad \forall N \in \NN$ because $Y_k^N := S_k^N - G_k \ge 0$ and $Y_k^N \le Y_k^{N+1}$.
+
+    Therefore $\tau_n^\infty := \lim_{N \to \infty} \tau_n^N$ is well-defined and $\tau_n^\infty \le \tau_n$.
+
+    Assume $\PP(\tau_n - \tau_n^\infty > 0) > 0$. Then $\PP(\tau_n - \tau_n^\infty \ge 1) > \delta$ for some $\delta > 0$. Let $A := \{\tau_n - \tau_n^\infty \ge 1\}$. Then for $\omega \in A$ we must have $\tau_n^\infty(\omega) \le T_\omega$ for some $T_\omega \in \NN$.
+    
+    $S_k(\omega) - G_k(\omega) > 0, \forall n \le k \le \tau_n^\infty(\omega)$. That implies
+    $$S_k(\omega) - G_k(\omega) \ge \eta_\omega > 0, \forall n \le k \le \tau_n^\infty(\omega), \text{ for some } \eta_\omega > 0.$$
+    In other words
+    \begin{equation} \label{eq:min_diff}
+        \min_{n \le k \le \tau_n^\infty(\omega)} (S_k(\omega) - G_k(\omega)) \ge \eta_\omega \tag{1}
+    \end{equation}
+    Since $S_k^N(\omega) \nearrow S_k(\omega)$ as $N \nearrow \infty \quad \forall n \le k \le T_\omega$ then
+    $$\max_{n \le k \le T_\omega} (S_k(\omega) - S_k^N(\omega)) \le \eta_\omega / 2 \quad \text{for sufficiently large } N.$$
+    (Note: $T_\omega$ is finite! i.e., $\exists \bar{N}_{\omega, \eta, T} \in \NN$ s.t. $\max_{n \le k \le T_\omega} (S_k(\omega) - S_k^N(\omega)) \le \eta_\omega / 2 \quad \forall N \ge \bar{N}_{\omega, \eta, T}$).
+
+    Therefore, from \eqref{eq:min_diff} we deduce, $\forall N \ge \bar{N}_{\omega, \eta, T}$
+    $$\min_{n \le k \le \tau_n^\infty(\omega)} (S_k^N(\omega) - G_k(\omega)) \ge \eta_\omega / 2 \quad \text{(HW)}$$
+    which would imply the absurd $\tau_n^N(\omega) \ge \tau_n^\infty(\omega) + 1$.
+    Thus $\PP(\tau_n - \tau_n^\infty \ge 1) = 0$ and $\tau_n = \tau_n^\infty$ $\PP$-a.s.
+\end{remark}
+
+\subsection{Markovian Setting}
+
+Let $(X_n)_{n \in \ZZ^+}$ be a Markov process taking values on some metric space $(E, \text{dist}(\cdot))$ [For example $(\RR^m, \|\cdot\|_{\RR^m})$].
+
+This allows us to use the Markovian setup:
+$$(\Omega, \mathcal{F}, (\mathcal{F}_n^X)_{n \in \ZZ^+}, (X_n)_{n \in \ZZ^+}, (\theta_n)_{n \in \ZZ^+}, (\PP_x)_{x \in E})$$
+where $\theta_n$ is the shift operator.
+
+Assume that $G_n = g(X_n)$ for some measurable $g: E \to \RR$.
+
+\subsection{Finite horizon}
+Then $S_N^N = g(X_N)$. Arguing by induction, assume $S_{n+1}^N = u(n+1, X_{n+1})$ for some function $u(\cdot, \cdot)$.
+Then
+$$S_n^N = \max \left\{ g(X_n), \underbrace{\EE[u(n+1, X_{n+1}) | \mathcal{F}_n]}_{f(n, X_n) \text{ by Markovianity for some } f(\cdot)} \right\}$$
+$\implies S_n^N = u(n, X_n)$ with
+$$u(n, x) := \max \{g(x), (P_{n+1} u(n+1, \cdot))(x)\}$$
+Here we use the semigroup $(P_n f)(x) := \int f(y) p_n(x, dy)$ where $p_n(x, dy) = \text{Law}(X_n | X_{n-1} = x)$.
+
+Recall that $S_n^N = \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_{n,N}} \EE[G_\tau | \mathcal{F}_n]$ and therefore
+$$u(n, X_n) = \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_{n,N}} \EE[g(X_\tau) | \mathcal{F}_n]$$
+Moreover we know that $\tau_n^* = \inf \{k \ge n : u(k, X_k) = g(X_k)\}$ is optimal (HW). It is not hard to see that $\tau_n^*$ is a stopping time for the filtration generated by $X$, i.e. $\mathcal{F}_k^X = \sigma(X_0, X_1, \dots, X_k)$. Then, with no loss of generality we can assume $(\mathcal{F}_k)_{k \in \ZZ^+} = (\mathcal{F}_k^X)_{k \in \ZZ^+}$.
+
+In order to pass to the infinite-time horizon we need to change our notation slightly:
+\begin{equation*}
+    \boxed{S_n^N = u^N(n, X_n) = \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_{n,N}} \EE[g(X_\tau) | \mathcal{F}_n]}
+\end{equation*}
+
+\subsection{Infinite horizon}
+Let us now assume that $(X_n)_{n \in \ZZ^+}$ is a homogeneous Markov chain with $X_0 = x \in E$, so that $P_n = P$ and $(Pf)(x) = \int f(y) p(x, dy)$.
+
+It follows that, for $X_0 = x \in E$,
+\begin{align*}
+    u^N(n, X_n) &= \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_{n,N}} \underbrace{\EE_x [g(X_{n+\tau \circ \theta_n}) | \mathcal{F}_n]}_{\overset{\text{using the shift operator}}{=} \EE_y [g(X_\tau)] \big|_{y=X_n(\omega)}} \\
+    &\qquad \text{where } \tau(\omega) = n + \tau(\theta_n(\omega)) = n + \tau \circ \theta_n \\
+    &= \operatorname*{ess\,sup}_{\sigma \in \mathcal{T}_{0, N-n}} \EE_{X_n} [g(X_\tau)] = u^{N-n}(0, X_n).
+\end{align*}
+Then
+\begin{align}
+    u^N(0, x) &= \max \{g(x), (P u^N(1, \cdot))(x)\} \nonumber \\
+    &= \max \{g(x), (P u^{N-1}(0, \cdot))(x)\}. \label{eq:bellman_finite} \tag{1}
+\end{align}
+It is clear that $u^N \le u^{N+1}$ (HW) and therefore the limit
+$$u^\infty(x) := \lim_{N \to \infty} u^N(0, x) \quad \text{exists (pointwise)}.$$
+
+Taking limits in eq. \eqref{eq:bellman_finite} we get
+$$u^\infty(x) = \max \left\{ g(x), \lim_{N \to \infty} \EE_x [u^{N-1}(0, X_1)] \right\}$$
+Notice that
+\begin{align*}
+    u^{N-1}(0, x) &= \sup_{\tau \in \mathcal{T}_{0, N-1}} \EE_x [g(X_\tau)] \\
+    &= \sup_{\tau \in \mathcal{T}_{0, N-1}} \EE_x [g(X_\tau) + \sup_{n \in \ZZ^+} |g(X_n)| - \sup_{n \in \ZZ^+} |g(X_n)|] \\
+    &= \sup_{\tau \in \mathcal{T}_{0, N-1}} \EE_x [\underbrace{g(X_\tau) + \sup_{n \in \ZZ^+} |g(X_n)|}_{\ge 0}] - \underbrace{\EE_x [\sup_{n \in \ZZ^+} |g(X_n)|]}_{=: c(x) > 0}
+\end{align*}
+Then $u^{N-1}(0, x) \ge -c(x)$ (i.e., it is bounded from below).
+We can apply MON to obtain
+\begin{equation*}
+    \boxed{u^\infty(x) = \max \{g(x), \EE_x [u^\infty(X_1)]\}.}
+\end{equation*}
+Thanks to Thm. OS2 we can identify
+\begin{equation*}
+    \boxed{u^\infty(x) = V_0 = \sup_{\tau \in \mathcal{T}_0} \EE_x [g(X_\tau)] =: V(x)}
+\end{equation*}
+Moreover, by the Markovian structure
+$$V(X_n) = \left( \sup_{\tau \in \mathcal{T}_0} \EE_y [g(X_\tau)] \right) \Big|_{y=X_n} \overset{\text{=}}{} \operatorname*{ess\,sup}_{\tau \in \mathcal{T}_n} \EE_x [g(X_\tau) | \mathcal{F}_n]$$
+
+\begin{remark}
+    This is a bit imprecise but essentially true.
+\end{remark}
