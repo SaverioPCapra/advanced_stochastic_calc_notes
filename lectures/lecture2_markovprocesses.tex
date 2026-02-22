@@ -1,5 +1,37 @@
 \section{Basic facts about Markov processes}
 
+\begin{intermission}
+    In this section we formalize the \vocab{Markov Property} in continuous time.
+    In simple words, this property states that the future of a process 
+    depends only on its present state, not its past history. 
+
+    We start by introducing the \vocab{Markov Transition Function} which
+    governs how a process moves between states. Via the 
+    \vocab{Chapman-Kolmogorov equation} we ensure that moving from $s$ 
+    to $t$ is the same as stopping at $u \in (s,t)$ and restarting.
+    We then extend this notion via the \vocab{Strong Markov Property} 
+    which says that the "memoryless" property holds even if the time 
+    we stop to check the process is random, as long as it's a stopping time. 
+
+    This set-up is then used to introduce some very useful results
+    and concepts for our modelling endeavors:
+
+    \begin{enumerate}
+        \item The solutions of SDEs are Markov processes. Hence, we
+    can use the current state of a system to forecast future 
+    distributions without needing the entire historical data-set.
+    \item By transitioning from the Markov process to the 
+    \vocab{Infinitesimal Generator} and the \vocab{Semigroup}
+    we can turn a stochastic path problem into a deterministic 
+    PDE, which we can solve via finite-difference methods. 
+    This saves us computational time, and resources, compared to  
+    using Monte Carlo methods.
+    \item \vocab{Càdlàg} functions are essential for modelling 
+    "shocks" or jumps, such as sudden market crashes.
+    \end{enumerate}
+   
+\end{intermission}
+
 Taken from Chapter 6 of \cite{baldi2017stochastic}.
 
 \begin{definition}[Markov transition function]

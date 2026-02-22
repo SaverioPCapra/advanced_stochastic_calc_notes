@@ -149,6 +149,8 @@
 \thmboxstyle{notebox}{mdorangebox}{orange!50!brown}{yellow!5!olive!5}
 \thmboxstyle{lembox}{mdpurplebox}{purple!50!blue}{purple!5!blue!3}
 \thmboxstyle{hwbox}{mdgreybox}{gray}{gray!10} % <-- ADDED HOMEWORK BOX STYLE
+\thmboxstyle{interbox}{mdinterbox}{black!70}{gray!5}   % A neutral gray for intermissions
+\thmboxstyle{ideabox}{mdideabox}{orange!80!black}{yellow!10} % A "lightbulb" yellow/orange for ideas
 
 \iflinclass
     \declaretheorem[style = thmbox, name = Theorem]{theorem}
@@ -190,8 +192,19 @@
 \declaretheorem[style=plain, name=Remark, sibling=theorem]{remark}
 \declaretheorem[style=plain, name=Remark, numbered=no]{remark*}
 
+% Intermission Environments
+\declaretheorem[style = interbox, name = Intermission, sibling = theorem]{intermission}
+\declaretheorem[style = interbox, name = Intermission, numbered = no]{intermission*}
+
+% Idea Environments
+\declaretheorem[style = ideabox, name = Idea, sibling = theorem]{idea}
+\declaretheorem[style = ideabox, name = Idea, numbered = no]{idea*}
+
 
 % Makes title bold 
 \makeatletter
 \patchcmd{\@maketitle}{\LARGE}{\LARGE\bfseries}{}{}
 \makeatother
+
+
+

@@ -1,6 +1,29 @@
 
 \section{Preliminaries about Stochastic Processes}
 
+\begin{intermission}
+    The purpose of this section is to introduce the concepts of \vocab{adapted} and \vocab{progressively measurable} processes, 
+    discuss their relationship, and present key results related to stopping times. 
+    
+    These are foundational for our later study of \vocab{stochastic control} 
+    and \vocab{optimal stopping}.
+    
+    Adaptedness is crucial because it ensurs our models respect causality. 
+    For instance, in an American option exercise strategy, a decision at 
+    time $t$ cannot be contingent on a future price $X_{s}, s > t$, as 
+    that information is unknown. 
+
+    Progressive Measurability is a more technical requirement that 
+    arises in continuous time. It is a prerequisite for stochastic 
+    integration, ensure the process is "well-behaved" over time intervals.
+
+    You may view it as "path-adaptedness": while adaptedness ensures 
+    we know the process' value at a specific point, progressive 
+    measurability ensures that the entire history of the process up to $t$
+    is mathematically tractable as a single object.
+
+\end{intermission}
+
 Let $(\Omega, \mathcal{F}, (\mathcal{F}_{t})_{t \geq 0}, \mathbb{P})$ be the probability space on which we're going to work. 
 
 
