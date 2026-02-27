@@ -1,0 +1,302 @@
+\section{Stochastic Control in Continuous Time}
+
+\begin{remark*}
+    A fully rigorous development of the continuous-time theory starting from our results in discrete time is a rather complex endeavour, which falls outside the scope of these lectures.
+    
+    The intuition is similar to the approach we developed for optimal stopping.
+\end{remark*}
+
+\subsection{A stochastic control problem}
+
+\begin{itemize}
+    \item Let $(\Omega, \mc{F}, (\mc{F}_t)_{t \geq 0}, \PP)$ be a filtered probability space equipped with a Brownian motion $(W_t)_{t \geq 0}$ in $\RR^{d'}$.
+    
+    \item \vocab{Admissible controls}: Let $\mc{A}$ be the class of progressively measurable processes $(u_t)_{t \geq 0}$ taking values in a subset $\mathbb{U} \subseteq \RR^m$, possibly compact, to keep the exposition simple. A control is \vocab{admissible} if the controlled SDE
+    \begin{equation}
+        X_t^u = x + \int_0^t \mu(X_s, u_s) ds + \int_0^t \sigma(X_s, u_s) dW_s
+    \end{equation}
+    admits a unique $(\mc{F}_t)_t$-adapted solution.
+    
+    \item If $\mu: \RR^d \times \mathbb{U} \to \RR^d$ and $\sigma: \RR^d \times \mathbb{U} \to \RR^{d \times d'}$ are such that
+    \[ \|\mu(x,u) - \mu(y,u)\|_d + \|\sigma(x,u) - \sigma(y,u)\|_{d \times d'} \leq L \|x - y\|_d \]
+    for a constant $L > 0$ independent of $u$, then the SDE in (1) admits a unique strong solution for each $u \in \mc{A}$ given and fixed.
+    
+    \begin{remark}
+        Moreover, the same stability estimates as for standard SDEs continue to hold.
+    \end{remark}
+    
+    \begin{homework*}[Advanced]
+        Prove that the SDE in (1) admits a unique strong solution under the given Lipschitz condition.
+    \end{homework*}
+    
+    \item A control $u \in \mc{A}$ is \vocab{Markovian} if $u_t = \alpha(t, X_t^u)$ for some measurable $\alpha: [0, \infty) \times \RR^d \to \mathbb{U}$. Notice that in the case of Markovian controls, the dynamics in (1) is a standard SDE:
+    \[ X_t = x + \int_0^t \mu(X_s^u, \alpha(s, X_s^u)) ds + \int_0^t \sigma(X_s^u, \alpha(s, X_s^u)) dW_s. \]
+\end{itemize}
+
+\section{Continuous-Time Stochastic Control}
+
+\begin{remark}
+    This means that the mapping $(t,x) \mapsto \alpha(t,x)$ must be sufficiently regular to guarantee that the SDE is well posed. \textbf{\color{red}This is a major issue, because oftentimes $\alpha(t,x)$ is not even continuous!!!}
+\end{remark}
+
+\subsection{The Objective Function}
+
+Let $T \in (0, \infty)$, and let $\mc{O}$ be an open subset of $[0,T] \times \RR^d$. Take continuous functions $f: [0,T] \times \RR^d \times U \to \RR$, $h: [0,T] \times \RR^d \to \RR$, and $g: \RR^d \to \RR$, and a discount rate $r \geq 0$. 
+
+For $(t,x) \in [0,T] \times \RR^d$ and $u \in \mc{A}$, let
+\begin{align*}
+    J_{t,x}(u) := \EE_{t,x} \bigg[ &\int_t^{T \wedge \tau_{\mc{O}}} e^{-r(s-t)} f(s, X_s^u, u_s) \, ds \\
+    &+ e^{-r(\tau_{\mc{O}}-t)} h(\tau_{\mc{O}}, X_{\tau_{\mc{O}}}^u) \mathbb{1}_{\{\tau_{\mc{O}} < T\}} \\
+    &+ e^{-r(T-t)} g(X_T^u) \mathbb{1}_{\{\tau_{\mc{O}} \geq T\}} \bigg],
+\end{align*}
+where $\EE_{t,x}[\,\cdot\,] = \EE[\,\cdot \mid X_t^u = x]$ and 
+\[ \tau_{\mc{O}} := \inf \{ s \geq t : (s, X_s^u) \notin \mc{O} \} \wedge T. \]
+
+\begin{remark}
+    Notice that, a priori, $(X_t^u)_{t \geq 0}$ is not Markovian.
+\end{remark}
+
+\subsection{The Value Function}
+
+\begin{definition}
+    For $(t,x) \in [0,T] \times \RR^d$, we define the \vocab{value function}:
+    \begin{equation}
+        V(t,x) := \sup_{u \in \mc{A}} J_{t,x}(u). \tag{2}
+    \end{equation}
+\end{definition}
+
+\begin{remark}[Observations]
+    \begin{itemize}
+        \item For $t=T$, $V(T,x) = g(x)$, $x \in \RR^d$.
+        \item For $(t,x) \in \mc{O}^c$, $t < T$, $V(t,x) = h(t,x)$.
+        \item A priori the function $V$ is not even measurable. Much effort goes towards proving measurability directly from formula (2).
+    \end{itemize}
+\end{remark}
+
+\begin{proposition}
+    Assume $\mc{O} = (0,T) \times \RR^d$ (i.e., $\tau_{\mc{O}} = T$). Assume $f$ and $g$ are Lipschitz. Then, for any $t \in [0,T]$ and $u \in \mc{A}$,
+    \[ |J_{t,x}(u) - J_{t,y}(u)| \leq L \pnorm{x-y}_{\RR^d} \quad \forall x,y \in \RR^d, \]
+    where $L > 0$ is a given constant.
+    
+    If $f$ and $g$ are also bounded, then, for any $x \in \RR^d$ and $u \in \mc{A}$,
+    \[ |J_{t,x}(u) - J_{s,x}(u)| \leq L(t-s)^{1/2} \quad \text{for } 0 \leq s < t \leq T, \]
+    where $L > 0$ is a given constant.
+\end{proposition}
+
+\begin{homework}[Advanced]
+    Prove the Proposition above.
+\end{homework}
+
+\begin{corollary}
+    Under the assumptions above:
+    \[ |V(t,x) - V(s,y)| \leq L \paren{\pnorm{x-y}_{\RR^d} + (t-s)^{1/2}} \quad \text{for } \begin{matrix} x,y \in \RR^d, \\ 0 \leq s < t \leq T, \end{matrix} \]
+    where $L > 0$ is a given constant.
+\end{corollary}
+
+\begin{homework}
+    Prove the Corollary. This should be easy once you have the Proposition in place.
+\end{homework}
+
+\begin{remark}
+    To keep the exposition simple we shall focus on the case $\mc{O} = (0,T) \times \RR^d$ so that $\tau_{\mc{O}} = T$ and the objective function simplifies.
+\end{remark}
+
+\subsection{Discrete-time approximation of the dynamics via Euler scheme}
+
+\begin{remark}
+    Fix $N \in \NN$, set $t_j^N := \frac{j}{2^N} T$, for $j = 0, \dots, 2^N$.
+    Let $u \in \mc{A}$ be given and set $\bar{X}_0^N = 0$, $\bar{u}_j^N := u_{t_j^N}$.
+    Inductively define:
+    \[ \bar{X}_{j+1}^N = \bar{X}_j^N + \mu(\bar{X}_j^N, \bar{u}_j^N) \frac{T}{2^N} + \sigma(\bar{X}_j^N, \bar{u}_j^N) \Delta W_j^N \]
+    where $\Delta W_j^N := W_{t_{j+1}^N} - W_{t_j^N}$.
+    
+    Continuous-time interpolation: $k^N(t) := \sup \{ j : t_j^N \leq t \}$.
+    $X_t^N := \bar{X}_{k^N(t)}^N$ and $u_t^N := \bar{u}_{k^N(t)}^N$.
+\end{remark}
+
+\begin{homework}
+    Show that:
+    \[ X_t^N = x + \int_0^t \mu(X_s^N, u_s^N) \, ds + \int_0^t \sigma(X_s^N, u_s^N) \, dW_s \]
+\end{homework}
+
+\begin{remark}
+    Under the Lipschitz assumption on $\mu$ and $\sigma$ we have:
+\end{remark}
+
+\begin{lemma}
+    For every $p \in [1, \infty)$ and $T > 0$, for any $u \in \mc{A}$,
+    \[ \EE \left[ \sup_{0 \leq t \leq T} \pnorm{X_t^{N,u} - X_t^u}_d^p \right] \leq c_p \paren{\frac{T}{2^N}}^{p/2} \quad \text{for large } N, \]
+    where $c_p > 0$ is a constant independent of $N$.
+\end{lemma}
+
+\begin{homework}[Advanced]
+    Prove the Lemma above.
+\end{homework}
+
+\begin{remark}
+    For the statement of the control problem, it is convenient to also introduce $\tilde{u}_t^N := \bar{u}_{k^N(t)-1}^N$.
+\end{remark}
+
+\subsection{Discrete-time approximation of the objective function}
+
+\begin{remark}
+    \begin{align*}
+        J_{n,x}^N(u) &:= \EE_{t_n^N, x} \left[ \frac{T}{2^N} \sum_{j=n}^{2^N} e^{-r(t_j^N - t_n^N)} f(t_j^N, \bar{X}_j^N, \bar{u}_{j-1}^N) + e^{-r(T - t_n^N)} g(\bar{X}_{2^N}^N) \right] \\
+        &= \EE_{t_n^N, x} \left[ \int_{t_n^N}^T e^{-r(t_{k^N(s)}^N - t_n^N)} f(t_{k^N(s)}^N, X_s^N, \tilde{u}_s^N) \, ds + e^{-r(T - t_n^N)} g(X_T^N) \right]
+    \end{align*}
+    The class of admissible controls simplifies to the vectors
+    \[ \bar{u}^N := (\bar{u}_0, \bar{u}_1, \bar{u}_2, \dots, \bar{u}_{2^N-1}) \quad \text{with } \bar{u}_j \in \mc{F}_{t_j^N} \ \forall j. \]
+\end{remark}
+
+\subsection{Discrete-time approximation of value function}
+
+\begin{definition}
+    \[ V_{N-n}^N(x) := \sup_{\bar{u}^N} J_{n,x}^N(\bar{u}^N). \]
+\end{definition}
+
+\begin{remark}
+    If $f$ and $g$ are Lipschitz in all their variables we get
+    \begin{align*}
+        |J_{n,x}^N(\bar{u}^N) - J_{t_n,x}(u)| &\leq \EE_{t_n,x} \left[ \int_{t_n}^T |e^{-r(t_{k^N(s)}^N - t_n^N)} f(t_{k^N(s)}^N, X_s^{N,u}, \tilde{u}_s^N) - e^{-r(s - t_n^N)} f(s, X_s^u, u_s)| \, ds \right] \\
+        &\qquad + e^{-r(T - t_n^N)} \EE \left[ |g(X_T^{N,u}) - g(X_T^u)| \right] \\
+        &\leq L \cdot \EE_{t_n,x} \left[ \int_{t_n}^T (\pnorm{X_s^{N,u} - X_s^u}_d + \pnorm{\tilde{u}_s^N - u_s}_m) \, ds + \pnorm{X_T^{N,u} - X_T^u}_d + c \frac{T}{2^N} \right] \\
+        &\leq L \cdot T \cdot C' \left[ \paren{\frac{T}{2^N}}^{1/2} + \int_0^T \EE[\pnorm{\tilde{u}_{s \vee t_n}^N - u_{s \vee t_n}}_m] \, ds \right]
+    \end{align*}
+    for some constants $L, c, c' > 0$ independent of $N$.
+    
+    Moreover $\forall t \in [0,T]$, we can choose $t_n^N$ s.t. $|t_n^N - t| \leq \frac{T}{2^N}$. Then
+    \[ |J_{t,x}(u) - J_{t_n,x}^N(u)| \leq L \paren{\frac{T}{2^N}}^{1/2}. \]
+    Thus, one can verify that
+    \[ |V(t,x) - V(t_n,x)| + |V(t_n,x) - V_{N-n}^N(x)| \leq C_0 \paren{ \paren{\frac{T}{2^N}}^{1/2} + \int_0^T \EE[\pnorm{\tilde{u}_s^N - u_s}_m] \, ds } \]
+    which means that $V^N$ approximates $V$.
+\end{remark}
+
+\subsection{DPP: For the discrete-time approximation}
+
+\begin{remark}
+    For the discrete-time approximation of the stoch. control problem we can use our previous results and obtain the DPP:
+    \[ V_{N-n}^N(x) = \sup_{u \in U} \left\{ e^{-r \frac{T}{2^N}} f(t_n, x, u) \frac{T}{2^N} + e^{-r \frac{T}{2^N}} \EE_{t_n,x} [V_{N-(n+1)}^N(X_{t_{n+1}}^N)] \right\}. \]
+    Here we take a leap of faith and we argue that DPP holds in the limit as $N \to \infty$!
+\end{remark}
+
+\subsection{DPP in continuous time}
+
+\begin{remark}
+    Reference: \vocab{\color{green!70!black} [Yong-Zhou: Stochastic controls]}
+\end{remark}
+
+\begin{theorem}
+    If $V(t,x)$ is continuous on $[0,T] \times \RR^d$, then for any open set $\Gamma$, letting $\tau_\Gamma := \inf \{ s \geq t : (s, X_s^u) \notin \Gamma \} \wedge T$,
+    \[ V(t,x) = \sup_{u \in \mc{A}} \EE_{t,x} \left[ \int_t^{\tau_\Gamma \wedge h} e^{-r(s-t)} f(s, X_s^u, u_s) \, ds + e^{-r(\tau_\Gamma \wedge h - t)} V(\tau_\Gamma \wedge h, X_{\tau_\Gamma \wedge h}^u) \right] \]
+    for any $h \in [t,T]$.
+\end{theorem}
+
+\begin{proof}
+    Quite difficult.
+\end{proof}
+
+\section{The Hamilton-Jacobi-Bellman equation}
+
+\begin{remark}
+    From the DPP equation we derive a PDE for $V$. \textbf{\color{orange}The derivation is purely heuristic!}
+    
+    Fix $u = \text{const}$. Then 
+    \[ V(t,x) \geq \EE_{t,x} \left[ \int_t^{\tau_\Gamma \wedge h} e^{-r(s-t)} f(s, X_s^u, u) \, ds + e^{-r(\tau_\Gamma \wedge h - t)} V(\tau_\Gamma \wedge h, X_{\tau_\Gamma \wedge h}^u) \right] \]
+    Assume for a moment that $V$ is sufficiently smooth to apply Itô's formula.
+    \begin{align*}
+        \implies V(t,x) \geq \EE_{t,x} \bigg[ \int_t^{\tau_\Gamma \wedge h} e^{-r(s-t)} \Big( &f(s, X_s^u, u) + \partial_t V(s, X_s^u) \\
+        &+ \mc{L}^u V(s, X_s^u) - r V(s, X_s^u) \Big) \, ds \bigg] + V(t,x)
+    \end{align*}
+    where
+    \[ \mc{L}^u p(x) = \langle \mu(x,u), \nabla p(x) \rangle + \frac{1}{2} \tr \paren{\sigma \sigma^\top(x,u) D^2 p(x)} \]
+    and we got rid of the stoch. integral
+    \[ \EE_{t,x} \left[ \int_t^{\tau_\Gamma \wedge h} e^{-r(s-t)} \partial_x V(s, X_s^u) \sigma(X_s^u, u) \, dW_s \right] = 0. \]
+    Then
+    \[ \frac{1}{h} \EE_{t,x} \left\{ \int_t^{\tau_\Gamma \wedge h} e^{-r(s-t)} \left[ (\partial_t V + \mc{L}^u V - r V)(s, X_s^u) + f(s, X_s^u, u) \right] \, ds \right\} \leq 0 \]
+    letting $h \downarrow 0$, and assuming that all functions are sufficiently smooth, we get:
+    \[ (\partial_t V + \mc{L}^u V - r V)(t,x) + f(t,x,u) \leq 0 \]
+    The result holds for any $u \in U$. Then:
+    \[ \partial_t V(t,x) + \underbrace{\sup_{u \in U} \paren{\frac{1}{2} \tr \paren{\sigma \sigma^\top(x,u) D^2 V(t,x)} + \langle \mu(x,u), \nabla V(t,x) \rangle + f(t,x,u)}}_{=: \mc{H}(t, x, \nabla V, D^2 V)} \leq r V(t,x) \]
+    If an optimal control $(u_t^*)_{t \geq 0}$ exists, then:
+    \[ V(t,x) = \EE_{t,x} \left[ \int_t^{\tau_\Gamma \wedge h} e^{-r(s-t)} f(s, X_s^{u^*}, u_s^*) \, ds + e^{-r(\tau_\Gamma \wedge h - t)} V(\tau_\Gamma \wedge h, X_{\tau_\Gamma \wedge h}^{u^*}) \right] \]
+    Repeating similar arguments as above (HW) we reach:
+    \begin{equation*}
+        \begin{cases} 
+            \partial_t V(t,x) + \mc{H}(t, x, \nabla V, D^2 V) = r V(t,x) & , (t,x) \in [0,T) \times \RR^d, \\ 
+            V(T,x) = g(x) & , x \in \RR^d. 
+        \end{cases}
+    \end{equation*}
+\end{remark}
+
+\subsection{Verification Theorem}
+
+Now we can state a verification theorem.
+
+\begin{theorem}
+    Assume there is a ``sufficiently smooth'' solution $\psi(t,x)$ of the HJB equation:
+    \begin{equation*}
+        \begin{cases} 
+            \partial_t \psi(t,x) + \mc{H}(t, x, \nabla \psi, D^2 \psi) = r \psi(t,x) & , (t,x) \in [0,T) \times \RR^d, \\ 
+            \psi(T,x) = g(x) & , x \in \RR^d. 
+        \end{cases}
+    \end{equation*}
+    Then $\psi(t,x) \geq V(t,x)$.
+    
+    Assume further that there exists a measurable function $\alpha^*: [0,T] \times \RR^d \to U$ s.t. $\forall (t,x) \in [0,T] \times \RR^d$
+    \[ \alpha^*(t,x) = \operatorname*{argmax}_{u \in U} \left\{ \frac{1}{2} \tr \paren{\sigma \sigma^\top(x,u) D^2 \psi} + \langle \mu(x,u), \nabla \psi \rangle + f(t,x,u) \right\} \]
+    and the SDE
+    \[ X_t^* = x + \int_0^t \mu(X_s^*, \alpha^*(s, X_s^*)) \, ds + \int_0^t \sigma(X_s^*, \alpha^*(s, X_s^*)) \, dW_s \]
+    is well-posed (i.e., $\exists!$ strong sol.). Then
+    \[ \psi(t,x) = V(t,x) = \EE_{t,x} \left[ \int_t^T e^{-r(s-t)} f(s, X_s^*, u_s^*) \, ds + e^{-r(T-t)} g(X_T^*) \right] \]
+    where $u_t^* := \alpha^*(t, X_t^*)$ is an \vocab{optimal Markovian control}.
+\end{theorem}
+
+\begin{remark}
+    \begin{proof}
+        Let $(t,x) \in [0,T] \times \RR^d$ be fixed and take an arbitrary admissible control $(u_t)_{t \in [0,T]} \in \mc{A}$. By smoothness of $\psi$:
+        \begin{align*}
+            e^{-r(T-t)} \psi(T, X_T^u) &+ \int_t^T e^{-r(s-t)} f(s, X_s^u, u_s) \, ds \\
+            &= \psi(t,x) + \int_t^T e^{-r(s-t)} \paren{(\partial_t \psi + \mc{L}^u \psi - r\psi)(s, X_s^u) + f(s, X_s^u, u_s)} \, ds \\
+            &\quad + \int_t^T e^{-r(s-t)} \partial_x \psi(s, X_s^u) \sigma(X_s^u, u_s) \, dW_s
+        \end{align*}
+        
+        \begin{homework}
+            Check that the stochastic integral term can be written as $\sum_{i=1}^d \sum_{j=1}^{d'} \partial_{x_i} \psi \cdot \sigma_{ij} \, dW_s^j$.
+        \end{homework}
+
+        Taking expectation $\EE_{t,x}$ on both sides:
+        \begin{align*}
+            \psi(t,x) &= \EE_{t,x} \left[ e^{-r(T-t)} g(X_T^u) + \int_t^T e^{-r(s-t)} f(s, X_s^u, u_s) \, ds \right] \tag{1} \\
+            &\quad - \EE_{t,x} \left[ \int_t^T e^{-r(s-t)} \paren{(\partial_t \psi + \mc{L}^u \psi - r\psi)(s, X_s^u) + f(s, X_s^u, u_s)} \, ds \right]
+        \end{align*}
+        Notice that:
+        \begin{align*}
+            \frac{1}{2} \tr \paren{\sigma \sigma^\top(X_s^u, u_s) D^2 \psi(s, X_s^u)} &+ \langle \mu(X_s^u, u_s), \nabla \psi(s, X_s^u) \rangle + f(s, X_s^u, u_s) \tag{2} \\
+            &\leq \sup_{\beta \in U} \left[ \frac{1}{2} \tr \paren{\sigma \sigma^\top(X_s^u, \beta) D^2 \psi(s, X_s^u)} + \langle \mu(X_s^u, \beta), \nabla \psi(s, X_s^u) \rangle + f(s, X_s^u, \beta) \right] \\
+            &= \mc{H}(s, X_s^u, \nabla \psi, D^2 \psi)
+        \end{align*}
+        Substituting this inequality into (1):
+        \begin{align*}
+            \psi(t,x) &\geq \EE_{t,x} \left[ \int_t^T e^{-r(s-t)} f(s, X_s^u, u_s) \, ds + e^{-r(T-t)} g(X_T^u) \right] \\
+            &\quad - \EE \left[ \int_t^T e^{-r(s-t)} \underbrace{\paren{\partial_t \psi(s, X_s^u) + \mc{H}(s, X_s^u, \nabla \psi, D^2 \psi) - r\psi(s, X_s^u)}}_{=0} \, ds \right]
+        \end{align*}
+        Thus, $\psi(t,x) \geq \EE_{t,x} \left[ \int_t^T e^{-r(s-t)} f(s, X_s^u, u_s) \, ds + e^{-r(T-t)} g(X_T^u) \right]$ for all $u \in \mc{A}$, which implies $\psi(t,x) \geq V(t,x)$.
+        
+        Repeating the argument with $u_s = \alpha^*(s, X_s^*)$, the inequality in Eq. (2) becomes strict equality and Eq. (1) yields:
+        \[ \psi(t,x) = \EE_{t,x} \left[ \int_t^T e^{-r(s-t)} f(s, X_s^*, \alpha^*(s, X_s^*)) \, ds + e^{-r(T-t)} g(X_T^*) \right] \leq V(t,x). \]
+        Then $\psi = V$ and $u_t^* = \alpha^*(t, X_t^*)$ is optimal.
+    \end{proof}
+\end{remark}
+
+\begin{homework}
+    Formulate the DPP for the problem with payoff:
+    \begin{align*}
+        J_{t,x}(u) := \EE_{t,x} \bigg[ &\int_t^{T \wedge \tau_{\mc{O}}} e^{-r(s-t)} f(s, X_s^u) \, ds \\
+        &+ e^{-r(\tau_{\mc{O}}-t)} h(\tau_{\mc{O}}, X_{\tau_{\mc{O}}}^u) \mathbb{1}_{\{\tau_{\mc{O}} < T\}} \\
+        &+ e^{-r(T-t)} g(X_T^u) \mathbb{1}_{\{\tau_{\mc{O}} \geq T\}} \bigg].
+    \end{align*}
+\end{homework}
+
+\begin{homework}
+    Obtain the HJB equation for the above problem.
+\end{homework}

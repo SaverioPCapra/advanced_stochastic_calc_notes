@@ -1,0 +1,702 @@
+\section{Optimal Stopping in Continuous Time}
+
+\begin{itemize}
+    \item \vocab{Optimal stopping theory} in continuous time can be developed from scratch without using results from the discrete-time setting $\implies$ \vocab{beyond the scope of these lecture notes}.
+    \item We deduce results for continuous time as limits of results for discrete-time.
+\end{itemize}
+
+\begin{remark*}[Warning]
+    We will use some heuristic arguments for the most technical steps. You will be able to fill all the gaps in specific examples in the second half of the course.
+\end{remark*}
+
+\subsection*{Formulation for infinite-time horizon and diffusive dynamics}
+
+\begin{itemize}
+    \item Let $(X_t)_{t \geq 0}$ be the solution of
+    \begin{equation*}
+        X_t = X_0 + \int_0^t \mu(X_s) ds + \int_0^t \sigma(X_s) dW_s
+    \end{equation*}
+    where $\mu: \RR^d \to \RR^d$, $\sigma: \RR^d \to \RR^{d \times d'}$, $(W_t)_{t \geq 0}$ is a $d'$-dimensional Brownian motion, and $X_0 \in \RR^d$.
+    
+    \item $(X_t)_{t \geq 0}$ is a \vocab{Markov process} and we define the family of probability measures $(\PP_x)_{x \in \RR^d}$ as $\PP_x(A) = \PP(A \mid X_0 = x)$ for all $A \in \mc{F}$.
+    
+    \item Let $g: \RR^d \to \RR$ be \vocab{continuous} and such that $\EE_x \left[ \sup_{t \geq 0} e^{-rt} |g(X_t)| \right] < \infty$ for some $r \geq 0$.
+    
+    Let us set for convenience:
+    \begin{equation*}
+        \boxed{\overline{M}(\omega) := \sup_{t \geq 0} e^{-rt} |g(X_t(\omega))|}
+    \end{equation*}
+\end{itemize}
+
+\begin{itemize}
+    \item The problem we are interested in is
+    \begin{equation*}
+        \boxed{V(x) = \sup_{\tau \in \mc{T}} \EE_x \left[ e^{-r\tau} g(X_\tau) \right]}
+    \end{equation*}
+    where $\mc{T} := \{ \tau : \tau \text{ is an } (\mc{F}_t)\text{-stopping time with } \tau(\omega) < \infty \text{ } \forall \omega \in \Omega \}$.
+\end{itemize}
+
+\begin{remark}
+    In the current formulation, the problem is \vocab{time-homogeneous}.
+\end{remark}
+
+\begin{remark*}[Aims]
+    We want to connect this problem to the theory we developed in the discrete-time setting. We do this by approximation and only in some cases, but I emphasize that the main results hold in much broader generality.
+\end{remark*}
+
+\subsection*{Step 1: (time-truncation)}
+
+For $T \in \NN$, define:
+\begin{equation*}
+    V_T(x) := \sup_{\tau \in \mc{T}_{0,T}} \EE_x \left[ e^{-r\tau} g(X_\tau) \right], \quad \text{where}
+\end{equation*}
+$\mc{T}_{0,T} := \{ \tau \in \mc{T} : \tau(\omega) \in [0,T], \forall \omega \in \Omega \}$.
+
+Clearly $V_T(x) \leq V_{T+1}(x) \leq V(x)$ for all $x \in \RR^d$. Then $V_\infty(x) := \lim_{T \to \infty} V_T(x)$ exists pointwise and $V_\infty(x) \leq V(x)$ for $x \in \RR^d$.
+
+Fix $\epsilon > 0$. Then there exists $\tau_\epsilon \in \mc{T}$ such that $V(x) \leq \EE_x \left[ e^{-r\tau_\epsilon} g(X_{\tau_\epsilon}) \right] + \epsilon$ and $\tau_\epsilon(\omega) < \infty$ for all $\omega \in \Omega$. Then:
+\begin{align*}
+    V(x) - \epsilon &\leq \EE_x \left[ \liminf_{T \to \infty} \left( \underbrace{e^{-r(\tau_\epsilon \wedge T)} g(X_{\tau_\epsilon \wedge T}) + \overline{M}}_{\geq 0} \right) \right] - \EE_x[\overline{M}] \\
+    &\leq \liminf_{T \to \infty} \EE_x \left[ e^{-r(\tau_\epsilon \wedge T)} g(X_{\tau_\epsilon \wedge T}) + \overline{M} \right] - \EE_x[\overline{M}]
+\end{align*}
+where the term inside the expectation is non-negative by the definition of $\overline{M}$, allowing the use of Fatou's Lemma.
+
+%%%%
+
+\begin{align*}
+    &= \liminf_{T \to \infty} \EE_x \left[ e^{-r(\tau_\epsilon \wedge T)} g(X_{\tau_\epsilon \wedge T}) \right] \leq \lim_{T \to \infty} V_T(x) = V_\infty(x).
+\end{align*}
+Thus $V(x) - \epsilon \leq V_\infty(x) \leq V(x)$ and $\epsilon > 0$ is arbitrary. It follows:
+
+\begin{lemma}
+    $\forall x \in \RR^d, \uparrow \lim_{T \to \infty} V_T(x) = V(x)$.
+\end{lemma}
+
+\subsection*{Step 2: (Time discretisation)}
+
+Fix $T \in \NN$. Let $D_N^T := \left\{ \frac{k}{2^N} \cdot T, k = 0, 1, 2, \dots, 2^N \right\}$ be a \vocab{dyadic partition} of $[0, T]$. Recall that $D_N^T \subseteq D_{N+1}^T$ and $D^T := \bigcup_{N \in \NN} D_N^T$ is a dense subset of $[0, T]$.
+
+Let $(X_k^N)_{k \in D_N^T}$ be defined as $X_k^N := X_{\frac{k}{2^N}T}$ and let
+\begin{equation*}
+    V_T^N(x) := \sup_{\tau \in \mc{T}_{0,T}^N} \EE_x \left[ e^{-r\tau} g(X_\tau^N) \right] \quad \text{and} \quad V_T^D(x) := \sup_{\tau \in \mc{T}_{0,T}^D} \EE_x \left[ e^{-r\tau} g(X_\tau) \right]
+\end{equation*}
+where $\mc{T}_{0,T}^N := \{ \tau \in \mc{T} : \tau \text{ takes values in } D_N^T \}$ and $\mc{T}_{0,T}^D := \{ \tau \in \mc{T} : \tau \text{ takes values in } D^T \}$.
+
+\begin{remark}
+    For any $\tau \in \mc{T}_{0,T}^N$ we have
+    \begin{align*}
+        \EE_x \left[ e^{-r\tau} g(X_\tau^N) \right] &= \EE_x \left[ \sum_{k=0}^{2^N} \mathbb{1}_{\{\tau = \frac{k}{2^N}T\}} e^{-r \frac{k}{2^N}T} g(X_k^N) \right] \\
+        &= \EE_x \left[ \sum_{k=0}^{2^N} \mathbb{1}_{\{\tau = \frac{k}{2^N}T\}} e^{-r \frac{k}{2^N}T} g(X_{\frac{k}{2^N}T}) \right] = \EE_x \left[ e^{-r\tau} g(X_\tau) \right].
+    \end{align*}
+\end{remark}
+
+Since $D_N^T \subseteq D_{N+1}^T \subseteq D^T$ then
+\begin{equation*}
+    V_T^N(x) \leq V_T^{N+1}(x) \leq V_T^D(x) \leq V_T(x), \quad \forall x \in \RR^d.
+\end{equation*}
+
+\begin{homework}
+    Prove the chain of inequalities $V_T^N(x) \leq V_T^{N+1}(x) \leq V_T^D(x) \leq V_T(x)$.
+\end{homework}
+
+And $V_T^\infty(x) = \lim_{N \to \infty} V_T^N(x)$ is well-defined.
+
+\begin{lemma}
+    $V_T^\infty(x) = V_T^D(x), \quad \forall x \in \RR^d$.
+\end{lemma}
+
+\begin{proof}
+    For any $\epsilon > 0, \exists \tau_\epsilon \in \mc{T}_{0,T}^D$ s.t. $V_T^D(x) \leq \EE_x [e^{-r\tau_\epsilon} g(X_{\tau_\epsilon})] + \epsilon$.
+    Let
+    \begin{equation*}
+        \tau_\epsilon^N := \begin{cases} \frac{k}{2^N}T & \text{on } \{ \omega \in \Omega : \frac{k-1}{2^N}T < \tau_\epsilon(\omega) \leq \frac{k}{2^N}T \} \\ T & \text{on } \{ \omega \in \Omega : \tau_\epsilon(\omega) = T \}. \end{cases}
+    \end{equation*}
+    Then $\tau_\epsilon^N \in \mc{T}_{0,T}^N$ and $0 \leq \tau_\epsilon^N(\omega) - \tau_\epsilon(\omega) \leq \frac{1}{2^N} T \quad \forall \omega \in \Omega$.
+    
+    \begin{homework}
+        Show that $\tau_\epsilon^N \in \mc{T}_{0,T}^N$.
+    \end{homework}
+    
+    Moreover $\tau_\epsilon^N \geq \tau_\epsilon^{N+1}$ so that $\downarrow \lim_{N \to \infty} \tau_\epsilon^N = \tau_\epsilon$.
+    By continuity of $t \mapsto e^{-rt} g(X_t(\omega))$ we deduce
+    \begin{align*}
+        V_T^D(x) - \epsilon &\leq \EE_x \left[ e^{-r\tau_\epsilon} g(X_{\tau_\epsilon}) \right] = \EE_x \left[ \liminf_{N \to \infty} e^{-r\tau_\epsilon^N} g(X_{\tau_\epsilon^N}) \right] \\
+        &\leq \liminf_{N \to \infty} \EE_x \left[ e^{-r\tau_\epsilon^N} g(X_{\tau_\epsilon^N}) \right] \leq \liminf_{N \to \infty} V_T^N(x) = V_T^\infty(x).
+    \end{align*}
+    where the second inequality follows from Fatou's Lemma (note that $e^{-r\tau_\epsilon^N} g(X_{\tau_\epsilon^N}) \geq -\overline{M}$).
+    Thus $V_T^D(x) - \epsilon \leq V_T^\infty(x) \leq V_T^D(x)$ and $\epsilon > 0$ is arbitrary.
+\end{proof}
+
+By the exact same argument we can prove:
+\begin{lemma}
+    $V_T(x) = V_T^D(x), \quad \forall x \in \RR^d$.
+\end{lemma}
+
+\begin{homework}
+    Prove that $V_T(x) = V_T^D(x)$.
+\end{homework}
+
+%%
+Combining the above results we obtain:
+
+\begin{corollary}
+    $\forall x \in \RR^d, \uparrow \lim_{T \to \infty} \uparrow \lim_{N \to \infty} V_T^N(x) = V(x)$.
+\end{corollary}
+
+\subsection*{Formal link to discrete-time OS}
+
+Since $V_T^N$ is the value function of a discrete-time Markovian OS problem with finite-time horizon, we establish the notation:
+\begin{itemize}
+    \item $V_T^N(x) = u_T(0, x; \frac{T}{2^N})$ \quad ($T$ is the time-horizon; $\frac{T}{2^N}$ is the mesh-size)
+    \item $\mc{T}_{j,N} = \mc{T}_{\frac{j}{2^N}T, T}^N = \{ \tau \in \mc{T}_{0,T}^N : \tau \geq \frac{j}{2^N} T \}$
+    \item $\mc{G}_j^N := \mc{F}_{\frac{j}{2^N}T}$
+\end{itemize}
+
+Then $u_T(j, X_j^N; \frac{T}{2^N}) = \text{ess sup}_{\tau \in \mc{T}_{j,N}} \EE_x \left[ e^{-r(\tau - \frac{j}{2^N}T)} g(X_\tau^N) \mid \mc{G}_j^N \right]$ and we are exactly in the framework of \vocab{Thm OS1}.
+
+In particular, $\left\{ e^{-r \frac{j}{2^N}T} u_T(j, X_j^N; \frac{T}{2^N}), j = 0, 1, \dots, 2^N \right\}$ is the smallest super-martingale that dominates $\left\{ e^{-r \frac{j}{2^N}T} g(X_j^N), j = 0, 1, \dots, 2^N \right\}$.
+
+Moreover $\tau_*^{T,N} := \inf \left\{ 0 \leq j \leq 2^N : u_T(j, X_j^N; \frac{T}{2^N}) = g(j, X_j^N) \right\}$ is optimal if finite $\PP$-a.s.
+
+\begin{remark*}
+    With a slight abuse of notation we set
+    \begin{equation*}
+        \boxed{u_T(j, X_j^N; \tfrac{T}{2^N}) = u_T(t, X_t; \tfrac{T}{2^N}) \text{ for } t = \tfrac{j}{2^N} T}
+    \end{equation*}
+\end{remark*}
+
+By the Markovian structure the function $u_T(\cdot, \cdot; \frac{T}{2^N}) : D_N^T \times \RR^d \to \RR$ reads
+\begin{equation*}
+    u_T(t, x; \tfrac{T}{2^N}) = \sup_{\tau \in \mc{T}_{t,T}^N} \EE \left[ e^{-r(\tau - t)} g(X_\tau) \mid X_t = x \right]
+\end{equation*}
+For any fixed $t \in D^T$, there is $N_t \in \NN$ s.t. $t \in D_N^T, \forall N \geq N_t$ and
+\begin{equation*}
+    u_T(t, x; \tfrac{T}{2^N}) = \sup_{\tau \in \mc{T}_{t,T}^N} \EE \left[ e^{-r(\tau - t)} g(X_\tau) \mid X_t = x \right]
+\end{equation*}
+letting $N \to \infty$, by the same arguments as before
+\begin{equation*}
+    u_T(t, x; \tfrac{T}{2^N}) \uparrow u_T(t, x) = \sup_{\tau \in \mc{T}_{t,T}^D} \EE \left[ e^{-r(\tau - t)} g(X_\tau) \mid X_t = x \right]
+\end{equation*}
+Notice that $u_T : D^T \times \RR^d \to \RR$ and letting $T \uparrow \infty$ yields
+\begin{align*}
+    u_T(t, x) \uparrow \sup_{\tau \in \mc{T}_t^D} \EE \left[ e^{-r(\tau - t)} g(X_\tau) \mid X_t = x \right] \\
+    \text{\small where } \mc{T}_t^D := \{ \tau \in \mc{T} : \tau \text{ takes values in } D := \bigcup_{T \in \NN} D^T \text{ and } \tau \geq t \} \\
+    = \sup_{\tau \in \mc{T}^D} \EE_x \left[ e^{-r\tau} g(X_\tau) \right] \doteq V^D(x) = V(x)
+\end{align*}
+\begin{homework}
+    Prove that $V^D(x) = V(x)$.
+\end{homework}
+
+\begin{remark*}[In summary]
+    \begin{equation*}
+        \boxed{V(x) = \uparrow \lim_{T \to \infty} \uparrow \lim_{N \to \infty} u_T(t, x; \tfrac{T}{2^N}) \quad \text{for any } t \in D \text{ and any } x \in \RR^d}
+    \end{equation*}
+\end{remark*}
+
+\begin{remark}
+    $u_T(t, x; \frac{T}{2^N}) = u_{T-t}(0, x; \frac{T}{2^N})$
+\end{remark}
+
+\begin{remark}
+    Because of the peculiar way in which I'm approaching the theory we will need to use \vocab{DOM} a few times. For that we need bounds on $V(x)$ and continuity of $x \mapsto V(x)$. This approach is not the most general! I will make standing assumptions and if time allows I will generalise.
+\end{remark}
+
+\vocab{Assumptions:}
+\begin{enumerate}[label=(\roman*)]
+    \item $\exists \Theta \in L^1(\Omega, \mc{F}, \PP)$ s.t. $|e^{-rt} V(X_t)| \leq \Theta \quad \forall t \geq 0$. (this allows the use of \vocab{DOM})
+    \item $x \mapsto V(x)$, $x \mapsto V_T(x)$, $x \mapsto V_T^N(x)$ are continuous on $\RR^d$.
+\end{enumerate}
+
+\begin{remark*}[Observation]
+    Condition (i) holds easily if $g$ is bounded. Both conditions hold if $g$ is Lipschitz, $\mu, \sigma$ are Lipschitz and $r$ is ``sufficiently large''.
+\end{remark*}
+
+\begin{proof}[Proof (for simplicity I consider $d=1$ but the proof is the same for $d>1$)]
+    \begin{align*}
+        \left| \EE \left[ e^{-r\tau} (g(X_\tau^1) - g(X_\tau^2)) \right] \right| &\leq \EE \left[ e^{-r\tau} |g(X_\tau^1) - g(X_\tau^2)| \right] \\
+        &\leq L_g \EE \left[ e^{-r\tau} |X_\tau^1 - X_\tau^2| \right] \leq L_g \EE \left[ e^{-2r\tau} (X_\tau^1 - X_\tau^2)^2 \right]^{\frac{1}{2}}
+    \end{align*}
+\end{proof}
+
+\begin{align*}
+    e^{-2rt} (X_t^1 - X_t^2)^2 &= (x_1 - x_2)^2 - 2r \int_0^t e^{-2rs} (X_s^1 - X_s^2)^2 ds \\
+    &\quad + 2 \int_0^t e^{-2rs} (X_s^1 - X_s^2) d(X_s^1 - X_s^2) + \int_0^t e^{-2rs} d\langle X^1 - X^2 \rangle_s \\
+    &= (x_1 - x_2)^2 + \int_0^t e^{-2rs} \left[ 2(X_s^1 - X_s^2)(\mu(X_s^1) - \mu(X_s^2)) - 2r(X_s^1 - X_s^2)^2 \right] ds \\
+    &\quad + \int_0^t e^{-2rs} 2(X_s^1 - X_s^2)(\sigma(X_s^1) - \sigma(X_s^2)) dW_s \\
+    &\quad + \int_0^t e^{-2rs} (\sigma(X_s^1) - \sigma(X_s^2))^2 ds
+\end{align*}
+
+Taking expectations and dropping the martingale (why?)
+\begin{align*}
+    \EE \left[ e^{-2rt} (X_t^1 - X_t^2)^2 \right] &\leq (x_1 - x_2)^2 + \EE \left[ \int_0^t e^{-2rs} 2(L + \tfrac{1}{2} L^2 - r) (X_s^1 - X_s^2)^2 ds \right] \\
+    &\leq (x_1 - x_2)^2 \quad \text{if } r \geq L(1 + \tfrac{1}{2} L).
+\end{align*}
+
+Then we have:
+\begin{align*}
+    \implies \EE \left[ e^{-2r\tau} (X_\tau^1 - X_\tau^2)^2 \right] &\leq \liminf_{T \to \infty} \EE \left[ e^{-2r(\tau \wedge T)} (X_{\tau \wedge T}^1 - X_{\tau \wedge T}^2)^2 \right] \\
+    &\leq \liminf_{T \to \infty} (x_1 - x_2)^2 = (x_1 - x_2)^2.
+\end{align*}
+
+Combining with the previous page:
+\[ \left| \EE \left[ e^{-r\tau} g(X_\tau^1) - e^{-r\tau} g(X_\tau^2) \right] \right| \leq \text{const.} |x_1 - x_2|. \]
+\[ \implies |V(x_1) - V(x_2)| \leq \text{const.} |x_1 - x_2|. \]
+
+\begin{homework}
+    Complete the proof that $|V(x_1) - V(x_2)| \leq \text{const.} |x_1 - x_2|$.
+\end{homework}
+
+There is an important consequence of continuity and so-called \vocab{Dini's lemma}:
+
+\begin{lemma}[Dini's lemma]
+    Let $K$ be a compact and $f: K \to \RR$ be continuous. If $(f_n)_{n \in \NN}$ is a sequence of \vocab{continuous functions} from $K$ to $\RR$ s.t. $f_n \leq f_{n+1} \quad \forall n \in \NN$ and $\forall x \in K \quad \lim_{n \to \infty} f_n(x) = f(x)$, then
+    \[ \lim_{n \to \infty} \sup_{x \in K} |f_n(x) - f(x)| = 0. \quad \text{(i.e., uniform convergence on compacts)} \]
+\end{lemma}
+
+Then we have for any compact $K \subset \RR^d$:
+\begin{equation*}
+    \boxed{\lim_{T \to \infty} \lim_{N \to \infty} \sup_{x \in K} |V_T^N(x) - V(x)| = 0.}
+\end{equation*}
+
+\begin{homework}
+    It is easy to verify that for $s < t$, $s, t \in [0, T]$ it holds $V_{T-s}(x) \geq V_{T-t}(x) \quad \forall x \in \RR^d$.
+\end{homework}
+
+Set
+\begin{align*}
+    \tau_*^{D_N^T} &:= \inf \{ t \in D_N^T : u_T(t, X_t; \tfrac{T}{2^N}) = g(X_t) \} \\
+    \tau_*^{D^T} &:= \inf \{ t \in D^T : u_T(t, X_t) = g(X_t) \} \\
+    \tau_*^D &:= \inf \{ t \in D : V(X_t) = g(X_t) \}
+\end{align*}
+
+%%
+\begin{lemma}
+    $\limsup_{T \to \infty} \limsup_{N \to \infty} \tau_*^{D_N^T} \leq \tau_*^D$.
+\end{lemma}
+
+\begin{proof}
+    For $\omega \in \Omega$ s.t. $\tau_*^D(\omega) = +\infty$ the claim is trivial.
+    Fix $\omega \in \Omega$ s.t. $\tau_*^D(\omega) < \infty$. By definition $\tau_*^D(\omega) \in D$ and therefore $\exists T_\omega \in \NN$ and $N_\omega \in \NN$, $k_\omega \in \{1, 2, \dots, 2^{N_\omega}\}$ s.t. $\tau_*^D(\omega) = \frac{k_\omega}{2^{N_\omega}} T_\omega$. The latter implies $\tau_*^D(\omega) \in D_N^T$ for all $N \geq N_\omega$ and $T \geq T_\omega$.
+    Then 
+    \[ u_T\left(\tau_*^D(\omega), X_{\tau_*^D(\omega)}; \frac{T}{2^N}\right) \leq u_T(\tau_*^D(\omega), X_{\tau_*^D(\omega)}) \leq V(X_{\tau_*^D(\omega)}) = g(X_{\tau_*^D(\omega)}) \]
+    $\implies \tau_*^D(\omega) \geq \tau_*^{D_N^T}(\omega)$, $\forall N \geq N_\omega, \forall T \geq T_\omega$. $\blacksquare$
+\end{proof}
+
+\begin{lemma}
+    $\liminf_{T \to \infty} \liminf_{N \to \infty} \tau_*^{D_N^T} \geq \tau_*^D$.
+\end{lemma}
+
+\begin{proof}
+    For $\omega \in \Omega$ s.t. $\tau_*^D(\omega) = 0$ it's obvious.
+    Fix $\omega \in \Omega$ s.t. $\tau_*^D(\omega) > 0$. For any $\delta < \tau_*^D(\omega)$ we have 
+    \[ \inf_{0 \leq t \leq \delta} (V(X_t(\omega)) - g(X_t(\omega))) \geq c_{\delta, \omega} > 0 \]
+    Since $t \mapsto X_t(\omega)$ is continuous then $(X_t(\omega))_{t \in [0, \delta]} \subseteq K$ for some compact $K \subset \RR^d$. Then, by uniform convergence of $V_T^N$ to $V$ we have for large enough $T$ and $N$:
+    \[ \inf_{0 \leq t \leq \delta} (V_T^N(X_t(\omega)) - g(X_t(\omega))) \geq \frac{c_{\delta, \omega}}{2} \]
+    \begin{homework}
+        Verify the above inequality using uniform convergence on compacts.
+    \end{homework}
+    $\implies \inf_{0 \leq t \leq \delta} (u_T(0, X_t(\omega); \frac{T}{2^N}) - g(X_t(\omega))) \geq \frac{c_{\delta, \omega}}{2}$.
+    There is $M \in \NN$ s.t. $\delta \leq 2^M T$ and therefore 
+    \[ u_T(0, x; \tfrac{T}{2^N}) \leq u_{2^M T - t}(0, x; \tfrac{T}{2^N}) = u_{2^M T}(t, x; \tfrac{T}{2^N}) \]
+    For $T' = 2^M T$, this is $= u_{T'}(t, x; \frac{T'}{2^{M+N}})$, $\forall t \in D_{M+N}^{T'} \cap [0, \delta]$.
+    $\implies \inf_{t \in [0, \delta] \cap D_{M+N}^{T'}} (u_{T'}(t, X_t(\omega); \frac{T'}{2^{M+N}}) - g(X_t(\omega))) \geq \frac{c_{\delta, \omega}}{2}$.
+    Then $\tau_*^{D_{M+N}^{T'}}(\omega) \geq \delta$ for all $T', N$ sufficiently large. Thus $\liminf_{T \to \infty} \liminf_{N \to \infty} \tau_*^{D_N^T}(\omega) \geq \delta$.
+    Since $\delta < \tau_*^D(\omega)$ was arbitrary, and $\omega \in \Omega$, we obtain the claim. $\blacksquare$
+\end{proof}
+
+\begin{corollary}
+    $\lim_{T \to \infty} \lim_{N \to \infty} \tau_*^{D_N^T} = \tau_*^D$.
+\end{corollary}
+
+\begin{remark}
+    By continuity of $t \mapsto V(X_t) - g(X_t)$ and the fact that $D$ is dense in $[0, T]$ we also have 
+    \[ \tau_*^D = \inf \{ t \in D : V(X_t) = g(X_t) \} = \inf \{ t \geq 0 : V(X_t) = g(X_t) \} \doteq \tau_* \]
+\end{remark}
+
+\begin{theorem}[(OS3)]
+    \begin{enumerate}[label=(\roman*)]
+        \item $t \mapsto e^{-rt} V(X_t)$ is the smallest \vocab{supermartingale} that dominates $e^{-rt} g(X_t)$.
+        \item For $\tau_* := \inf \{ t \geq 0 : V(X_t) = g(X_t) \}$, $t \mapsto e^{-r(t \wedge \tau_*)} V(X_{t \wedge \tau_*})$ is a \vocab{martingale}.
+        \item If $\PP_x(\tau_* < \infty) = 1$ then $\tau_*$ is \vocab{optimal}.
+        \item If $\hat{\tau}$ is an optimal stopping time, then $\hat{\tau} \geq \tau_*$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+    Fix $s, t \in D^T$ with $s < t$. Then $\exists N_0, k_1, k_2 \in \NN, k_1 < k_2$ s.t. $s = \frac{k_1}{2^{N_0}} T, t = \frac{k_2}{2^{N_0}} T$. For any $N \geq N_0$ we have $s, t \in D_N^T$ and by the discrete-time OS theory we know 
+    \[ e^{-rs} u_T^N(s, X_s; \tfrac{T}{2^N}) \geq \EE_x \left[ e^{-rt} u_T^N(t, X_t; \tfrac{T}{2^N}) \mid \mc{F}_s \right] \]
+    Letting $N \to \infty$ and then $T \to \infty$ we obtain by \vocab{MON}:
+    \[ e^{-rs} V(X_s) \geq \EE_x \left[ e^{-rt} V(X_t) \mid \mc{F}_s \right], \quad s, t \in D^T, s < t \]
+    Then $t \mapsto e^{-rt} V(X_t)$ is a supermartingale on $D^T$ for every $T$. Thus, it is a supermartingale on $D := \bigcup_{T \in \NN} D^T$, which is a dense subset of $[0, \infty)$.
+
+    Since $x \mapsto V(x)$ is continuous and $(\mc{F}_t)_{t \geq 0}$ is right-continuous, then for any $s < t$ we can find sequences $(s_n)_n, (t_n)_n \subset D$ s.t. $s_n \downarrow s, t_n \downarrow t, s_n < t_n \forall n$ and $e^{-rs} V(X_s) = \lim_{n \to \infty} e^{-rs_n} V(X_{s_n})$. Taking conditional expectation:
+\begin{align*}
+    e^{-rs} V(X_s) &= \EE_x \left[ \lim_{n \to \infty} e^{-rs_n} V(X_{s_n}) \mid \mc{F}_s \right] \\
+    &\overset{\text{\vocab{DOM}}}{=} \lim_{n \to \infty} \EE_x \left[ e^{-rs_n} V(X_{s_n}) \mid \mc{F}_s \right] \\
+    &\geq \lim_{n \to \infty} \EE_x \left[ \EE_x \left[ e^{-rt_n} V(X_{t_n}) \mid \mc{F}_{s_n} \right] \mid \mc{F}_s \right] \\
+    &= \lim_{n \to \infty} \EE_x \left[ e^{-rt_n} V(X_{t_n}) \mid \mc{F}_s \right] \\
+    &= \EE_x \left[ \lim_{n \to \infty} e^{-rt_n} V(X_{t_n}) \mid \mc{F}_s \right] = \EE_x \left[ e^{-rt} V(X_t) \mid \mc{F}_s \right]
+\end{align*}
+Thus $e^{-rt} V(X_t)$ is a \vocab{supermartingale} on $[0, \infty)$ and it is clear that it dominates $e^{-rt} g(X_t)$.
+
+Let $e^{-rt} \tilde{V}(X_t)$ be a supermartingale that dominates $e^{-rt} g(X_t)$. Then for any $\tau \in \mc{T}$, we have
+\[ \tilde{V}(x) \overset{\text{\vocab{optional sampling}}}{\geq} \EE_x \left[ e^{-r(\tau \wedge T)} \tilde{V}(X_{\tau \wedge T}) \right] \geq \EE_x \left[ e^{-r(\tau \wedge T)} g(X_{\tau \wedge T}) \right] \]
+Letting $T \to \infty$ and using \vocab{DOM}:
+\[ \tilde{V}(x) \geq \EE_x \left[ e^{-r\tau} g(X_\tau) \right]. \]
+Since $\tau \in \mc{T}$ was arbitrary, then $\tilde{V}(x) \geq \sup_{\tau \in \mc{T}} \EE_x [ e^{-r\tau} g(X_\tau) ]$ and therefore $\tilde{V}(x) \geq V(x)$. This completes the proof of (i).
+
+Now, from optimality of $\tau_*^{T,N}$ we have for $s < t, s, t \in D^T$ and for all $N \geq N_0$:
+\[ e^{-r(s \wedge \tau_*^{T,N})} u_T \left( \tau_*^{T,N} \wedge s, X_{\tau_*^{T,N} \wedge s}; \frac{T}{2^N} \right) = \EE_x \left[ e^{-r(t \wedge \tau_*^{T,N})} u_T \left( t \wedge \tau_*^{T,N}, X_{t \wedge \tau_*^{T,N}}; \frac{T}{2^N} \right) \mid \mc{F}_s \right] \]
+Letting $T, N \to \infty$ and using convergence of $u_T(\cdot; \frac{T}{2^N})$ to $V(\cdot)$ and convergence of $\tau_*^{T,N}$ to $\tau_*$ we deduce:
+\[ e^{-r(s \wedge \tau_*)} V(X_{s \wedge \tau_*}) = \EE_x \left[ e^{-r(t \wedge \tau_*)} V(X_{t \wedge \tau_*}) \mid \mc{F}_s \right] \]
+
+\begin{homework}
+    Make the argument precise with \vocab{DOM} and uniform convergence of $u_T(\cdot; \frac{T}{2^N})$ to $V(\cdot)$.
+\end{homework}
+
+Then $e^{-r(t \wedge \tau_*)} V(X_{t \wedge \tau_*})$ is a \vocab{martingale} on $D^T$ for any $T$. Thus on $D$ and, from the same argument as above, on $[0, \infty)$. This completes the proof of (ii).
+
+To prove (iii) it suffices to notice that $\forall t \geq 0$:
+\begin{align*}
+    V(x) &= \EE_x \left[ e^{-r(t \wedge \tau_*)} V(X_{t \wedge \tau_*}) \right] \\
+    &= \EE_x \left[ e^{-r\tau_*} V(X_{\tau_*}) \mathbb{1}_{\{\tau_* \leq t\}} \right] + \EE_x \left[ e^{-rt} V(X_t) \mathbb{1}_{\{t < \tau_*\}} \right] \\
+    &= \EE_x \left[ e^{-r\tau_*} g(X_{\tau_*}) \mathbb{1}_{\{\tau_* \leq t\}} \right] + \EE_x \left[ e^{-rt} V(X_t) \mathbb{1}_{\{t < \tau_*\}} \right].
+\end{align*}
+Letting $t \uparrow \infty$ we have:
+\begin{align*}
+    \lim_{t \uparrow \infty} \EE_x \left[ e^{-r\tau_*} g(X_{\tau_*}) \mathbb{1}_{\{\tau_* \leq t\}} \right] &= \lim_{t \uparrow \infty} \EE_x \left[ (e^{-r\tau_*} g(X_{\tau_*}) + \overline{M} - \overline{M}) \mathbb{1}_{\{\tau_* \leq t\}} \right] \\
+    &\overset{\text{\vocab{MON}}}{=} \EE_x \left[ e^{-r\tau_*} g(X_{\tau_*}) \mathbb{1}_{\{\tau_* < \infty\}} \right] = \EE_x \left[ e^{-r\tau_*} g(X_{\tau_*}) \right]
+\end{align*}
+and
+\begin{align*}
+    \lim_{t \uparrow \infty} \left| \EE_x \left[ e^{-rt} V(X_t) \mathbb{1}_{\{t < \tau_*\}} \right] \right| &\leq \lim_{t \uparrow \infty} \EE_x \left[ \Theta \mathbb{1}_{\{t < \tau_*\}} \right] \\
+    &\overset{\text{\vocab{DOM}}}{=} \EE_x \left[ \Theta \lim_{t \uparrow \infty} \mathbb{1}_{\{t < \tau_*\}} \right] = 0.
+\end{align*}
+Hence $V(x) = \EE_x [ e^{-r\tau_*} g(X_{\tau_*}) ]$ and $\tau_*$ is \vocab{optimal}.
+
+\end{proof}
+
+\begin{homework}
+    Prove (iv).
+\end{homework}
+
+\section{The Variational Problem}
+
+We derive a PDE problem from the properties of $V$.
+
+\begin{itemize}
+    \item \vocab{Obstacle constraint}: $V(x) \geq g(x) \quad \forall x \in \RR^d$.
+    \item \vocab{PDE}: Assume $V(x)$ is sufficiently smooth to justify some generalisation of Itô's formula. Then
+    \begin{align*}
+        V(x) &\geq \EE_x \left[ e^{-rt} V(X_t) \right] \\
+        &= V(x) + \EE_x \left[ \int_0^t e^{-rs} (\mc{L}_X V(X_s) - rV(X_s)) ds \right]
+    \end{align*}
+    where $\mc{L}_X f(x) = \langle \mu(x), \nabla f(x) \rangle + \frac{1}{2} \tr(\sigma\sigma^\top(x) D^2 f(x))$ is the \vocab{infinitesimal generator} of $(X_t)_{t \geq 0}$.
+    
+    Then $\EE_x \left[ \int_0^t e^{-rs} (\mc{L}_X V(X_s) - rV(X_s)) ds \right] \leq 0$. Dividing by $t$ and letting $t \to 0$ yields
+    \begin{equation*}
+        \lim_{t \downarrow 0} \frac{1}{t} \EE_x \left[ \int_0^t e^{-rs} (\mc{L}_X V(X_s) - rV(X_s)) ds \right] = \mc{L}_X V(x) - rV(x) \leq 0, \quad \forall x \in \RR^d.
+    \end{equation*}
+    
+    \item \vocab{PDE in $\mc{C}$}: Set $\mc{C} := \{ x \in \RR^d : V(x) > g(x) \}$. For $x \in \mc{C}$, $\PP_x(\tau_* > 0) = 1$ and
+    \begin{align*}
+        V(x) &= \EE_x \left[ e^{-r(t \wedge \tau_*)} V(X_{t \wedge \tau_*}) \right] \\
+        &= V(x) + \EE_x \left[ \int_0^{t \wedge \tau_*} e^{-rs} (\mc{L}_X V(X_s) - rV(X_s)) ds \right] \\
+        \implies &\EE_x \left[ \int_0^{t \wedge \tau_*} e^{-rs} (\mc{L}_X V(X_s) - rV(X_s)) ds \right] = 0.
+    \end{align*}
+    Since we know that $\mc{L}_X V - rV \leq 0$, then it must be $\mc{L}_X V(x) - rV(x) = 0$ for $x \in \mc{C}$.
+    
+    \item \vocab{Variational inequality}: Combining the items above we have
+    \begin{equation*}
+        \begin{cases}
+            \mc{L}_X V(x) - rV(x) = 0, & x \in \mc{C} = \{ V > g \} \\
+            \mc{L}_X V(x) - rV(x) \leq 0, & x \in \RR^d \\
+            V(x) \geq g(x)
+        \end{cases}
+    \end{equation*}
+    $\implies \max \{ \mc{L}_X V(x) - rV(x), g(x) - V(x) \} = 0, \quad x \in \RR^d$.
+    And we need some growth conditions at $+\infty$.
+    
+    \item \vocab{Finite-time horizon}:
+    \begin{equation*}
+        V(t,x) := \sup_{\tau \in \mc{T}_{0, T-t}} \EE_x \left[ e^{-r\tau} g(X_\tau) \right]
+    \end{equation*}
+    \begin{equation*}
+        \begin{cases}
+            \max \{ \partial_t V(t,x) + \mc{L}_X V(t,x) - rV(t,x), g(x) - V(t,x) \} = 0 \\
+            \text{for } (t,x) \in [0,T) \times \RR^d \\
+            V(T,x) = g(x).
+        \end{cases}
+    \end{equation*}
+\end{itemize}
+
+\begin{remark}[Running profit]
+    $V(x) = \sup_{\tau \in \mc{T}} \EE_x \left[ \int_0^\tau e^{-rt} f(X_t) dt + e^{-r\tau} g(X_\tau) \right]$.
+    \begin{itemize}
+        \item $e^{-rt} V(X_t) + \int_0^t e^{-rs} f(X_s) ds$ is a supermartingale.
+        \item $e^{-r(t \wedge \tau_*)} V(X_{t \wedge \tau_*}) + \int_0^{t \wedge \tau_*} e^{-rs} f(X_s) ds$ is a martingale.
+        \item $\tau_* = \inf \{ t \geq 0 : V(X_t) = g(X_t) \}$ is optimal.
+    \end{itemize}
+\end{remark}
+
+\begin{homework}
+    Derive the variational inequality for the OSP with running profit.
+\end{homework}
+
+The above derivation of the variational inequality is largely heuristic. Now we formulate a more rigorous statement:
+
+\begin{theorem}[Verification]
+    Assume $\exists$ a ``sufficiently smooth'' solution of
+    \begin{equation*}
+        \max \{ \mc{L}_X u(x) - ru(x) + f(x), u(x) - g(x) \} = 0, \quad \forall x \in \RR^d
+    \end{equation*}
+    s.t. $\lim_{t \to \infty} \EE_x \left[ e^{-rt} u(X_t) \mathbb{1}_{\{t \leq \hat{\tau}\}} \right] = 0$ (\vocab{transversality condition}) for $\hat{\tau} := \inf \{ t \geq 0 : u(X_t) = g(X_t) \}$.
+    
+    If $\PP_x(\hat{\tau} < \infty) = 1$, then $u(x) = \sup_{\tau \in \mc{T}} \EE_x \left[ e^{-r\tau} g(X_\tau) \right] = V(x)$ and $\hat{\tau} = \tau_*$ is an optimal stopping time.
+\end{theorem}
+
+\begin{remark}
+    Here the notion of ``sufficiently smooth'' is deliberately vague and it should be read as: smooth enough to guarantee that
+    \begin{equation*}
+        (*) \quad u(x) = \EE_x \left[ e^{-r(t \wedge \tau)} u(X_{t \wedge \tau}) - \int_0^{t \wedge \tau} e^{-rs} (\mc{L}_X u - ru)(X_s) ds \right]
+    \end{equation*}
+    holds. For the applications that you will see later it will be $d=1$ and in that case it's enough that $u \in C^1(\RR)$ with $x \mapsto \partial_x u(x)$ locally Lipschitz. That allows the application of Tanaka's formulae.
+\end{remark}
+
+\begin{proof}
+    Using $(*)$ and conditions $\mc{L}_X u - ru \leq 0$ and $u \geq g$ we get
+    \[ u(x) \geq \EE_x \left[ e^{-r(t \wedge \tau)} g(X_{t \wedge \tau}) \right] \quad \forall \tau \in \mc{T}. \]
+    Letting $t \uparrow \infty$ and using \vocab{DOM} we get
+    \[ u(x) \geq \EE_x \left[ e^{-r\tau} g(X_\tau) \right] \quad \forall \tau \in \mc{T}. \]
+    $\implies u(x) \geq V(x) = \sup_{\tau \in \mc{T}} \EE_x \left[ e^{-r\tau} g(X_\tau) \right]$.
+
+    For the reverse inequality we choose $\tau = \hat{\tau}$ in $(*)$. That yields
+    \begin{align*}
+        u(x) &= \EE_x \left[ e^{-r(\hat{\tau} \wedge t)} u(X_{t \wedge \hat{\tau}}) \right] \\
+        &= \EE_x \left[ e^{-r\hat{\tau}} u(X_{\hat{\tau}}) \mathbb{1}_{\{\hat{\tau} \leq t\}} + e^{-rt} u(X_t) \mathbb{1}_{\{\hat{\tau} > t\}} \right] \\
+        &= \EE_x \left[ e^{-r\hat{\tau}} g(X_{\hat{\tau}}) \mathbb{1}_{\{\hat{\tau} \leq t\}} + e^{-rt} u(X_t) \mathbb{1}_{\{\hat{\tau} > t\}} \right].
+    \end{align*}
+    Let $t \uparrow \infty$ and use \vocab{MON} and the \vocab{transversality condition}.
+    \[ \implies u(x) = \EE_x \left[ e^{-r\hat{\tau}} g(X_{\hat{\tau}}) \mathbb{1}_{\{\hat{\tau} < \infty\}} \right] = \EE_x \left[ e^{-r\hat{\tau}} g(X_{\hat{\tau}}) \right]. \]
+    Then $u(x) \leq V(x) \implies u(x) = V(x)$ and $\hat{\tau} = \tau_*$ is \vocab{optimal}.
+\end{proof}
+
+\begin{homework}
+    Write down and prove a verification theorem for
+    \[ V(x) = \sup_{\tau \in \mc{T}} \EE_x \left[ e^{-r\tau} g(X_\tau) + \int_0^\tau e^{-rt} f(X_t) dt \right]. \]
+\end{homework}
+
+\begin{homework}
+    Write down and prove a verification theorem for
+    \[ V(t,x) = \sup_{\tau \in \mc{T}_{0, T-t}} \EE_x \left[ e^{-r\tau} g(X_\tau) + \int_0^\tau e^{-rt} f(X_t) dt \right]. \]
+\end{homework}
+
+Since $V(0)=0$, we have
+\begin{equation*}
+    A_1 + A_2 = 0, \quad A_1 = -A_2
+\end{equation*}
+and the general solution is
+\begin{equation*}
+    V(n) = A_1 e^{-\frac{\mu}{\sigma^2}n} \left( e^{\frac{\Delta}{2}n} - e^{-\frac{\Delta}{2}n} \right)
+\end{equation*}
+
+Hence, we have to determine 3 constants: $C_2, A_1, \tilde{n}$.
+
+To do this, we impose the following 3 conditions:
+\begin{enumerate}
+    \item $V(\tilde{n}_-) = V(\tilde{n}_+)$ (\vocab{continuity});
+    \item $V'(\tilde{n}_-) = V'(\tilde{n}_+)$ (\vocab{smooth-pasting});
+    \item $V''(\tilde{n}_-) = V''(\tilde{n}_+)$ (\vocab{super-contact}) $\rightarrow$ function is $C^2 \Rightarrow$ we can apply Itô's formula.
+\end{enumerate}
+
+Condition 2) implies that $V'(\tilde{n}_-) = V'(\tilde{n}_+) = 1$ {\color{red} $\rightarrow$ this is how $\tilde{n}$ is defined!}
+
+a solution for $0 < \tilde{n} < \infty$. It depends on $K$, for fixed other parameters, $\mu$ and $\rho > 0$.
+
+In particular, it is possible to show that, setting $\frac{\mu}{\frac{\sigma^2}{2}} = \hat{\mu}, \frac{\rho}{\frac{\sigma^2}{2}} = \hat{\rho}$, the parameters $\hat{\rho}, \hat{\mu}, K$ should satisfy:
+\begin{equation*}
+    0 < \underbrace{\frac{2 (\hat{\mu} + K \lambda_2) \Delta}{\hat{\rho} (\hat{\mu} + K \lambda_2) + 2 \hat{\rho} \lambda_2}}_{\star} < 1
+\end{equation*}
+Call $K_*$ the value of $K$ s.t. $\star = 0$, and for $K > K_*$, $\tilde{n}$ is the solution of {\color{red}(*)}.
+
+\section*{\color{red}A VERIFICATION THEOREM FOR THE SOLUTION OF A CONSUMPTION/INVESTMENT PROBLEM}
+
+Consider the following general problem:
+\begin{equation*}
+    \sup_{\pi, C} \EE \left[ \int_0^T e^{-\rho t} w_t^\gamma \frac{C_t^{1-\gamma}}{1-\gamma} dt + e^{-\rho T} \Delta W_T^\gamma \frac{X_T^{1-\gamma}}{1-\gamma} \right]
+\end{equation*}
+where $w_t^\gamma$ and $\Delta W_T^\gamma$ are \vocab{weights to consumption and terminal utility}. We have:
+\begin{enumerate}[label=(\alph*)]
+    \item $u(c) = \frac{c^{1-\gamma}}{1-\gamma}$ is the utility function;
+    \item The problem considers both consumption and terminal utility from wealth;
+    \item The wealth dynamics are given by:
+    \begin{equation*}
+        dX_t = (r + \pi_t(\mu - r)) X_t dt + \pi_t \sigma X_t dW_t + a_t dt - C_t dt.
+    \end{equation*}
+\end{enumerate}
+
+Let $V_{t,n}$ be the associated value function.
+
+\begin{theorem}[Asmussen/Steffensen, 2020]
+    Assume there exists a function $\bar{V}(t,n)$ that is sufficiently integrable, such that it satisfies the HJB equation:
+    \begin{multline*}
+        \partial_t \bar{V}(t,n) - \rho \bar{V}(t,n) + \sup_{\pi, C} \left\{ \partial_n \bar{V}(t,n) \left[ (r + \pi(\mu - r)) n + a_t - C \right] \right. \\
+        \left. + \frac{1}{2} \partial_{nn} \bar{V}(t,n) \pi^2 \sigma^2 n^2 + w_t^\gamma \frac{C^{1-\gamma}}{1-\gamma} \right\} = 0,
+    \end{multline*}
+    with terminal condition:
+    \begin{equation*}
+        \bar{V}(T,n) = \Delta W_T^\gamma \frac{n^{1-\gamma}}{1-\gamma}.
+    \end{equation*}
+    Then $V = \bar{V}$ and the optimal controls are given by:
+    \begin{align*}
+        C^* &= \arg \sup_C \left\{ -\partial_n \bar{V}(t,n) C + w_t^\gamma \frac{C^{1-\gamma}}{1-\gamma} \right\}; \\
+        \pi^* &= \arg \sup_\pi \left\{ \partial_n \bar{V}(t,n) \pi (\mu - r) n + \frac{1}{2} \partial_{nn} \bar{V}(t,n) \pi^2 \sigma^2 n^2 \right\}.
+    \end{align*}
+\end{theorem}
+
+\begin{proof}
+Consider a strategy $(\pi, C)$. Applying Itô to $\bar{V}(t, X_t)$:
+\begin{multline*}
+    d(e^{-\rho t} \bar{V}(t, X_t)) = e^{-\rho t} \left[ -\rho \bar{V}(t, X_t) dt + \partial_t \bar{V}(t, X_t) dt \right. \\
+    \left. + \partial_n \bar{V}(t, X_t) dX_t + \frac{1}{2} \partial_{nn} \bar{V}(t, X_t) \pi_t^2 \sigma^2 X_t^2 dt \right]
+\end{multline*}
+Integrating, we have:
+\begin{equation*}
+    e^{-\rho t} \bar{V}(t, X_t) = -\int_t^T d(e^{-\rho s} \bar{V}(s, X_s)) + e^{-\rho T} \bar{V}(T, X_T)
+\end{equation*}
+
+For every $(\pi, C)$, from the HJB equation we have:
+\begin{multline*}
+    \partial_t \bar{V}(t, X_t) - \rho \bar{V}(t, X_t) \leq -\partial_n \bar{V}(t, X_t) \left[ (r + \pi_t(\mu - r)) X_t + a_t - C_t \right] \\
+    - \frac{1}{2} \partial_{nn} \bar{V}(t, X_t) \pi_t^2 \sigma^2 X_t^2 - w_t^\gamma \frac{C_t^{1-\gamma}}{1-\gamma}
+\end{multline*}
+and
+\begin{align*}
+    {\color{red}e^{\rho t}} e^{-\rho t} \bar{V}(t, X_t) &= -\int_t^T e^{-\rho s} \left[ -\rho \bar{V}(s, X_s) ds + \partial_s \bar{V}(s, X_s) ds \right. \\
+    &\quad \left. + \partial_n \bar{V}(s, X_s) dX_s + \frac{1}{2} \partial_{nn} \bar{V}(s, X_s) \pi_s^2 \sigma^2 X_s^2 ds \right] + e^{-\rho T} \bar{V}(T, X_T) \\
+    &\geq {\color{red}e^{\rho t}} \int_t^T e^{-\rho s} \left[ w_s^\gamma \frac{C_s^{1-\gamma}}{1-\gamma} ds - \partial_n \bar{V}(s, X_s) \pi_s X_s \sigma dW_s \right] + e^{-\rho T} \bar{V}(T, X_T)
+\end{align*}
+Taking expectations:
+\begin{equation*}
+    \Rightarrow \bar{V}(t, n) \geq \EE_{t,n} \left[ \int_t^T e^{-\rho(s-t)} w_s^\gamma \frac{C_s^{1-\gamma}}{1-\gamma} ds + e^{-\rho(T-t)} \Delta W_T^\gamma \frac{X_T^{1-\gamma}}{1-\gamma} \right]
+\end{equation*}
+Since $(\pi, C)$ was arbitrarily chosen:
+\begin{equation*}
+    \bar{V}(t, n) \geq \sup_{\pi, C} \EE \left[ \dots \right]
+\end{equation*}
+
+Now, we have to prove the other side. Consider the strategy realizing the supremum. For that strategy:
+\begin{multline*}
+    \partial_t \bar{V}(t, X_t) - \rho \bar{V}(t, X_t) = -\partial_n \bar{V}(t, X_t) \left[ (r + \pi_t(\mu - r)) X_t + a_t - C_t \right] \\
+    - \frac{1}{2} \partial_{nn} \bar{V}(t, X_t) \pi_t^2 \sigma^2 X_t^2 - w_t^\gamma \frac{C_t^{1-\gamma}}{1-\gamma}
+\end{multline*}
+Using the same arguments as above:
+\begin{align*}
+    \Rightarrow \bar{V}(t, n) &= \EE_{t,n} \left[ \int_t^T e^{-\rho(s-t)} w_s^\gamma \frac{C_s^{1-\gamma}}{1-\gamma} ds + e^{-\rho(T-t)} \Delta W_T^\gamma \frac{X_T^{1-\gamma}}{1-\gamma} \right] \\
+    &\overset{\text{by definition}}{\leq} \sup_{\pi, C} \EE_{t,n} \left[ \dots \right]
+\end{align*}
+Thus, $\bar{V}(t, n) = \sup_{\pi, C} J_{t,n}(\pi, C) = V(t, n)$.
+\end{proof} \hfill $\square$
+
+\section*{\color{ForestGreen}OTHER INTERESTING PROBLEMS}
+\subsection*{\color{red}MINIMIZING THE RUIN PROBABILITY}
+
+The "classical" risk theory model in insurance:
+
+Insurance company $\rightarrow$ Receives premium in exchange for protection against events (contractually defined) that cause damage which is reimbursed by the company.
+
+\begin{itemize}
+    \item $\uparrow \pi \rightarrow$ \vocab{premium} (constant rate)
+    \item $\downarrow Y_i \rightarrow$ \vocab{payments} (claims)
+\end{itemize}
+
+The company has a capital endowment, which must not be depleted (go below 0).
+
+\subsubsection*{CLASSICAL MODEL}
+
+\begin{center}
+\begin{tikzpicture}[scale=1]
+    % Axes
+    \draw[->] (0,0) -- (5,0) node[below] {$t$};
+    \draw[->] (0,0) -- (0,3) node[left] {};
+    
+    % Initial capital
+    \node[left] at (0,1.5) {$X_0$};
+    \fill (0,1.5) circle (1.5pt);
+    
+    % Path
+    \draw[thick] (0,1.5) -- (1.2,2.1);
+    \draw[dashed] (1.2,2.1) -- (1.2,1.3) node[midway, right, scale=0.8] {$Y_1$};
+    \draw[thick] (1.2,1.3) -- (2.5,1.9);
+    \draw[dashed] (2.5,1.9) -- (2.5,0.9) node[midway, right, scale=0.8] {$Y_2$};
+    \draw[thick] (2.5,0.9) -- (3.8,1.5);
+    \draw[dashed] (3.8,1.5) -- (3.8,0.6) node[midway, right, scale=0.8] {$Y_3$};
+    \draw[thick] (3.8,0.6) -- (4.8,1.1);
+\end{tikzpicture}
+\end{center}
+
+\begin{itemize}
+    \item $X_0 \rightarrow$ \vocab{initial capital}, (invested at the rate $r$)
+    \item $\rightarrow$ premiums arrive at a constant rate
+    \item $Y_1, Y_2, Y_3$ are the \vocab{claims} (jumps)
+\end{itemize}
+
+Key quantity: \vocab{RUIN PROBABILITY}, i.e.
+defining $\tau = \inf \{ t \geq 0 : X_t < 0 \}$ the \vocab{TIME TO RUIN},
+$\psi(n) = \PP[\tau < \infty]$ is the \vocab{RUIN PROBABILITY}.
+$\delta(n) = 1 - \psi(n) \rightarrow$ \vocab{SURVIVAL PROBABILITY}
+
+\begin{equation*}
+    X_t = X_0 + \pi t - \sum_{i=1}^{N_t} Y_i
+\end{equation*}
+where:
+\begin{itemize}
+    \item $X_0$ is the \vocab{initial capital};
+    \item $\pi > 0$ is the \vocab{premium rate};
+    \item $N_t$ is a \vocab{counting process} (Risk process) $\rightarrow$ frequency of the claims;
+    \item $Y_i$ is the \vocab{size of the claims} $\rightarrow$ i.i.d., positive.
+\end{itemize}
+
+$\rightarrow$ \vocab{CRÀMER LUNDBERG MODEL}
+
+Its diffusive approximation can be considered:
+\begin{equation*}
+    X_t^b = X_0 + \int_0^t \pi_s ds + \sigma \int_0^t dW_s,
+\end{equation*}
+which is easier to handle mathematically. Then, we can tackle the following problems related to the minimization of the \vocab{RUIN PROBABILITY}.
+
+Suppose the company can:
+
+\begin{enumerate}[label=(\alph*)]
+    \item \vocab{Reinsure itself PROPORTIONALLY}, i.e. transfer to a third party a part of the risk. Its surplus process becomes:
+    \begin{equation*}
+        X_t^b = X_0 + \int_0^t [b_s(1+\theta) - (\theta - \eta)] \lambda \mu ds + \sigma \int_0^t b_s dW_s^s,
+    \end{equation*}
+    where $c = (1+\eta)\lambda \mu$ is the premium rate, $b$ is the \vocab{retention level}, and the reinsurance premium rate is $(1+\theta)(1-b)\lambda \mu$.
+    \begin{equation*}
+        \Rightarrow c(b) = (b(1+\theta) - (\theta - \eta))\lambda \mu.
+    \end{equation*}
+
+    \item \vocab{Invest in a risky asset}:
+    \begin{equation*}
+        dX_t^\pi = (\eta + \pi_t m) dt + \sigma_s dW_t^s + \sigma_I \pi_t dW_t^I,
+    \end{equation*}
+    where $W^I, W^s$ are independent, $\pi_t$ is the \vocab{investment share}, and $m$ is the drift of the risky asset process.
+\end{enumerate}
+
+\begin{enumerate}[label=(\alph*)]
+    \item $\sup_b \delta^b(n)$, where $b$ is the \vocab{retention level}
+    \begin{itemize}
+        \item[] {\color{red} $\downarrow$ OPTIMAL REINSURANCE}
+    \end{itemize}
+
+    \item $\sup_\pi \delta^\pi(n)$, where $\pi$ is the \vocab{risky investment share}
+    \begin{itemize}
+        \item[] {\color{red} $\downarrow$ OPTIMAL INVESTMENT}
+    \end{itemize}
+
+    \item $\sup_{\pi, b} \delta^{\pi, b}(n) \rightarrow$ {\color{red} OPTIMAL INVESTMENT AND REINSURANCE}
+    \begin{itemize}
+        \item[] $\searrow$ (a+b before must be combined)
+    \end{itemize}
+\end{enumerate}

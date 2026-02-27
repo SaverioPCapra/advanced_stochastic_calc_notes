@@ -1,0 +1,227 @@
+\section{Appendix}
+
+\subsection{$d$-systems and Monotone Class Theorem}
+
+\begin{definition}[$d$-system] \hfill \textit{[D. Williams, A1.2]}
+    A collection $\mc{D}$ of subsets of $E$ is a \vocab{$d$-system} if:
+    \begin{enumerate}[label=(\roman*)]
+        \item $E \in \mc{D}$
+        \item $A, B \in \mc{D}$ and $A \subseteq B \implies B \setminus A \in \mc{D}$
+        \item $(A_n)_{n \in \NN} \subset \mc{D}$ s.t. $A_n \subseteq A_{n+1} \ \forall n \in \NN \implies \bigcup_{n \in \NN} A_n \in \mc{D}$
+    \end{enumerate}
+\end{definition}
+
+\begin{proposition}
+    A collection of sets $\Sigma$ on $E$ is a $\sigma$-algebra iff it's a $\pi$-system and a $d$-system.
+\end{proposition}
+
+\begin{lemma}[Dynkin's lemma]
+    If $\mc{I}$ is a $\pi$-system on $E$ then $\sigma(\mc{I}) = d(\mc{I})$.
+\end{lemma}
+
+\begin{theorem}[Monotone class theorem] \hfill \textit{[D. Williams, Thm 3.14]}
+    Let $\mc{H}$ be a class of (bounded) functions $f: E \to \RR$ s.t.
+    \begin{enumerate}[label=(\roman*)]
+        \item $\mc{H}$ is a vector space.
+        \item $\mc{H}$ contains the constant function $f(x) = 1$.
+        \item If $(f_n)_{n \in \NN} \subset \mc{H}$ s.t. $0 \leq f_n \leq f_{n+1} \ \forall n \in \NN$ s.t. $f_n \uparrow f$, then $f \in \mc{H}$.
+    \end{enumerate}
+    Then, if $\mc{H}$ contains the indicator functions of all sets from a $\pi$-system $\mc{I}$ on $E$, then $\mc{H} \supseteq \sigma(\mc{I})$.
+\end{theorem}
+
+\begin{remark}[Sketch of proof]
+    The collection $\mc{D} := \{ F \subseteq E : \mathbb{1}_F \in \mc{H} \}$ is a $d$-system on $E$ that contains a $\pi$-system $\mc{I}$, then $\sigma(\mc{I}) \subseteq \mc{D}$.
+    If $f \in m\sigma(\mc{I})$ then it can be approximated by simple functions.
+\end{remark}
+
+\subsection{Uniformly integrable families of r.v.'s}
+
+\begin{definition}
+    A family $\{X_\alpha, \alpha \in I\}$ of r.v.'s is \vocab{uniformly integrable} (u.i.) if
+    \[ \lim_{c \to \infty} \sup_{\alpha \in I} \EE \left[ |X_\alpha| \mathbb{1}_{\{|X_\alpha| > c\}} \right] = 0. \]
+\end{definition}
+
+\begin{homework}
+    Show that the family formed by a single random variable $X \in \mc{L}^1$ is u.i.
+\end{homework}
+
+\begin{lemma} \label{lem:ui_eps_delta}
+    Let $X \in \mc{L}^1$. For any $\eps > 0$, $\exists \delta_\eps > 0$ s.t.
+    \[ \EE \left[ |X| \mathbb{1}_A \right] < \eps \quad \forall A \in \mc{F} \text{ s.t. } \PP(A) < \delta_\eps. \]
+\end{lemma}
+
+\begin{proof}
+    Fix $\eps > 0$. For arbitrary $\lambda > 0$ we have
+    \begin{align*}
+        \EE \left[ |X| \mathbb{1}_A \right] &= \EE \left[ |X| \paren{\mathbb{1}_{A \cap \{|X| > \lambda\}} + \mathbb{1}_{A \cap \{|X| \leq \lambda\}}} \right] \\
+        &\leq \EE \left[ |X| \mathbb{1}_{\{|X| > \lambda\}} \right] + \lambda \PP(A).
+    \end{align*}
+    By MON $\lim_{\lambda \to \infty} \EE \left[ |X| \mathbb{1}_{\{|X| > \lambda\}} \right] = 0$ and therefore $\exists \lambda_\eps > 0$ s.t. $\EE \left[ |X| \mathbb{1}_{\{|X| > \lambda_\eps\}} \right] < \frac{\eps}{2}$. Moreover I can choose $\PP(A) < \delta_\eps$ for $\delta_\eps > 0$ s.t. $\lambda_\eps \delta_\eps < \frac{\eps}{2}$. Then $\EE \left[ |X| \mathbb{1}_A \right] < \eps \ \forall A \in \mc{F}$ s.t. $\PP(A) < \delta_\eps$.
+\end{proof}
+
+\begin{lemma} \label{lem:cond_exp_ui}
+    Let $X \in \mc{L}^1$ and $(\mc{G}_\beta)_{\beta \in B} \subset \mc{F}$ be a family of $\sigma$-algebras. Then $\{ \EE[X | \mc{G}_\beta], \beta \in B \}$ is u.i.
+\end{lemma}
+
+\begin{proof}
+    We want to show that $\sup_\beta \EE \left[ |\EE[X | \mc{G}_\beta]| \mathbb{1}_{\{|\EE[X | \mc{G}_\beta]| > c\}} \right] \to 0$ as $c \to \infty$.
+    By Jensen's inequality, $|\EE[X | \mc{G}_\beta]| \leq \EE[|X| | \mc{G}_\beta]$.
+    Then
+    \begin{align*}
+        \sup_\beta \EE \left[ |\EE[X | \mc{G}_\beta]| \mathbb{1}_{\{|\EE[X | \mc{G}_\beta]| > c\}} \right] &\leq \sup_\beta \EE \left[ \EE[|X| | \mc{G}_\beta] \mathbb{1}_{\{\EE[|X| | \mc{G}_\beta] > c\}} \right] \\
+        &= \sup_\beta \EE \left[ |X| \mathbb{1}_{\{\EE[|X| | \mc{G}_\beta] > c\}} \right]
+    \end{align*}
+    where the last equality follows from the definition of conditional expectation since $\{\EE[|X| | \mc{G}_\beta] > c\} \in \mc{G}_\beta$.
+    
+    \begin{remark}
+        The inequality $\EE \left[ |\EE[X | \mc{G}_\beta]| \mathbb{1}_{\{|\EE[X | \mc{G}_\beta]| > c\}} \right] \leq \EE \left[ |X| \mathbb{1}_{\{\EE[|X| | \mc{G}_\beta] > c\}} \right]$ is left as \vocab{HW}.
+    \end{remark}
+
+    Let $A_\beta := \{ \EE[|X| | \mc{G}_\beta] > c \}$. By Markov's inequality, $\PP(A_\beta) \leq \frac{\EE[\EE[|X| | \mc{G}_\beta]]}{c} = \frac{\EE[|X|]}{c} \ \forall \beta \in B$.
+    Then I can choose $c_\eps > 0$ s.t. $\PP(A_\beta) < \delta_\eps \ \forall \beta \in B$.
+    By Lemma \ref{lem:ui_eps_delta}, $\EE \left[ |X| \mathbb{1}_{A_\beta} \right] < \eps \ \forall \beta \in B$ and therefore
+    \[ \lim_{c \to \infty} \sup_\beta \EE \left[ |\EE[X | \mc{G}_\beta]| \mathbb{1}_{\{|\EE[X | \mc{G}_\beta]| > c\}} \right] \leq \eps. \]
+    Since $\eps$ is arbitrary, the result follows by letting $\eps \to 0$.
+\end{proof}
+
+\begin{lemma}
+    Let $X \in \mc{L}^1, X \geq 0$. If $(X_n)_{n \in \ZZ^+} \subset \mc{L}^1$ is s.t. $|X_n| \leq \EE[X | \mc{F}_n] \ \forall n \in \ZZ^+$, then $(X_n)_{n \in \ZZ^+}$ is u.i.
+\end{lemma}
+
+\begin{proof}
+    We have
+    \begin{align*}
+        \EE \left[ |X_n| \mathbb{1}_{\{|X_n| > c\}} \right] &\leq \EE \left[ \EE[X | \mc{F}_n] \mathbb{1}_{\{\EE[X | \mc{F}_n] > c\}} \right] \\
+        &= \EE \left[ X \mathbb{1}_{\{\EE[X | \mc{F}_n] > c\}} \right].
+    \end{align*}
+    As in the proof of Lemma \ref{lem:cond_exp_ui}, we can choose $c_\eps > 0$ s.t. $\PP(\EE[X | \mc{F}_n] > c_\eps) < \delta_\eps \ \forall n \in \ZZ^+$ and therefore, by Lemma \ref{lem:ui_eps_delta}, $\EE \left[ X \mathbb{1}_{\{\EE[X | \mc{F}_n] > c_\eps\}} \right] < \eps$. Thus
+    \[ \lim_{c \to \infty} \sup_{n \in \ZZ^+} \EE \left[ |X_n| \mathbb{1}_{\{|X_n| > c\}} \right] \leq \eps. \]
+    Letting $\eps \to 0$ gives the result.
+\end{proof}
+
+\subsection{Convergence Theorems for Martingales}
+
+\begin{remark}
+    If $\{X_\alpha, \alpha \in I\}$ is u.i. then $\sup_{\alpha \in I} \EE[|X_\alpha|] < \infty$, because
+    \[ \sup_{\alpha \in I} \EE[|X_\alpha| (\mathbb{1}_{\{|X_\alpha| \leq c\}} + \mathbb{1}_{\{|X_\alpha| > c\}})] \leq c + \sup_{\alpha \in I} \EE[|X_\alpha| \mathbb{1}_{\{|X_\alpha| > c\}}] \]
+    and for $c > 0$ sufficiently large, this is $\leq c + 1$.
+\end{remark}
+
+\begin{remark}
+    The following results provide a summary of martingale convergence theorems. For more details, see Chapter 10 in the lecture notes for PFF.
+\end{remark}
+
+\begin{lemma}[Doob's upcrossing]
+    Let $(X_n)$ be a super-martingale. Then
+    \[ (b-a) \EE[U_N[a,b]] \leq \EE[(X_N - a)^+]. \]
+\end{lemma}
+
+\begin{corollary}
+    Let $(X_n)_{n \in \ZZ^+}$ be a super-martingale with $\sup_n \EE[|X_n|] < \infty$ (i.e., bounded in $\mc{L}^1$). Then
+    \[ (b-a) \EE[U_\infty[a,b]] \leq |a| + \sup_n \EE[|X_n|] < \infty \]
+    which implies $\PP(U_\infty[a,b] = \infty) = 0$.
+\end{corollary}
+
+\begin{theorem}
+    Let $(X_n)_{n \in \ZZ^+}$ be a super-martingale bounded in $\mc{L}^1$. Then
+    \[ \lim_{n \to \infty} X_n = X_\infty \quad \PP\text{-a.s.} \]
+\end{theorem}
+
+\begin{proposition}
+    Let $(M_n)_{n \in \ZZ^+}$ be a \vocab{u.i. martingale}. Then:
+    \begin{enumerate}[label=(\alph*)]
+        \item $M_\infty := \lim_{n \to \infty} M_n$ exists a.s. and in $\mc{L}^1$.
+        \item $M_n = \EE[M_\infty | \mc{F}_n]$.
+    \end{enumerate}
+\end{proposition}
+
+\begin{proof}
+    Since $(M_n)_{n \in \ZZ^+}$ is u.i., then it's bounded in $\mc{L}^1$ and therefore $M_\infty = \lim_{n \to \infty} M_n$ exists a.s.
+    
+    Notice that by Fatou's lemma, $\EE[|M_\infty|] \leq \liminf_{n \to \infty} \EE[|M_n|] < \infty$, so $M_\infty \in \mc{L}^1$.
+    
+    \begin{homework}
+        Show that $\{M_n - M_\infty, n \in \ZZ^+\}$ is u.i.
+    \end{homework}
+    
+    We now prove convergence in $\mc{L}^1$. We have:
+    \begin{align*}
+        \EE[|M_n - M_\infty|] &= \EE[|M_n - M_\infty| (\mathbb{1}_{\{|M_n - M_\infty| \leq \eps\}} + \mathbb{1}_{\{|M_n - M_\infty| > \eps\}})] \\
+        &\leq \eps + \EE[|M_n - M_\infty| \mathbb{1}_{\{|M_n - M_\infty| > \eps\}}]
+    \end{align*}
+    We can split the second term as:
+    \begin{align*}
+        \EE[|M_n - M_\infty| \mathbb{1}_{\{|M_n - M_\infty| > \eps\}}] &= \EE[|M_n - M_\infty| \mathbb{1}_{\{|M_n - M_\infty| > \eps\}} \cap \{|M_n - M_\infty| \leq c\}] \\
+        &\quad + \EE[|M_n - M_\infty| \mathbb{1}_{\{|M_n - M_\infty| > \eps\}} \cap \{|M_n - M_\infty| > c\}] \\
+        &\leq c \PP(|M_n - M_\infty| > \eps) + \EE[|M_n - M_\infty| \mathbb{1}_{\{|M_n - M_\infty| > c\}}]
+    \end{align*}
+    This implies:
+    \[ \EE[|M_n - M_\infty|] \leq \eps + c \PP(|M_n - M_\infty| > \eps) + \sup_{n \in \ZZ^+} \EE[|M_n - M_\infty| \mathbb{1}_{\{|M_n - M_\infty| > c\}}] \]
+    For sufficiently large $c_\eps > 0$, by uniform integrability, we have $\sup_{n \in \ZZ^+} \EE[|M_n - M_\infty| \mathbb{1}_{\{|M_n - M_\infty| > c_\eps\}}] < \eps$.
+    Then:
+    \[ \EE[|M_n - M_\infty|] \leq 2\eps + c_\eps \PP(|M_n - M_\infty| > \eps). \]
+    Since $M_n \to M_\infty$ a.s., it also converges in probability, so $\lim_{n \to \infty} \PP(|M_n - M_\infty| > \eps) = 0$.
+    Thus, $\limsup_{n \to \infty} \EE[|M_n - M_\infty|] \leq 2\eps$. Letting $\eps \downarrow 0$, we conclude
+    \[ \lim_{n \to \infty} \EE[|M_n - M_\infty|] = 0. \]
+    
+    It remains to prove (b). Fix $n \in \ZZ^+$ and $A \in \mc{F}_n$. Then for all $r \geq n$:
+    \[ \EE[M_n \mathbb{1}_A] = \EE[M_r \mathbb{1}_A] = \EE[M_\infty \mathbb{1}_A] + \EE[(M_r - M_\infty) \mathbb{1}_A] \]
+    
+    \begin{homework}
+        Show that $\EE[M_n \mathbb{1}_A] = \EE[M_r \mathbb{1}_A]$ for $r \geq n$ and $A \in \mc{F}_n$.
+    \end{homework}
+    
+    We have $|\EE[(M_r - M_\infty) \mathbb{1}_A]| \leq \EE[|M_r - M_\infty|] \xrightarrow{r \to \infty} 0$.
+    Thus, $\EE[M_n \mathbb{1}_A] = \EE[M_\infty \mathbb{1}_A]$ for all $A \in \mc{F}_n$, which implies $M_n = \EE[M_\infty | \mc{F}_n]$.
+\end{proof}
+
+This transcription follows the style and structure of your previous chapters, utilizing the `lindrew` package and the specific math commands provided in your preamble. Formal statements are placed in their respective environments, and the professor's additional notes are formatted as remarks.
+
+\subsection{The Essential Supremum}
+
+\begin{remark}
+    Let $(Z_\alpha)_{\alpha \in I}$ be a family of random variables on a probability space $(\Omega, \mc{F}, \PP)$.
+    \begin{itemize}
+        \item If $I$ is a countable set (e.g., $I = \NN$) then we know that $\bar{Z}(\omega) := \sup_{\alpha \in I} Z_\alpha(\omega)$ is a $\mc{F}$-measurable function.
+        \item If $I$ is uncountable, then $\bar{Z}$ may not be measurable. We need a different notion: \vocab{essential supremum}.
+    \end{itemize}
+\end{remark}
+
+\begin{lemma}
+    There exists a countable subset $J \subset I$ such that $Z^*(\omega) := \sup_{\alpha \in J} Z_\alpha(\omega)$ satisfies:
+    \begin{enumerate}[label=(\roman*)]
+        \item $\PP(Z_\alpha \leq Z^*) = 1$ for all $\alpha \in I$.
+        \item If $\hat{Z} \in m\mc{F}$ is such that $\PP(Z_\alpha \leq \hat{Z}) = 1$ for all $\alpha \in I$, then $\PP(\hat{Z} \geq Z^*) = 1$. (i.e., $Z^*$ is the smallest $\mc{F}$-measurable function that satisfies (i)).
+    \end{enumerate}
+    Moreover, if the family $(Z_\alpha)_{\alpha \in I}$ is \vocab{upwards directed} in the sense that for all $\alpha_1, \alpha_2 \in I$, there exists $\alpha_3 \in I$ such that $Z_{\alpha_3} \geq Z_{\alpha_1} \vee Z_{\alpha_2}$ $\PP$-a.s., then there exists a sequence $(\alpha_n)_{n \in \NN} \subset I$ such that $Z_{\alpha_n} \leq Z_{\alpha_{n+1}}$ for all $n$, $\PP$-a.s., and $Z^* = \lim_{n \to \infty} Z_{\alpha_n}$ $\PP$-a.s.
+\end{lemma}
+
+\begin{proof}
+    We can assume $|Z_\alpha| \leq 1$ because if not we can redefine $Z'_\alpha := \frac{2}{\pi} \arctan(Z_\alpha)$, which is equivalent for our purposes because $\arctan(x)$ is a strictly increasing function. Recall that $\tan x = \frac{\sin x}{\cos x}$.
+    
+    Let $\mc{C}$ be the collection of all countable subsets of $I$. Define:
+    \[ a := \sup_{C \in \mc{C}} \EE \left[ \sup_{\alpha \in C} Z_\alpha \right]. \]
+    By the definition of supremum, there exists a sequence of countable sets $(C_n)_{n \in \NN} \subset \mc{C}$ such that $C_n \subseteq C_{n+1}$ for all $n$ and $a = \lim_{n \to \infty} \EE \left[ \sup_{\alpha \in C_n} Z_\alpha \right]$.
+    
+    Set $J := \bigcup_{n \in \NN} C_n$ so that $J$ is a countable set. Take $Z^* := \sup_{\alpha \in J} Z_\alpha$ and notice that
+    \[ Z^* = \sup_{\alpha \in \bigcup_{n \in \NN} C_n} Z_\alpha = \sup_{n \in \NN} \sup_{\alpha \in C_n} Z_\alpha = \lim_{n \to \infty} \sup_{\alpha \in C_n} Z_\alpha. \]
+    By the Monotone Convergence Theorem (MON), $a = \EE[Z^*]$.
+    
+    Now $Z_\alpha \leq Z^*$ for all $\alpha \in J$. For $\bar{\alpha} \notin J$, let us argue by contradiction and assume $\PP(Z_{\bar{\alpha}} > Z^*) > 0$. Then $\EE[Z_{\bar{\alpha}} \vee Z^*] > \EE[Z^*] = a$.
+    However, the set $J' := J \cup \{\bar{\alpha}\}$ is countable, hence $J' \in \mc{C}$ and therefore
+    \[ a = \sup_{C \in \mc{C}} \EE \left[ \sup_{\alpha \in C} Z_\alpha \right] \geq \EE \left[ \sup_{\alpha \in J'} Z_\alpha \right] = \EE[Z_{\bar{\alpha}} \vee Z^*] > a, \]
+    which gives us a contradiction. Thus $\PP(Z_\alpha \leq Z^*) = 1$ for all $\alpha \in I$.
+    
+    \begin{homework}
+        Prove property (ii).
+    \end{homework}
+    
+    Let's prove the final claim: assume for all $\alpha, \beta \in I$, there exists $\gamma \in I$ such that $Z_\gamma \geq Z_\alpha \vee Z_\beta$ $\PP$-a.s.
+    Let $Z^* = \sup_{\alpha \in J^0} Z_\alpha$ where $J^0 = \{ \alpha_1^0, \alpha_2^0, \dots, \alpha_n^0, \dots \}$ is the countable set from the first part.
+    
+    Take $\alpha_1 = \alpha_1^0$. Let $\alpha_2 \in I$ be such that $Z_{\alpha_2} \geq Z_{\alpha_1} \vee Z_{\alpha_2}^0$.
+    Inductively, take $\alpha_{n+1} \in I$ so that $Z_{\alpha_{n+1}} \geq Z_{\alpha_n} \vee Z_{\alpha_{n+1}^0}$.
+    This defines a countable set $J = \{ \alpha_1, \alpha_2, \dots, \alpha_n, \dots \}$ and by construction $Z_{\alpha_n} \geq Z_{\alpha_j^0}$ for all $1 \leq j \leq n$. Moreover, $Z_{\alpha_n} \leq Z_{\alpha_{n+1}}$ and so $\check{Z} := \lim_{n \to \infty} Z_{\alpha_n} \geq Z^*$.
+    
+    However, $J$ is countable and therefore $\EE[\check{Z}] \leq \sup_{C \in \mc{C}} \EE \left[ \sup_{\alpha \in C} Z_\alpha \right] = \EE[Z^*]$ by the previous part of the proof. We conclude $Z^* = \check{Z}$ $\PP$-a.s.
+\end{proof}

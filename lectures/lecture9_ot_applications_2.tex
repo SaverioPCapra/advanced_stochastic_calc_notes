@@ -1,0 +1,62 @@
+\section{Optimal Sale of an Asset}
+
+\begin{remark}
+    Let us consider an investor who holds an asset (e.g., a firm) with value process $X$. He/she can sell at any time paying a fixed cost $K$. The problem is to find the time at which it is optimal to sell, solving
+    \[ v(n) = \sup_{\tau \in \mc{T}} \EE \left[ e^{-\rho \tau} (X_\tau^n - K) \right] \]
+    where $\rho > 0$ is the \vocab{DISCOUNT FACTOR} (under the risk-neutral measure).
+    
+    This time, $g(n) = (n - K)$, which is $C^2$ on $(0, \infty)$. We assume the asset value follows a Geometric Brownian Motion:
+    \[ dX_t = \mu X_t dt + \sigma X_t dW_t \]
+    The \vocab{stopping region} is in the set where $\rho g(n) - \mc{L}g(n) \geq 0$. Let us define
+    \[ \mc{D} = \{ n \in (0, \infty) : (\rho - \mu)n \geq \rho K \} \]
+
+    We have three cases:
+    \begin{enumerate}[label=(\roman*)]
+        \item $\rho < \mu$. In this case, $v(n) = \infty$ for all $n > 0$. Indeed, for any fixed time $T$, we have
+        \[ v(n) \geq \EE \left[ e^{-\rho T} (X_T^n - K) \right] = n e^{(\mu - \rho)T} \EE \left[ e^{\sigma W_T - \frac{\sigma^2}{2} T} \right] - K e^{-\rho T} \]
+        Since $X_t$ is a GBM, the expectation term is 1, yielding
+        \[ = n e^{(\mu - \rho)T} - K e^{-\rho T} \]
+        As $T \to +\infty$, this expression goes to infinity.
+        
+        \item $\mu = \rho$. In this case, $v(n) = n$. Indeed, for any stopping time $\tau$ and for all $m \in \NN$, by the optional sampling theorem we have:
+        \[ \EE \left[ e^{-\rho (\tau \wedge m)} (X_{\tau \wedge m}^n - K) \right] = n - K \EE \left[ e^{-\rho (\tau \wedge m)} \right] \leq n \]
+        Sending $m \to \infty$ and using Fatou's lemma, for all $\tau \in \mc{T}$ we have
+        \[ \EE \left[ e^{-\rho \tau} (X_\tau^n - K) \right] \leq n \implies v(n) \leq n \]
+        By taking $\tau = m$ and sending $m \to +\infty$, we find $v(n) \geq n$, hence $v(n) = n$.
+        
+        \item $\rho > \mu$. This is the interesting case. We have $\mc{D}$ defined as $n \in [a, \infty)$, where $a = \frac{\rho K}{\rho - \mu} > 0$.
+        
+        Notice that if we never stop the process, the value we get is $0 < g(n) = n - K$ for all $n > K$. We can prove that the \vocab{stopping region} is of the form $\mc{S} = [n^*, \infty)$ for some $n^* \in (0, \infty)$ with $n^* \geq a$ (omitted, see Pham p. 104).
+        
+        We have the following variational inequality: $\max \{ \mc{L}v - \rho V, v(n) - g(n) \} = 0$, which leads to:
+        \begin{enumerate}[label=\arabic*.]
+            \item $\mc{L}v - \rho V = 0$ for $n < n^*$
+            \item $V(n) = n - K$ for $n \geq n^*$
+            \item $V'(n^*) = 1$ (the \vocab{smooth-fit} condition)
+        \end{enumerate}
+        
+        Let us start from the \vocab{continuation region}, where $v$ satisfies the ODE:
+        \[ \mu n v'(n) + \frac{1}{2} \sigma^2 n^2 v''(n) - \rho v = 0, \quad n < n^* \]
+        This is a second-order ODE whose general solution is $v(n) = A n^m + B n^n$, where $m$ and $n$ are the roots of the characteristic equation:
+        \[ \frac{1}{2} \sigma^2 x^2 + \gamma x - \rho = 0, \quad \text{with } \gamma = \mu - \frac{1}{2} \sigma^2. \]
+        The roots are given by $m, n = \frac{-\gamma \pm \sqrt{\gamma^2 + 2 \rho \sigma^2}}{\sigma^2}$. Specifically:
+        \begin{itemize}
+            \item $m = \frac{-\gamma - \sqrt{\gamma^2 + 2 \rho \sigma^2}}{\sigma^2} < 0$
+            \item $n = \frac{-\gamma + \sqrt{\gamma^2 + 2 \rho \sigma^2}}{\sigma^2} > 1$
+        \end{itemize}
+        We also know that $v(0^+) = \max(-K, 0) = 0$, which implies $A = 0$. Using the \vocab{smooth-fit} condition $V'(n^*) = 1$, we have:
+        \[ B n (n^*)^{n-1} = 1 \implies B = \frac{1}{n} \cdot \frac{1}{(n^*)^{n-1}}. \]
+        While using the boundary condition $V(n^*) = n^* - K$, we get:
+        \begin{align*}
+            B (n^*)^n = n^* - K &\implies K = n^* - B (n^*)^n \\
+            &\implies K = n^* - \frac{1}{n} \frac{(n^*)^n}{(n^*)^{n-1}} = n^* - \frac{1}{n} n^* \\
+            &\implies n^* \paren{1 - \frac{1}{n}} = K \implies n^* = \frac{K}{1 - \frac{1}{n}}.
+        \end{align*}
+    \end{enumerate}
+\end{remark}
+
+\begin{remark}
+    This implies that the value function $v(n)$ is
+    \[ v(n) = \begin{cases} \frac{1}{n} (n^*)^{1-n} n^n & n < n^* \\ n - K & n \geq n^* \end{cases} \]
+    and the optimal stopping time is $\tau^* = \inf \{ t \geq 0 : X_t \geq n^* \}$.
+\end{remark}

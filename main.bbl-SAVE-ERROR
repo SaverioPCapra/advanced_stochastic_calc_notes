@@ -1,0 +1,99 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global}
+    \entry{baldi2017stochastic}{book}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=08959c59fed7c190b61be2ae8ceae42b}{%
+           family={Baldi},
+           familyi={B\bibinitperiod},
+           given={Paolo},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer International Publishing}%
+      }
+      \strng{namehash}{08959c59fed7c190b61be2ae8ceae42b}
+      \strng{fullhash}{08959c59fed7c190b61be2ae8ceae42b}
+      \strng{bibnamehash}{08959c59fed7c190b61be2ae8ceae42b}
+      \strng{authorbibnamehash}{08959c59fed7c190b61be2ae8ceae42b}
+      \strng{authornamehash}{08959c59fed7c190b61be2ae8ceae42b}
+      \strng{authorfullhash}{08959c59fed7c190b61be2ae8ceae42b}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-3-319-62225-5}
+      \field{series}{Unitext}
+      \field{title}{Stochastic Calculus: An Introduction through Theory and Exercises}
+      \field{volume}{110}
+      \field{year}{2017}
+      \verb{doi}
+      \verb 10.1007/978-3-319-62226-2
+      \endverb
+    \endentry
+    \entry{peskir2006optimal}{book}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=65401738aa9a9dfb00978dd69ed75dd2}{%
+           family={Peskir},
+           familyi={P\bibinitperiod},
+           given={Goran},
+           giveni={G\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0a4b9a2184bbabc83d99034ee4a81f49}{%
+           family={Shiryaev},
+           familyi={S\bibinitperiod},
+           given={Albert},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{location}{1}{%
+        {Basel}%
+      }
+      \list{publisher}{1}{%
+        {Birkhäuser}%
+      }
+      \strng{namehash}{2988cba1faaa75d0384c46f41f5badef}
+      \strng{fullhash}{2988cba1faaa75d0384c46f41f5badef}
+      \strng{bibnamehash}{2988cba1faaa75d0384c46f41f5badef}
+      \strng{authorbibnamehash}{2988cba1faaa75d0384c46f41f5badef}
+      \strng{authornamehash}{2988cba1faaa75d0384c46f41f5badef}
+      \strng{authorfullhash}{2988cba1faaa75d0384c46f41f5badef}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-3-7643-2419-3}
+      \field{series}{Lectures in Mathematics. ETH Zürich}
+      \field{title}{Optimal Stopping and Free-Boundary Problems}
+      \field{year}{2006}
+      \verb{doi}
+      \verb 10.1007/978-3-7643-7390-0
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

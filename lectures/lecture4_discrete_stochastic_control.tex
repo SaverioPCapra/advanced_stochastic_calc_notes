@@ -1,1 +1,255 @@
 \section{Stochastic Control in Discrete Time}
+
+\begin{remark*}
+    Reference: Chapter I in Schmidli's book or Bertsekas \& Shreve.
+\end{remark*}
+
+\begin{itemize}
+    \item \vocab{Noise}: Let $(Y_n)_{n \in \NN}$ be i.i.d. on $(E_Y, \mc{E}_Y)$. 
+    The noise's filtration is $\mc{F}_n = \sigma(Y_1, Y_2, \dots, Y_n)$, with $\mc{F}_0 = \{\emptyset, \Omega\}$.
+
+    \item \vocab{Control}: Let $(U_n)_{n \in \ZZ^+}$ be $(\mc{F}_n)$-adapted taking values on some space $(\mathbb{U}, \mc{U})$. 
+    The class of \vocab{admissible controls} is denoted by $\hat{\mc{A}}$.
+
+    \item \vocab{State dynamics}: Let $(X_n)_{n \in \ZZ^+}$ be the state dynamics on $(E_X, \mc{E}_X)$ defined by
+    \begin{equation*}
+        \boxed{X_{n+1} = f(X_n, U_n, Y_{n+1})}
+    \end{equation*}
+    for some measurable function $f: E_X \times \mathbb{U} \times E_Y \to E_X$.
+\end{itemize}
+
+\begin{remark}
+    By composition of measurable functions, $(X_n)_{n \in \ZZ^+}$ is $(\mc{F}_n)$-adapted.
+\end{remark}
+
+\begin{homework}
+    Prove the adaptedness of the state dynamics process $(X_n)_{n \in \ZZ^+}$.
+\end{homework}
+
+\begin{remark}
+    We could generalize the dynamics to $X_{n+1} = f_{n+1}(X_n, U_n, Y_{n+1})$.
+\end{remark}
+
+\begin{remark}
+    We shall consider $E_Y = \RR^k$, $E_X = \RR^m$, and $\mathbb{U} \subseteq \RR^\ell$.
+\end{remark}
+
+\begin{remark}
+    A priori, the dynamics is not Markovian, because $(U_n)_{n \in \ZZ^+}$ can be any adapted process. The dynamics becomes Markovian if $U_n = u_n(X_n)$ for some measurable functions $u_n: E_X \to \mathbb{U}$, $n \in \ZZ^+$. We denote
+    \[ \mc{A} := \left\{ (U_n)_{n \in \ZZ^+} \in \hat{\mc{A}} : U_n = u_n(X_n) \text{ for measurable functions } u_n: E_X \to \mathbb{U} \right\} \]
+    as the class of \vocab{Markovian controls}.
+\end{remark}
+
+\begin{remark*}
+    In the next page the formulation is slightly unorthodox because I use $g(X_n, U_{n-1})$ instead of $g(X_n, U_n)$. It's for good reasons!
+\end{remark*}
+
+
+%%% Pages 2 and 3
+
+Given a measurable function $g: E_X \times \mathbb{U} \to \RR$, we consider an objective function: let $T \in \NN \cup \{\infty\}$, $X_0 = x$.
+\begin{equation*}
+    \boxed{J_x^T(U) := \EE \left[ \sum_{n=1}^T g(X_n, U_{n-1}) e^{-rn} \right]}
+\end{equation*}
+\begin{remark*}
+    $r > 0$ is the discount rate. If $T = \infty \implies J_x^\infty(U) = J_x(U)$.
+\end{remark*}
+
+The \vocab{value function} of our problem reads:
+\begin{equation*}
+    \boxed{V_T(x) := \sup_{U \in \hat{\mc{A}}} J_x^T(U)}
+\end{equation*}
+\begin{remark*}
+    If $T = \infty \implies V(x) := \sup_{U \in \hat{\mc{A}}} J_x(U)$.
+\end{remark*}
+
+\begin{remark}
+    Intuitively we expect $V_T \to V$ when $T \to \infty$. Now we provide a sufficient condition for this claim.
+\end{remark}
+
+\begin{lemma}
+    Assume $g(x,u) \geq -c$ for some constant $c > 0$. Then $V(x) = \uparrow \lim_{T \to \infty} V_T(x)$ for all $x \in E_X$.
+\end{lemma}
+
+\begin{proof}
+    We can rewrite $V_T(x)$ by adding and subtracting a constant term to make the running cost non-negative. Let $\tilde{g}(X_k, U_{k-1}) := g(X_k, U_{k-1}) + c$. Then:
+    \begin{align*}
+        V_T(x) &= \sup_{U \in \hat{\mc{A}}} \EE \left[ \sum_{k=1}^T e^{-rk} (g(X_k, U_{k-1}) + c) \right] - \sum_{k=1}^T e^{-rk} c \\
+        &= \sup_{U \in \hat{\mc{A}}} \EE \left[ \sum_{k=1}^T e^{-rk} \tilde{g}(X_k, U_{k-1}) \right] - c \left( \frac{1 - e^{-r(T+1)}}{1 - e^{-r}} - 1 \right) \\
+        &= \tilde{V}_T(x) - c \frac{e^{-r} - e^{-r(T+1)}}{1 - e^{-r}}
+    \end{align*}
+    where $\tilde{V}_T(x) := \sup_{U \in \hat{\mc{A}}} \EE \left[ \sum_{k=1}^T e^{-rk} \tilde{g}(X_k, U_{k-1}) \right]$.
+    
+    Since $\tilde{g} \geq 0$, then $\tilde{V}_T(x) \leq \tilde{V}_{T+1}(x) \leq \tilde{V}(x)$ for all $T$, with 
+    \[ \tilde{V}(x) = \sup_{U \in \hat{\mc{A}}} \EE \left[ \sum_{k=1}^\infty e^{-rk} \tilde{g}(X_k, U_{k-1}) \right]. \]
+    Then $\tilde{V}_\infty(x) := \lim_{T \to \infty} \tilde{V}_T(x) \leq \tilde{V}(x)$.
+    
+    Moreover, for any $\eps > 0$, there exists $U^\eps \in \hat{\mc{A}}$ such that $X_k^\eps = f(X_{k-1}^\eps, U_{k-1}^\eps, Y_k)$ and
+    \begin{align*}
+        \tilde{V}(x) &\leq \EE \left[ \sum_{k=1}^\infty e^{-rk} \tilde{g}(X_k^\eps, U_{k-1}^\eps) \right] + \eps \\
+        &= \EE \left[ \lim_{T \to \infty} \sum_{k=1}^T e^{-rk} \tilde{g}(X_k^\eps, U_{k-1}^\eps) \right] + \eps \\
+        &\overset{\text{MON}}{=} \lim_{T \to \infty} \EE \left[ \sum_{k=1}^T e^{-rk} \tilde{g}(X_k^\eps, U_{k-1}^\eps) \right] + \eps \leq \tilde{V}_\infty(x) + \eps
+    \end{align*}
+    where the last inequality follows from the fact that $\EE \left[ \sum_{k=1}^T e^{-rk} \tilde{g}(X_k^\eps, U_{k-1}^\eps) \right] \leq \tilde{V}_T(x)$.
+    
+    Thus $\tilde{V}_\infty(x) \leq \tilde{V}(x) \leq \tilde{V}_\infty(x) + \eps$ for all $\eps > 0$, which implies $\tilde{V}_\infty(x) = \tilde{V}(x)$.
+    
+    It follows that:
+    \begin{align*}
+        \lim_{T \to \infty} V_T(x) &= \lim_{T \to \infty} \left( \tilde{V}_T(x) - c \frac{e^{-r} - e^{-r(T+1)}}{1 - e^{-r}} \right) \\
+        &= \tilde{V}(x) - c \frac{e^{-r}}{1 - e^{-r}} \\
+        &= \sup_{U \in \hat{\mc{A}}} \EE \left[ \sum_{k=1}^\infty e^{-rk} g(X_k, U_{k-1}) + \sum_{k=1}^\infty c e^{-rk} \right] - c \frac{e^{-r}}{1 - e^{-r}} \\
+        &= \sup_{U \in \hat{\mc{A}}} \EE \left[ \sum_{k=1}^\infty e^{-rk} g(X_k, U_{k-1}) \right] + c \frac{e^{-r}}{1 - e^{-r}} - c \frac{e^{-r}}{1 - e^{-r}} = V(x)
+    \end{align*}
+    where we used the fact that $\sum_{k=1}^\infty c e^{-rk} = c \left( \frac{1}{1 - e^{-r}} - 1 \right) = c \frac{e^{-r}}{1 - e^{-r}}$.
+\end{proof}
+
+%% Till page 7
+\begin{lemma}[\vocab{Dynamic Programming Principle}]
+    Suppose $|V_T(x)| < \infty$. The function $V_T(x)$ satisfies:
+    \begin{align*}
+        V_T(x) &= \sup_{u \in \mathbb{U}} \left\{ \EE \left[ e^{-r} g(X_1, u) + e^{-r} V_{T-1}(X_1) \right] \right\} \\
+        &= \sup_{u \in \mathbb{U}} \left\{ \EE \left[ e^{-r} g(f(x, u, Y_1), u) + e^{-r} V_{T-1}(f(x, u, Y_1)) \right] \right\}
+    \end{align*}
+    Suppose $g(x, u) \geq -c$ for $c > 0$. The function $V(x)$ satisfies:
+    \begin{align*}
+        V(x) &= \sup_{u \in \mathbb{U}} \left\{ \EE \left[ e^{-r} g(X_1, u) + e^{-r} V(X_1) \right] \right\} \\
+        &= \sup_{u \in \mathbb{U}} \left\{ \EE \left[ e^{-r} g(f(x, u, Y_1), u) + e^{-r} V(f(x, u, Y_1)) \right] \right\}
+    \end{align*}
+\end{lemma}
+
+\begin{proof}
+    $V_0(x) = 0$.
+    \begin{align*}
+        V_1(x) &= \sup_{U_0 \in m\mc{F}_0} \EE[e^{-r} g(X_1, U_0)] = \sup_{U_0 \in m\mc{F}_0} \EE[e^{-r} g(f(x, U_0, Y_1), U_0)] \\
+        &= \sup_{u \in \mathbb{U}} e^{-r} \Lambda_0(x, u) \quad \text{with } \Lambda_0(x, u) := \int g(f(x, u, y), u) \mu(dy) \text{ where } Y_1 \sim \mu
+    \end{align*}
+    Notice that $\Lambda_0(x, u) = \int [g(f(x, u, y), u) + V_0(f(x, u, y))] \mu(dy)$.
+    
+    For any $\eps > 0$ and fixed $x \in E_X$, $\exists u_0^\eps(x) \in \mathbb{U}$ s.t. $e^{-r} \Lambda_0(x, u_0^\eps(x)) \geq V_1(x) - \eps$.
+
+    \begin{remark}
+        \vocab{A fine issue: measurable selection}: is the mapping $x \mapsto u_0^\eps(x)$ measurable $E_X \to \mathbb{U}$? Yes if the function $\Lambda_0$ is u.s.c. or l.s.c. and $\mathbb{U}$ is compact (see Bertsekas \& Shreve, Prop. 7.33, Ch. 7.5, 7.34).
+    \end{remark}
+
+    \begin{align*}
+        V_2(x) &= \sup_{\substack{U_0 \in m\mc{F}_0 \\ U_1 \in m\mc{F}_1}} \EE[e^{-r} g(X_1, U_0) + e^{-2r} g(X_2, U_1)] \\
+        &= \sup_{U_0, U_1} \EE \left[ e^{-r} g(X_1, U_0) + e^{-2r} \EE[g(X_2, U_1) | \mc{F}_1] \right]
+    \end{align*}
+    By the \vocab{Freezing Lemma}, $\EE[g(f(X_1, U_1, Y_2), U_1) | \mc{F}_1] = \Lambda_0(X_1, U_1)$. Thus:
+    \begin{align*}
+        V_2(x) &= \sup_{U_0, U_1} \EE \left[ e^{-r} g(X_1, U_0) + e^{-r} (e^{-r} \Lambda_0(X_1, U_1)) \right] \\
+        &\implies V_2(x) \leq \sup_{U_0} \EE \left[ e^{-r} g(X_1, U_0) + e^{-r} V_1(X_1) \right]
+    \end{align*}
+    $\forall \eps > 0$, I can choose $U_1^\eps = u_0^\eps(X_1)$ so that $e^{-r} \Lambda_0(X_1, U_1^\eps) \geq V_1(X_1) - \eps$ $\PP$-a.s.
+    Then $V_2(x) \geq \sup_{U_0} \EE \left[ e^{-r} g(X_1, U_0) + e^{-r} V_1(X_1) \right] - \eps$.
+    Combining the two we obtain:
+    \begin{align*}
+        V_2(x) &= \sup_{U_0} \EE \left[ e^{-r} g(X_1, U_0) + e^{-r} V_1(X_1) \right] \\
+        &= \sup_{U_0} \EE \left[ e^{-r} g(f(x, U_0, Y_1), U_0) + e^{-r} V_1(f(x, U_0, Y_1)) \right] \\
+        &= \sup_{u \in \mathbb{U}} e^{-r} \Lambda_1(x, u)
+    \end{align*}
+    where $\Lambda_1(x, u) = \int (g(f(x, u, y), u) + V_1(f(x, u, y))) \mu(dy)$.
+    As before we notice that $\forall \eps > 0$, $\exists$ \vocab{measurable} $u_1^\eps: E_X \to \mathbb{U}$ s.t. $e^{-r} \Lambda_1(x, u_1^\eps(x)) \geq V_2(x) - \eps$ $\forall x \in E_X$.
+
+    Now we continue by induction: suppose that for $n \leq T-1$
+    \begin{align*}
+        V_j(x) &= \sup_{U_0} \EE[e^{-r} g(X_1, U_0) + e^{-r} V_{j-1}(X_1)] \quad \forall j \leq n \\
+        &= \sup_{u \in \mathbb{U}} e^{-r} \Lambda_{j-1}(x, u) \quad \text{where} \\
+        \Lambda_{j-1}(x, u) &:= \int [g(f(x, u, y), u) + V_{j-1}(f(x, u, y))] \mu(dy)
+    \end{align*}
+    and $\forall \eps > 0$ $\exists$ measurable $u_{j-1}^\eps: E_X \to \mathbb{U}$ s.t. $e^{-r} \Lambda_{j-1}(x, u_{j-1}^\eps(x)) \geq V_j(x) - \eps$ $\forall x \in E_X$.
+    Then:
+    \begin{align*}
+        V_{n+1}(x) &= \sup_{\substack{U_j \in m\mc{F}_j \\ j=0, \dots, n}} \EE \left[ \sum_{k=1}^{n+1} e^{-kr} g(X_k, U_{k-1}) \right] \\
+        &= \sup_{\substack{U_j \in m\mc{F}_j \\ j=0, \dots, n}} \EE \left[ \sum_{k=1}^n e^{-kr} g(X_k, U_{k-1}) + \EE[e^{-(n+1)r} g(X_{n+1}, U_n) | \mc{F}_n] \right]
+    \end{align*}
+    The inner conditional expectation is:
+    \[ e^{-(n+1)r} \EE[g(f(X_n, U_n, Y_{n+1}), U_n) | \mc{F}_n] = e^{-(n+1)r} \Lambda_0(X_n, U_n) \leq e^{-rn} V_1(X_n) \]
+    Moreover, choosing $U_n = U_n^\eps \equiv u_0^\eps(X_n)$ we have $e^{-r} \Lambda_0(X_n, U_n^\eps) \geq V_1(X_n) - \eps$ and therefore:
+    \begin{align*}
+        V_{n+1}(x) &= \sup_{\substack{U_j \in m\mc{F}_j \\ j=0, \dots, n-1}} \EE \left[ \sum_{k=1}^n e^{-rk} g(X_k, U_{k-1}) + e^{-rn} V_1(X_n) \right] \\
+        &= \sup_{\substack{U_j \in m\mc{F}_j \\ j=0, \dots, n-1}} \EE \left[ \sum_{k=1}^{n-1} e^{-rk} g(X_k, U_{k-1}) + \EE[e^{-rn} (g(X_n, U_{n-1}) + V_1(X_n)) | \mc{F}_{n-1}] \right]
+    \end{align*}
+    The inner conditional expectation is:
+    \begin{align*}
+        &e^{-rn} \EE[g(f(X_{n-1}, U_{n-1}, Y_n), U_{n-1}) + V_1(f(X_{n-1}, U_{n-1}, Y_n)) | \mc{F}_{n-1}] \\
+        &= e^{-rn} \Lambda_1(X_{n-1}, U_{n-1}) \leq e^{-r(n-1)} V_2(X_{n-1})
+    \end{align*}
+    Moreover, choosing $U_{n-1} = U_{n-1}^\eps = u_1^\eps(X_{n-1})$ we get $e^{-r} \Lambda_1(X_{n-1}, U_{n-1}^\eps) \geq V_2(X_{n-1}) - \eps$.
+    Then:
+    \[ V_{n+1}(x) = \sup_{\substack{U_j \in m\mc{F}_j \\ j=0, \dots, n-2}} \EE \left[ \sum_{k=1}^{n-1} e^{-rk} g(X_k, U_{k-1}) + e^{-r(n-1)} V_2(X_{n-1}) \right] \]
+    Iterating the procedure we get:
+    \[ V_{n+1}(x) = \sup_{U_0 \in m\mc{F}_0} \EE[e^{-r} g(X_1, U_0) + e^{-r} V_n(X_1)] \]
+    This proves the finite horizon case: $V_T(x) = \sup_{U_0 \in m\mc{F}_0} \EE[e^{-r} g(X_1, U_0) + e^{-r} V_{T-1}(X_1)]$.
+
+    For the infinite horizon case, since $g \geq -c$, then $\tilde{V}_T(x) := V_T(x) + \sum_{k=1}^T c e^{-rk} \geq 0$.
+    \[ \implies \tilde{V}_T(x) = \sup_{U_0 \in m\mc{F}_0} \EE[e^{-r} \tilde{g}(X_1, U_0) + e^{-r} \tilde{V}_{T-1}(X_1)] \]
+    where $\tilde{V}_{T-1}(X_1) = V_{T-1}(X_1) + \sum_{k=1}^{T-1} c e^{-rk}$. Since $\tilde{V}_T(x) \leq \tilde{V}(x)$ for all $x \in E_X$, we have:
+    \[ \tilde{V}_T(x) \leq \sup_{U_0 \in m\mc{F}_0} \EE[e^{-r} \tilde{g}(X_1, U_0) + e^{-r} \tilde{V}(X_1)] \]
+    Letting $T \to \infty$, we obtain $\tilde{V}(x) \leq \sup_{U_0 \in m\mc{F}_0} \EE[e^{-r} \tilde{g}(X_1, U_0) + e^{-r} \tilde{V}(X_1)]$.
+    For the reverse inequality, we notice that for any $U_0 \in m\mc{F}_0$:
+    \[ \tilde{V}(x) \geq \tilde{V}_T(x) \geq \EE[e^{-r} \tilde{g}(X_1, U_0) + e^{-r} \tilde{V}_{T-1}(X_1)] \]
+    Letting $T \to \infty$ and using the Monotone Convergence Theorem (MON):
+    \[ \tilde{V}(x) \geq \EE[e^{-r} \tilde{g}(X_1, U_0) + e^{-r} \tilde{V}(X_1)] \]
+    By the arbitrariness of $U_0$, this implies $\tilde{V}(x) \geq \sup_{U_0 \in m\mc{F}_0} \EE[e^{-r} \tilde{g}(X_1, U_0) + e^{-r} \tilde{V}(X_1)]$.
+    Finally, notice that $\tilde{V}(x) = V(x) + \sum_{k=1}^\infty c e^{-rk}$ and conclude:
+    \[ V(x) = \sup_{U_0 \in m\mc{F}_0} \EE[e^{-r} g(X_1, U_0) + e^{-r} V(X_1)] \]
+\end{proof}
+
+From DPP we have
+\begin{align*}
+    V_T(x) &= \sup_{u \in \mathbb{U}} e^{-r} \int \left[ g(f(x,u,y),u) + V_{T-1}(f(x,u,y)) \right] \mu(dy) \\
+    &= \sup_{u \in \mathbb{U}} e^{-r} \Lambda_{T-1}(x,u).
+\end{align*}
+Analogously,
+\begin{align*}
+    V(x) &= \sup_{u \in \mathbb{U}} e^{-r} \int \left[ g(f(x,u,y),u) + V(f(x,u,y)) \right] \mu(dy) \\
+    &= \sup_{u \in \mathbb{U}} e^{-r} \Lambda(x,u).
+\end{align*}
+
+Then we have a corollary:
+
+\begin{corollary}[\vocab{Measurable selection}]
+    \textbf{Part I:} Assume $\forall n \in \NN \cup \{0\}$, $\exists$ measurable $u_n^*: E_X \to \mathbb{U}$ s.t. $\Lambda_n(x, u_n^*(x)) = \sup_{u \in \mathbb{U}} \Lambda_n(x,u)$. Then $U_n^* := u_{T-1-n}^*(X_n)$ is an optimal control, i.e., with $X_{n+1}^* = f(X_n^*, U_n^*, Y_{n+1})$, we have
+    \[ V_T(x) = \EE \left[ \sum_{k=1}^T e^{-rk} g(X_k^*, U_{k-1}^*) \right]. \]
+    
+    \textbf{Part II:} Assume $\exists$ measurable $u^*: E_X \to \mathbb{U}$ s.t. $\Lambda(x, u^*(x)) = \sup_{u \in \mathbb{U}} \Lambda(x,u)$. Then $U_n^* = u^*(X_n)$ is an optimal control, i.e., with $X_{n+1}^* = f(X_n^*, U_n^*, Y_{n+1})$, we have
+    \[ V(x) = \EE \left[ \sum_{k=1}^\infty e^{-rk} g(X_k^*, U_{k-1}^*) \right]. \]
+\end{corollary}
+
+\begin{proof}
+    $V_T(x) = \sup_{u \in \mathbb{U}} e^{-r} \Lambda_{T-1}(x,u) = e^{-r} \Lambda_{T-1}(x, u_{T-1}^*(x))$
+    \begin{align*}
+        &= e^{-r} \int \left[ g(f(x, u_{T-1}^*(x), y), u_{T-1}^*(x)) + V_{T-1}(f(x, u_{T-1}^*(x), y)) \right] \mu(dy) \\
+        &= \EE \left[ e^{-r} g(X_1^*, U_0^*) + e^{-r} V_{T-1}(X_1^*) \right]
+    \end{align*}
+    using $U_0^* = u_{T-1}^*(x)$.
+    
+    Now we notice:
+    \begin{align*}
+        V_{T-1}(X_1^*) &= \sup_{u \in \mathbb{U}} e^{-r} \Lambda_{T-2}(X_1^*, u) = e^{-r} \Lambda_{T-2}(X_1^*, u_{T-2}^*(X_1^*)) \\
+        &= e^{-r} \EE \left[ g(X_2^*, U_1^*) + V_{T-2}(X_2^*) \mid \mc{F}_1 \right]
+    \end{align*}
+    by the \vocab{freezing lemma} because $X_2^* = f(X_1^*, U_1^*, Y_2)$ with $X_1^*, U_1^* \in m\mc{F}_1$ and $Y_2 \indep \mc{F}_1$.
+    
+    Combining with the first equation yields:
+    \[ V_T(x) = \EE \left[ e^{-r} g(X_1^*, U_0^*) + e^{-2r} g(X_2^*, U_1^*) + e^{-2r} V_{T-2}(X_2^*) \right]. \]
+    Iterating the procedure we obtain the claim in Part I.
+\end{proof}
+
+\begin{homework}
+    Prove the claim in Part II of the corollary.
+\end{homework}
+
+\begin{remark}
+
+    In summary:
+    
+    \begin{itemize}
+        \item We have obtained DPP in discrete time.
+        \item The argument requires \vocab{measurable selection}. This means that we must prove a priori that $x \mapsto V_T(x)$ is either l.s.c. or u.s.c.
+        \item We obtained a procedure to construct optimal controls in Markovian form $\implies$ no loss of generality in considering only \vocab{Markovian controls}.
+    \end{itemize}
+
+\end{remark}

@@ -1,0 +1,253 @@
+\section{Ito-Tanaka-Meyer formula}
+
+\section{Issues and Generalisations of Itô's Formula}
+
+\begin{remark}
+    There are at least two crucial issues with the use of Verification theorems:
+    \begin{enumerate}[label=(\roman*)]
+        \item existence of some kind of solution for difficult nonlinear PDEs.
+        \item sufficient regularity for the application of Itô's formula.
+    \end{enumerate}
+    In the second part of this course we will consider some famous applications of the theory of stoch. control in Economics, Finance \& Insurance, where explicit solutions are available. However, the vast majority of problems is not amenable to explicit solution and stoch. control is a lively area of mathematical research.
+\end{remark}
+
+\begin{remark}[Reminder]
+    Given $\psi: [0,T] \times \RR^d \to \RR$, Itô's formula requires $\psi \in C^{1,2}([0,T] \times \RR^d)$. This can be relaxed to $\psi \in C^{1,2}([0,T) \times \RR^d) \cap C([0,T] \times \RR^d)$ by continuity....
+
+    In optimal stopping \vocab{we can never obtain continuity of $D^2\psi = (\partial^2_{x_i x_j} \psi)_{i,j=1 \dots d}$}.
+
+    Thus, generalisations of Itô's formula are necessary. We will review a famous one, but this is only the tip of the iceberg!
+\end{remark}
+
+\begin{remark}
+    Reference: \vocab{\color{orange} [[Revuz \& Yor: Continuous martingales and Brownian motion]] chapter VI.}
+
+    Let $f$ be a convex function.
+    \begin{itemize}
+        \item left- and right- derivatives exist at all points: $f'_-$ and $f'_+$
+        \item There are at most countably many points $x \in \RR$ s.t. $f'_-(x) \neq f'_+(x)$ (notice that $f'_- \leq f'_+$ by convexity)
+        \item $x \mapsto f'_-(x)$ is left-cont., $x \mapsto f'_+(x)$ is right-cont.
+        \item $f''$ exists as a positive measure on $\mc{B}(\RR)$.
+        \item On any bounded interval $(a,b)$ the function $f$ can be written as 
+        \[ f(x) = \alpha x + \beta + \frac{1}{2} \int_a^b |x-y| f''(dy) \]
+        for suitable constants $\alpha, \beta \in \RR$ depending on the interval.
+        \item Let $\varphi \in C^\infty((-\infty, 0])$ s.t. $\varphi \geq 0$, $\int_{-\infty}^0 \varphi(x) \, dx = 1$ and $\varphi(x) > 0 \iff x \in (-a, 0]$ for some $a > 0$ (supp $\varphi = (-a, 0]$).
+        Then $\varphi_n(x) := n \varphi(nx)$ defines a sequence of mollifiers with $\int \varphi_n = 1$ and support $\text{supp } \varphi_n = (-\frac{a}{n}, 0]$.
+        
+        Note that $\int_{-\infty}^0 n \varphi(nx) \, dx = \int_{-\infty}^0 \varphi(y) \, dy = 1$.
+        \item Set 
+        \[ f_n(x) := \int_{-\infty}^0 f(x+y) \varphi_n(y) \, dy = \int_{-\infty}^x f(z) \varphi_n(z-x) \, dz \]
+    \end{itemize}
+\end{remark}
+
+\begin{remark}
+    We have the following properties for the mollified functions $f_n$:
+    \begin{equation*}
+        |f_n(x) - f(x)| = \left| \int_{-\infty}^0 (f(x+y) - f(x)) \varphi_n(y) \, dy \right| \leq \pnorm{f(x+\cdot) - f(x)}_{L^\infty((-\frac{a}{n}, 0))} \xrightarrow{n \to \infty} 0.
+    \end{equation*}
+    Moreover, $f'_n(x) = f(x)\varphi_n(0) - \int_{-\infty}^x f(z) \varphi'_n(z-x) \, dz$.
+    Since $f'_- = f'_+$ a.e., we have:
+    \begin{equation*}
+        f'_n(x) = \int_{-\infty}^x f'_-(z) \varphi_n(z-x) \, dz \leq f'_-(x) \quad \text{(by convexity)}.
+    \end{equation*}
+    We can also write:
+    \begin{align*}
+        f'_n(x) &= \int_{-\infty}^0 f'_-(x+y) \varphi_n(y) \, dy = \int_{-\frac{a}{n}}^0 f'_-(x+y) \varphi_n(y) \, dy \\
+        &= \int_{-\frac{a}{n}}^0 f'_-(x+y) n \varphi(ny) \, dy.
+    \end{align*}
+    Using the substitution $ny = z$, $dz = n \, dy$:
+    \begin{align*}
+        f'_n(x) &= \int_{-a}^0 f'_-(x+\frac{z}{n}) \varphi(z) \, dz \leq \int_{-a}^0 f'_-(x+\frac{z}{n+1}) \varphi(z) \, dz \quad \text{(by convexity)} \\
+        &= \int_{-\frac{a}{n+1}}^0 f'_-(x+y) \varphi_{n+1}(y) \, dy = f'_{n+1}(x).
+    \end{align*}
+    Thus, $f'_n \leq f'_{n+1}$ and $f'_n \uparrow f'_-$ pointwise.
+    Finally, $f'_n(x) = \int_{-\infty}^x f'_-(z) \varphi_n(z-x) \, dz$ and therefore:
+    \begin{align*}
+        f''_n(x) &= f'_-(x)\varphi_n(0) - \int_{-\infty}^x f'_-(z) \varphi'_n(z-x) \, dz \\
+        &= \int_{-\infty}^x \varphi_n(z-x) f''(dz) \geq 0
+    \end{align*}
+    because $f''(dz)$ is a positive measure and $\varphi_n \geq 0$.
+\end{remark}
+
+\begin{theorem}
+    If $X$ is a continuous semi-martingale, there is a continuous non-decreasing process $A^f$ s.t.
+    \begin{equation*}
+        f(X_t) = f(X_0) + \int_0^t f'_-(X_s) \, dX_s + \frac{1}{2} A^f_t.
+    \end{equation*}
+\end{theorem}
+
+\begin{proof}
+    From Itô's formula:
+    \begin{equation*}
+        f_n(X_t) = f_n(X_0) + \int_0^t f'_n(X_s) \, dX_s + \frac{1}{2} \underbrace{\int_0^t f''_n(X_s) \, d\langle X \rangle_s}_{=: A^{f_n}_t}.
+    \end{equation*}
+    Note that $A^{f_n}_t$ is non-decreasing and continuous since $f''_n \geq 0$ and $d\langle X \rangle_s \geq 0$.
+    Letting $n \to \infty$, we have $f_n(X_t) \to f(X_t)$, $f_n(X_0) \to f(X_0)$ and:
+    \begin{align*}
+        \lim_{n \to \infty} \EE \left[ \left| \int_0^t f'_n(X_s) \, dX_s - \int_0^t f'_-(X_s) \, dX_s \right|^2 \right] &= \lim_{n \to \infty} \EE \left[ \int_0^t |f'_n(X_s) - f'_-(X_s)| \, d\langle X \rangle_s \right] \\
+        &= \EE \left[ \int_0^t \lim_{n \to \infty} |f'_n(X_s) - f'_-(X_s)| \, d\langle X \rangle_s \right] = 0.
+    \end{align*}
+    The use of the Dominated Convergence Theorem (\vocab{DOM}) is justified because it suffices to consider $X$ evolving on a compact set.
+    Then, up to selecting a subsequence, we have $\PP$-a.s.:
+    \begin{align*}
+        \lim_{n \to \infty} \frac{1}{2} A^{f_n}_t &= \lim_{n \to \infty} \paren{ f_n(X_t) - f_n(X_0) - \int_0^t f'_n(X_s) \, dX_s } \\
+        &= f(X_t) - f(X_0) - \int_0^t f'_-(X_s) \, dX_s =: \frac{1}{2} A^f_t.
+    \end{align*}
+    The process $f(X_t) - f(X_0) - \int_0^t f'_-(X_s) \, dX_s$ is continuous.
+    Furthermore, $t \mapsto A^f_t$ is continuous and also non-decreasing as the limit of non-decreasing processes.
+\end{proof}
+
+\section{Local Time and Tanaka's Formula}
+
+\begin{remark}
+    We now want to characterise the process $A^f$ in some special case. This leads to a notion of \vocab{local time} which will allow us to state the Itô-Tanaka-Meyer formula.
+    
+    Let us define $\operatorname{sign}(x) = \begin{cases} 1, & x > 0 \\ -1, & x \leq 0 \end{cases}$ so that if $f(x) = |x|$ then $f'_-(x) = \operatorname{sign}(x)$.
+\end{remark}
+
+\begin{theorem}[Tanaka formula]
+    For any $a \in \RR$, there exists a non-decreasing, continuous process $(L_t^a)_{t \geq 0}$, called the \vocab{local-time} of $X$ at $a$, such that:
+    \begin{itemize}
+        \item $|X_t - a| = |X_0 - a| + \int_0^t \operatorname{sign}(X_s - a) \, dX_s + L_t^a$
+        \item $(X_t - a)^+ = (X_0 - a)^+ + \int_0^t \mathbb{1}_{\{X_s > a\}} \, dX_s + \frac{1}{2} L_t^a$
+        \item $(X_t - a)^- = (X_0 - a)^- - \int_0^t \mathbb{1}_{\{X_s \leq a\}} \, dX_s + \frac{1}{2} L_t^a$
+    \end{itemize}
+    where $(y)^- = \max\{0, -y\}$.
+    This shows that $|X_t - a|, (X_t - a)^+, (X_t - a)^-$ are semimartingales.
+\end{theorem}
+
+\begin{proof}
+    All functions considered are convex. Then, there exist continuous non-decreasing processes $A^+$ and $A^-$ s.t.
+    \begin{align*}
+        (X_t - a)^+ &= (X_0 - a)^+ + \int_0^t \mathbb{1}_{\{X_s > a\}} \, dX_s + \frac{1}{2} A_t^+ \\
+        (X_t - a)^- &= (X_0 - a)^- - \int_0^t \mathbb{1}_{\{X_s \leq a\}} \, dX_s + \frac{1}{2} A_t^-
+    \end{align*}
+    Then:
+    \begin{align*}
+        X_t - a &= (X_t - a)^+ - (X_t - a)^- \\
+        &= X_0 - a + \int_0^t dX_s + \frac{1}{2} (A_t^+ - A_t^-)
+    \end{align*}
+    Since $X_t - a = X_0 - a + \int_0^t dX_s$, then it must be $A_t^+ = A_t^-$ $\forall t \geq 0$ $\PP$-a.s.
+    We call $A_t^+ = A_t^- = L_t^a$.
+    Moreover, $|X_t - a| = (X_t - a)^+ + (X_t - a)^-$
+    \[ = |X_0 - a| + \int_0^t \operatorname{sign}(X_s - a) \, dX_s + L_t^a. \]
+\end{proof}
+
+\begin{remark}
+    $t \mapsto L_t^a(\omega)$ defines a non-negative measure on $[0, \infty)$. The next proposition gives us information on its support.
+\end{remark}
+
+\begin{proposition}
+    $dL_t^a = \mathbb{1}_{\{X_t = a\}} \, dL_t^a$, $\forall t \geq 0$, $\PP$-a.s.
+\end{proposition}
+
+\begin{proof}
+    We calculate $d(X_t - a)^2$ in two ways and then equate the resulting expressions.
+    By Itô's formula:
+    \begin{align}
+        d(X_t - a)^2 &= 2(X_t - a) \, d(X_t - a) + d\langle X - a \rangle_t \nonumber \\
+        &= 2(X_t - a) \, dX_t + d\langle X \rangle_t \label{eq:ito_way}
+    \end{align}
+    By Tanaka's formula:
+    \begin{equation}
+        d(|X_t - a|)^2 = 2|X_t - a| \, d|X_t - a| + d\langle |X - a| \rangle_t \label{eq:tanaka_way}
+    \end{equation}
+    Since $d|X_t - a| = \operatorname{sign}(X_t - a) \, dX_t + dL_t^a$, then $d\langle |X - a| \rangle_t = (\operatorname{sign}(X_t - a))^2 \, d\langle X \rangle_t = d\langle X \rangle_t$.
+    Then \eqref{eq:tanaka_way} reads:
+    \begin{equation}
+        d(|X_t - a|)^2 = 2 \underbrace{|X_t - a| \operatorname{sign}(X_t - a)}_{= (X_t - a)} \, dX_t + 2|X_t - a| \, dL_t^a + d\langle X \rangle_t \label{eq:tanaka_way_expanded}
+    \end{equation}
+    Comparing \eqref{eq:ito_way} and \eqref{eq:tanaka_way_expanded} we get: $\int_0^t |X_s - a| \, dL_s^a = 0$ $\forall t \geq 0$, $\PP$-a.s., which implies that $L_s^a$ increases only when $X_s = a$.
+\end{proof}
+
+\begin{fact}
+    $(t, \omega, a) \mapsto L_t^a(\omega)$ is jointly measurable on $\mc{P}(\mc{F}_t) \otimes \mc{B}(\RR)$, where $\mc{P}(\mc{F}_t)$ is the $\sigma$-algebra on $\RR_+ \times \Omega$ generated by continuous adapted processes.
+\end{fact}
+
+\begin{theorem}[Itô-Tanaka-Meyer Formula]
+    If $f: \RR \to \RR$ is the difference of two convex functions and $X$ a continuous semi-martingale, then
+    \[ f(X_t) = f(X_0) + \int_0^t f'_-(X_s) \, dX_s + \frac{1}{2} \int_{\RR} L_t^a f''(da). \]
+    \begin{remark}
+        This requires measurability of $a \mapsto L_t^a$.
+    \end{remark}
+\end{theorem}
+
+\begin{remark}
+    Hence $f(X_t)$ is a semimartingale.
+\end{remark}
+
+\begin{proof}
+    Let $\tau_n := \inf \{ t \geq 0 : X_t \notin (-n, n) \}$. By continuity of $t \mapsto X_t(\omega)$ we have $\tau_n(\omega) \leq \tau_{n+1}(\omega)$, $\forall n \in \NN$, $\forall \omega \in \Omega$ and $\lim_{n \to \infty} \tau_n(\omega) = +\infty$.
+
+    Since $X_{t \wedge \tau_n} \in [-n, n]$ then we consider $f(x)$ restricted to $(-n, n)$ and we can w.l.o.g. assume that $f$ has compact support outside of $(-n, n)$. Then 
+    \[ f(x) = \alpha_n x + \beta_n + \frac{1}{2} \int_{\RR} |x-a| f''(da) \]
+    Applying this to the process:
+    \[ f(X_{t \wedge \tau_n}) = \alpha_n X_{t \wedge \tau_n} + \beta_n + \frac{1}{2} \int_{\RR} |X_{t \wedge \tau_n} - a| f''(da) \]
+    By Tanaka's formula, $|X_{t \wedge \tau_n} - a| = |X_0 - a| + \int_0^{t \wedge \tau_n} \operatorname{sign}(X_s - a) \, dX_s + L_{t \wedge \tau_n}^a$. Substituting this in:
+    \begin{align*}
+        f(X_{t \wedge \tau_n}) &= \alpha_n (X_{t \wedge \tau_n} - X_0) + \underbrace{\paren{\alpha_n X_0 + \beta_n + \frac{1}{2} \int_{\RR} |X_0 - a| f''(da)}}_{= f(X_0)} \\
+        &\quad + \frac{1}{2} \int_{\RR} \paren{\int_0^{t \wedge \tau_n} \operatorname{sign}(X_s - a) \, dX_s} f''(da) + \frac{1}{2} \int_{\RR} L_{t \wedge \tau_n}^a f''(da) \\
+        &= f(X_0) + \alpha_n (X_{t \wedge \tau_n} - X_0) + \frac{1}{2} \int_0^{t \wedge \tau_n} \paren{\int_{\RR} \operatorname{sign}(X_s - a) f''(da)} \, dX_s + \frac{1}{2} \int_{\RR} L_{t \wedge \tau_n}^a f''(da)
+    \end{align*}
+    The inner integral evaluates to:
+    \begin{align*}
+        \int_{\RR} \operatorname{sign}(X_s - a) f''(da) &= \int_{-\infty}^{X_s} f''(da) - \int_{X_s}^{\infty} f''(da) \\
+        &= (f'_-(X_s) - \alpha) - (\alpha - f'_-(X_s)) = 2(f'_-(X_s) - \alpha)
+    \end{align*}
+    where $\alpha$ is the slope at infinity. Thus the stochastic integral term is:
+    \[ \int_0^{t \wedge \tau_n} (f'_-(X_s) - \alpha) \, dX_s = \int_0^{t \wedge \tau_n} f'_-(X_s) \, dX_s - \alpha (X_{t \wedge \tau_n} - X_0) \]
+    Hence:
+    \begin{equation}
+        f(X_{t \wedge \tau_n}) = f(X_0) + \int_0^{t \wedge \tau_n} f'_-(X_s) \, dX_s + \frac{1}{2} \int_{\RR} L_{t \wedge \tau_n}^a f''(da) \tag{1}
+    \end{equation}
+    For each $\omega \in \Omega$, $\exists n_\omega \in \NN$ large enough so that $X_s(\omega) \in (-n_\omega, n_\omega)$ $\forall s \geq 0$. Thus, letting $n \to \infty$ in (1) we obtain the claim $\omega$ by $\omega$.
+    
+    \begin{homework}
+        Fill the small gap!
+    \end{homework}
+\end{proof}
+
+\begin{corollary}[Occupation time formula]
+    For any non-negative Borel function $\Phi$,
+    \begin{equation}
+        \int_0^t \Phi(X_s) \, d\langle X \rangle_s = \int_{\RR} \Phi(a) L_t^a \, da \quad \forall t \geq 0, \PP\text{-a.s.} \tag{1}
+    \end{equation}
+    ($\Phi$ may be bounded Borel).
+    \begin{remark}
+        The result presented in the book is stronger: the null set does not depend on $\Phi$.
+    \end{remark}
+\end{corollary}
+
+\begin{proof}
+    Let $f \in C^2(\RR)$ be s.t. $f'' = \Phi$. Then comparing Itô formula:
+    \[ f(X_t) = f(X_0) + \int_0^t f'(X_s) \, dX_s + \frac{1}{2} \int_0^t \Phi(X_s) \, d\langle X \rangle_s \]
+    and Itô-Tanaka-Meyer formula:
+    \[ f(X_t) = f(X_0) + \int_0^t f'(X_s) \, dX_s + \frac{1}{2} \int_{\RR} L_t^a \Phi(a) \, da \]
+    we deduce $\int_0^t \Phi(X_s) \, d\langle X \rangle_s = \int_{\RR} L_t^a \Phi(a) \, da$ for $\Phi \in C(\RR)$.
+    
+    Let $\mc{H} := \{ \Phi \in m\mc{B}(\RR) : \Phi \text{ bounded s.t. (1) holds} \}$.
+    $\mc{H}$ is a vector space, it contains $\Phi(a) = 1$ and it's closed under monotone limits by MON. Moreover $\Phi(a) = \mathbb{1}_{(-\infty, \lambda]}(a)$ can be approximated from below with continuous functions that converge pointwise $\implies \mathbb{1}_{(-\infty, \lambda]}(\cdot) \in \mc{H}$.
+    
+    Since $\{ (-\infty, \lambda], \lambda \in \RR \}$ is a $\pi$-system that generates $\mc{B}(\RR)$ we can apply monotone class theorem to conclude that $\mc{H} \supset m\mc{B}(\RR)$.
+\end{proof}
+
+\subsection{Some special cases of interest}
+
+\begin{remark}
+    \begin{itemize}
+        \item If $f \in W^{2,\infty}_{loc}(\RR)$, i.e., $f'$ and $f''$ exist as functions that are locally bounded, then $f'$ is absolutely continuous and by \vocab{ITM formula}:
+        \begin{align*}
+            f(X_t) &= f(X_0) + \int_0^t f'(X_s) \, dX_s + \frac{1}{2} \int_{\RR} L_t^a f''(a) \, da \\
+            &= f(X_0) + \int_0^t f'(X_s) \, dX_s + \frac{1}{2} \int_0^t f''(X_s) \, d\langle X \rangle_s
+        \end{align*}
+        This is the formula we use in optimal stopping and stoch. control in 1-D.
+
+        \item If $f \in C(\RR)$, $f \in C^2(-\infty, 0)$ and $f \in C^2(0, \infty)$ with $f'(0-) \neq f'(0+)$ both finite and $f''$ loc. bounded on $\RR$, then 
+        \[ f''(da) = f''(a) \mathbb{1}_{(-\infty, 0)}(a) \, da + f''(a) \mathbb{1}_{(0, \infty)}(a) \, da + [f'(0+) - f'(0-)] \delta_0(da) \]
+        By ITM formula:
+        \begin{align*}
+            f(X_t) &= f(X_0) + \int_0^t f'_-(X_s) \, dX_s + \frac{1}{2} \int \mathbb{1}_{\{a \neq 0\}} L_t^a f''(a) \, da + \frac{1}{2} [f'(0+) - f'(0-)] L_t^0 \\
+            &= f(X_0) + \int_0^t f'_-(X_s) \, dX_s + \frac{1}{2} \int_0^t f''(X_s) \mathbb{1}_{\{X_s \neq 0\}} \, d\langle X \rangle_s + \frac{1}{2} \underbrace{[f'(0+) - f'(0-)] L_t^0}_{\text{\color{blue}this is precisely the effect of a lack of smooth-fit!}}
+        \end{align*}
+    \end{itemize}
+\end{remark}

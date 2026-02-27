@@ -1,0 +1,17 @@
+\section{Sequential Testing}
+
+\begin{remark}
+    \textbf{Problem:} we observe a trajectory of the \vocab{Wiener process} $X = (X_t)_{t \geq 0}$ with drift $\theta \mu$, where $\theta$ is a random variable such that
+    \[ \theta = \begin{cases} 1 & \text{with prob } \pi \\ 0 & \text{with prob } 1-\pi \end{cases} \]
+    in the probability space $(\Omega, \mc{F}, \PP_\pi, \pi \in [0,1])$.
+    
+    The probability measure is defined as
+    \[ \PP_\pi = \pi \PP_1 + (1-\pi) \PP_0 \]
+    so that $\PP_\pi(\theta = 1) = \pi$. The process $X_t$ is given by
+    \[ X_t = \theta \mu t + \sigma W_t \]
+    where $(W_t)_{t \geq 0}$ is a \vocab{standard BM}, with $\mu \neq 0$ and $\sigma > 0$.
+    
+    The task is to test
+    \[ H_1 : \theta = 1, \quad H_0 : \theta = 0 \]
+    sequentially with minimal loss. We then define a \vocab{stopping time} $\tau$ of $X$ and an $\mc{F}_\tau^X$-measurable random variable $d$ taking values 0 or 1.
+\end{remark}

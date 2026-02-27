@@ -1,0 +1,193 @@
+\section{Discrete Stochastic Control}
+
+\subsection{Optimal Control in Discrete Time}
+
+Discrete time is generally used in macroeconomics.
+
+\begin{problem*}[Typical problem]
+Find the value function $V_T(n)$:
+\begin{equation}
+    V_T(n) = \sup_{U \in \hat{\mathcal{A}}} J_n^T(U) = \sup_{U \in \hat{\mathcal{A}}} \EE \left[ \sum_{m=1}^T g(X_m, U_{m-1}) e^{-rm} \right]
+\end{equation}
+where:
+\begin{itemize}
+    \item $X_m$ is the \vocab{state};
+    \item $U_{m-1}$ are the \vocab{controls};
+    \item $e^{-rm}$ is the \vocab{discount factor}.
+\end{itemize}
+\end{problem*}
+
+\subsubsection{Method to tackle these problems}
+
+\vocab{DPP (Dynamic Programming Principle)}:
+Assuming $|V_T(n)| < \infty$, we have:
+\begin{equation}
+    V_T(n) = \sup_{\mu \in \mathcal{U}} \left\{ \EE \left[ e^{-r} g(X_1, u) + e^{-r} V_{T-1}(X_1) \right] \right\}
+\end{equation}
+
+\subsection{A Portfolio Consumption/Investment Problem}
+
+We now consider a \vocab{portfolio consumption/investment problem}. We will first tackle it in discrete time, then in continuous time.
+
+Consider a horizon $[0, T]$ (possibly $T \to +\infty$) and an agent who has to select an \vocab{investment strategy} in the market. Suppose there is 1 riskless asset and $K$ risky ones.
+
+Let $\alpha_t = (\alpha_t^0, \alpha_t^1, \dots, \alpha_t^K) = (\alpha_t^i)_{i \geq 0}$ be a \vocab{predictable process} defining the strategy, such that $\alpha_t \in \mathcal{F}_{t-1}$. 
+Here, $\alpha_t^i$ represents the \vocab{number of units invested in asset $i$}.
+
+The \vocab{portfolio value (wealth)} at time $t$, usually denoted by $X_t$ (or $V_t$ in discrete-time), is given by:
+\begin{equation}
+    X_t = \alpha_t^0 B_t + \sum_{i=1}^K \alpha_t^i S_t^i
+\end{equation}
+where $B_t$ is the riskless asset and $S_t^i$ are the risky assets.
+
+If the strategy $\alpha$ is \vocab{self-financing}, then:
+\begin{equation}
+    X_{t+\Delta t} - X_t = \alpha_t^0 \Delta B_t + \sum_{i=1}^K \alpha_t^i \Delta S_t^i
+\end{equation}
+where $\Delta B_t = B_{t+\Delta t} - B_t$ and $\Delta S_t^i = S_{t+\Delta t}^i - S_t^i$.
+
+\subsubsection{The Agent's Decision}
+
+The agent decides $\alpha_t$ at any $t$ by maximizing the expected utility from:
+\begin{enumerate}
+    \item \vocab{Terminal wealth} (solved in discrete time);
+    \item \vocab{Consumption} (+ terminal wealth) (tackled in continuous time).
+\end{enumerate}
+
+\subsubsection{Utility Function}
+
+The \vocab{utility function} $u(X)$ is a function of a monetary amount $X$ representing a "measure" of the well-being of an individual with wealth $X$. It satisfies the following properties:
+\begin{itemize}
+    \item $u(X)$ is strictly increasing (\vocab{non-satiation}, increasing marginal utility);
+    \item $u(X)$ is strictly concave and differentiable (\vocab{decreasing marginal utility});
+    \item $\lim_{X \to \infty} u'(X) = 0$;
+    \item $\lim_{X \to 0^+} u'(X) = +\infty$.
+\end{itemize}
+
+\subsection{Consumption}
+
+The individual may use its wealth to "generate" utility (buy goods, services, ...).
+\begin{itemize}
+    \item The consumption process $C$ will be defined as a non-negative, adapted process $C = (C_t)_{t \geq 0}$.
+\end{itemize}
+
+Hence $(C, \alpha)$ will be a \vocab{CONSUMPTION/INVESTMENT STRATEGY PAIR}.
+
+If we allow for consumption, the wealth at time $t$ is allocated as:
+\begin{equation}
+    X_t = C_t + \alpha_{t+1}^0 B_t + \sum_{i=1}^K \alpha_{t+1}^i S_t^i
+\end{equation}
+The \vocab{self-financing condition} with consumption is:
+\begin{equation}
+    X_{t+1} - X_t = -C_t + \alpha_{t+1}^0 \Delta B_t + \sum_{i=1}^K \alpha_{t+1}^i \Delta S_t^i
+\end{equation}
+
+So, the problem of the agent is:
+\begin{enumerate}
+    \item \vocab{Max Terminal Utility}:
+    \begin{equation}
+        \max_{\alpha \in \hat{\mathcal{A}}} \EE \left[ \beta^T u(X_T; \alpha) \right], \quad X_0 = x_0
+    \end{equation}
+    where $\alpha$ is predictable and self-financing, and $\beta^T$ is the discount factor.
+    
+    \item \vocab{Max Consumption and Terminal Utility}:
+    \begin{equation}
+        \max_{(C, \alpha) \in \hat{\mathcal{A}}} \EE \left[ \sum_{t=0}^T \beta^t u_c(C_t) + \beta^T u_x(X_T) \right]
+    \end{equation}
+    where $u_c$ and $u_x$ are the utility functions for consumption and terminal wealth respectively (in principle, they can be different).
+\end{enumerate}
+
+\subsection{The CRR Binomial Model}
+
+Let us put ourselves in the \vocab{CRR binomial model}, with one risky asset. Then:
+\begin{equation}
+    S_{t+1} = \xi_{t+1} S_t, \quad \text{where } \xi_t = \begin{cases} u & \text{with prob. } p \\ d & \text{with prob. } 1-p \end{cases}
+\end{equation}
+We assume $u > (1+r) > d$ to ensure the existence of a unique risk-neutral martingale measure $\mathbb{P}^*$ with:
+\begin{equation}
+    p^* = \frac{1+r-d}{u-d}
+\end{equation}
+
+\subsubsection{Focus on Problem 1: Max Terminal Utility}
+
+Let us rewrite the strategy $\alpha$ in terms of the \vocab{share of wealth} $\pi_t$ invested in the risky asset:
+\begin{equation}
+    \pi_t = \frac{\alpha_{t+1}^1 S_t}{X_t}, \quad \pi_t^0 = 1 - \pi_t = \frac{\alpha_{t+1}^0 B_t}{X_t}
+\end{equation}
+The wealth evolution becomes:
+\begin{align*}
+    X_{t+1} &= X_t + \alpha_{t+1}^0 \Delta B_t + \alpha_{t+1}^1 \Delta S_t \\
+    &= X_t + \alpha_{t+1}^0 r B_t + \alpha_{t+1}^1 S_t (\xi_{t+1} - 1) \\
+    &= X_t + X_t \left[ \pi_t^0 r + \pi_t (\xi_{t+1} - 1) \right] \\
+    &= X_t \left[ 1 + (1-\pi_t)r + \pi_t(\xi_{t+1} - 1) \right]
+\end{align*}
+The term in the brackets is the \vocab{gain process} $G(X_t, \pi_t, \xi_{t+1})$.
+
+\subsubsection{Applying the DPP}
+
+Applying the Dynamic Programming Principle, the value function $V_t(x)$ satisfies:
+\begin{equation}
+    \begin{cases} 
+    V_T(x) = u(x) & \text{for } t = T \\
+    V_t(x) = \sup_{\pi} \EE \left[ V_{t+1} \left( x(1 + (1-\pi)r + \pi(\xi_{t+1}-1)) \right) \right] & \text{for } t < T
+    \end{cases}
+\end{equation}
+The recursive step can be simplified to:
+\begin{equation}
+    V_t(x) = \sup_{\pi} \EE \left[ V_{t+1} \left( x(1+r) + x\pi(\xi_{t+1} - 1 - r) \right) \right]
+\end{equation}
+Note that we require $X_t \geq 0$, which is satisfied as long as $\pi \geq 0$ and $\xi_{t+1} > 0$.
+
+\subsubsection{Example: Log Utility}
+
+Consider the simplest case: $u(x) = \log x$ and $r = 0$.
+Notice that in the CRR model:
+\begin{equation}
+    S_t = S_0 u^m d^{t-m}
+\end{equation}
+where $m$ is the realization of the Bernoulli random variable $N_t \sim B(t, p^*)$, which models the number of upward movements in the stock price up to time $t$.
+
+In our case, we have:
+\begin{align*}
+    V_T(n) &= \log n; \\
+    V_t(n) &= \sup_{\pi} \EE \left[ V_{t+1} \left( n(1 + \pi (\xi_{t+1} - 1)) \right) \mid X_t = n \right] \quad \forall t \leq T
+\end{align*}
+
+Proceeding backwards:
+
+For $T-1$:
+\begin{align*}
+    V_{T-1}(n) &= \sup_{\pi_{T-1}} \EE \left[ \log \left[ n(1 + \pi_{T-1}(\xi_T - 1)) \right] \mid X_t = n \right] \\
+    &= \sup_{\pi_{T-1}} \left[ p \log \left[ n(1 + \pi_{T-1}(u - 1)) \right] + (1-p) \log \left[ n(1 + \pi_{T-1}(d - 1)) \right] \right] \\
+    &= \log n + \sup_{\pi_{T-1}} \left[ p \log \left[ 1 + \pi_{T-1}(u - 1) \right] + (1-p) \log \left[ 1 + \pi_{T-1}(d - 1) \right] \right]
+\end{align*}
+Notice that the supremum term does not depend on $n$!
+
+F.O.C.:
+\begin{equation*}
+    p \cdot \frac{u - 1}{1 + \pi_{T-1}(u - 1)} + (1-p) \frac{d - 1}{1 + \pi_{T-1}(d - 1)} = 0
+\end{equation*}
+\begin{equation*}
+    p(u - 1) [1 + \pi_{T-1}(d - 1)] + (1-p) [1 + \pi_{T-1}(u - 1)](d - 1) = 0
+\end{equation*}
+\begin{equation*}
+    \pi_{T-1}(u - 1)(d - 1) [p + 1 - p] = p(1 - u) + (1-p)(1 - d)
+\end{equation*}
+
+\begin{align*}
+    \Rightarrow \pi_{T-1} &= \frac{1 - pu - d + pd}{(u - 1)(d - 1)} = \frac{p(d - u) + 1 - d}{(u - 1)(d - 1)} \\
+    &= - \frac{p(u - d) + d - 1}{(u - 1)(d - 1)} = \frac{p(u - d) + d - 1}{(u - 1)(1 - d)}
+\end{align*}
+In the last expression, the denominator $(u-1)(1-d) > 0$.
+
+For the condition of \vocab{no short-selling}:
+\begin{equation*}
+    pu - pd + d - 1 \geq 0 \implies p \geq \frac{1 - d}{u - d} = p^*!
+\end{equation*}
+
+We can then iterate backwards!
+As an alternative, we can guess a functional form for $V_t$, for instance:
+\begin{equation*}
+    V_t(n) = \log n + a_t
+\end{equation*}
+and proceed backwards using the Bellman equation, using the terminal condition $a_T = 0$ since $V_T(n) = \log n$. \textbf{\color{red}(HW)}
