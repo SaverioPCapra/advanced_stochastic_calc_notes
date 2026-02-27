@@ -15,7 +15,7 @@
 
     Progressive Measurability is a more technical requirement that 
     arises in continuous time. It is a prerequisite for stochastic 
-    integration, ensure the process is "well-behaved" over time intervals.
+    integration, as it ensures the process is "well-behaved" over time intervals.
 
     You may view it as "path-adaptedness": while adaptedness ensures 
     we know the process' value at a specific point, progressive 
@@ -36,7 +36,7 @@ A stochastic process is $(t,\omega) \to X_t(\omega)$ is \vocab{$\mathcal{B}(\mat
 \begin{definition}
     A stochastic process $\mathbb{X}$ is \vocab{adapted to $(\mathcal{F}_t)_{t \geq 0}$} if $X_t \in m\mathcal{F}_t, \forall t \geq 0$.
 
-    Note that $m\mathcal{F}_t$ denotes the set of measurable functions with respect to the $\sigma$-algebra $\mathcal{F}_{t}$ in the filtration $(\mathcal{F}_{t})_{t\geq0}$.
+    \textbf{Note:} $m\mathcal{F}_t$ denotes the set of measurable functions with respect to the $\sigma$-algebra $\mathcal{F}_{t}$ in the filtration $(\mathcal{F}_{t})_{t\geq0}$.
 \end{definition}
 
 \begin{definition}
@@ -70,8 +70,7 @@ If we show that $(s,\omega) \to X^{n}_{s}(\omega)$ is $\mathcal{B}([0,t]) \times
 Since $t > 0$ is arbitrary, we conclude that $\mathbb{X}$ is progressively measurable. 
 
 Fix $A \in \mathcal{B}(\mathbb{R}^{d}): \{(s, \omega) \in [0,t] \times \Omega: X_{s}^{n}(\omega) \in A\}$
-$$= \bigcup^{2^{n}-1}_{k=0} \left( \left[\frac{k}{2^{n}}t, \frac{k+1}{2^{n}}t \right) \times  \left\{ \omega \in \Omega: X_{\frac{k+1}{2^{n}}t}(\omega) \in A \right\}  \right)  \bigcup \left(\{t\} \times \{\omega \in \Omega: X_{t}(\omega) \in A\}   \right)$$
-
+$$= \bigcup^{2^{n}-1}_{k=0} \left( \underbrace{\left[\frac{k}{2^{n}}t, \frac{k+1}{2^{n}}t \right)}_{\in \mathcal{B}([0,t])} \times  \underbrace{\left\{ \omega \in \Omega: X_{\frac{k+1}{2^{n}}t}(\omega) \in A \right\}}_{\in \mathcal{F}_{\frac{k+1}{2^n}t}}  \right)  \bigcup \left(\underbrace{\{t\}}_{\in \mathcal{B}([0,t])} \times \underbrace{\{\omega \in \Omega: X_{t}(\omega) \in A\}}_{\in \mathcal{F}_t}   \right)$$
 Then:
 $$\{(s, \omega) \in [0,t] \times \Omega: X_{s}^{n}(\omega) \in A\} \in \mathcal{B}([0,t]) \times \mathcal{F}_{t}$$
 
@@ -112,11 +111,14 @@ In the definition below, let $\Pi$ be either $[0, + \infty)$ or $\mathbb{Z}^{+}$
 
 \textbf{Proof}
 
-(ii) was proven in PFF and it's left as HW.
-
 (i) It suffices to show $\{\omega: \tau(\omega) \leq s\} \in \mathcal{F}_{\tau}, \forall s \in \Pi$.
 By def $\{\tau \leq s\} \in \mathcal{F}_s \subseteq \mathcal{F}_{\infty}$. Fix $t \in \Pi$. Then
 $$\{\tau \leq s\} \cap \{\tau \leq t\} = \{\tau \leq s \wedge t\} \in \mathcal{F}_{s \wedge t} \subseteq \mathcal{F}_t$$
+
+\begin{homework}
+    Prove (ii). Note that this was proven in Probability for Finance.
+\end{homework}
+
 
 (iii) Take $F \in \mathcal{F}_{\sigma}$. Then $F \in \mathcal{F}_{\infty}$ and $F \cap \{\sigma \leq t\} \in \mathcal{F}_t, \forall t \in \Pi$.
 $$F \cap \{\tau \leq t\} = F \cap \underbrace{\{\sigma \leq t\}}_{\in \mathcal{F}_t} \cap \underbrace{\{\tau \leq t\}}_{\in \mathcal{F}_t} \quad \text{because } \sigma \leq \tau$$
@@ -129,8 +131,8 @@ Thus, $\mathcal{F}_{\sigma \wedge \tau} \subseteq \mathcal{F}_{\tau} \cap \mathc
 
 Take $F \in \mathcal{F}_{\tau} \cap \mathcal{F}_{\sigma}$. Then $F \in \mathcal{F}_{\infty}$, $F \cap \{\tau \leq t\} \in \mathcal{F}_t$ and $F \cap \{\sigma \leq t\} \in \mathcal{F}_t, \forall t \in \Pi$. Now, for $t \in \Pi$,
 \begin{align*}
-F \cap \{\tau \wedge \sigma \leq t\} &= (F \cap \underbrace{\{\tau \leq t\}}_{\in \mathcal{F}_t} \cap \{\tau \wedge \sigma \leq t\}) \cup (F \cap \{\tau \wedge \sigma \leq t\} \cap \{\tau > t\}) \\
-&\qquad \qquad \qquad \qquad \qquad \qquad = \underbrace{F \cap \{\sigma \leq t\}}_{\in \mathcal{F}_t} \cap \underbrace{\{\tau > t\}}_{\in \mathcal{F}_t}
+F \cap \{\tau \wedge \sigma \leq t\} &= ( \underbrace{F \cap \{\tau \leq t\}}_{\in \mathcal{F}_t} \cap \underbrace{\{\tau \wedge \sigma \leq t\}}_{\in \mathcal{F}_t} ) \cup {} \\
+&\quad \underbrace{\cup (F \cap \{\tau \wedge \sigma \leq t\} \cap \{\tau > t\})}_{= \underbrace{F \cap \{\sigma \leq t\}}_{\in \mathcal{F}_t} \cap \underbrace{\{\tau > t\}}_{\in \mathcal{F}_t}}
 \end{align*}
 $\implies F \in \mathcal{F}_{\tau \wedge \sigma} \implies \mathcal{F}_{\tau} \cap \mathcal{F}_{\sigma} \subseteq \mathcal{F}_{\tau \wedge \sigma}$. $\blacksquare$
 
@@ -161,18 +163,13 @@ Since $\mathcal{B}([0,t]) \times \mathcal{F}_t = \sigma([0,s] \times F, s \in [0
 \textbf{Proof}
 
 If $A$ is open:
-\begin{itemize}
-    \item by continuity of $s \mapsto X_s \implies$ continuity of $s \mapsto \text{dist}(X_s, A^c)$ and $A^c$ is closed.
-\end{itemize}
-
-\begin{homework}
-    Fill in the details of this proof.
-\end{homework}
 
 $$\{\tau_A > t\} = \{\inf_{0 \leq s \leq t} \text{dist}(X_s, A^c) > 0\} = \bigcup_{n \in \mathbb{N}} \left\{\inf_{0 \leq s \leq t} \text{dist}(X_s, A^c) > \frac{1}{n}\right\}$$
 $$\overset{\text{indistinguishability}}{=} \bigcup_{n \in \mathbb{N}} \bigcap_{s \in [0,t] \cap \mathbb{Q}} \left\{\text{dist}(X_s, A^c) > \frac{1}{n}\right\} \in \mathcal{F}_t$$
 
-If $A$ is closed, let's approximate $A$ with open sets $A_n \downarrow A$ ($A_n \supseteq A_{n+1} \supseteq A$).
+Where the first equality is by continuity of $s \mapsto X_s$, which implies continuity of $s \mapsto \text{dist}(X_s, A^c)$, and by the fact that $A^c$ is closed.
+
+If $A$ is closed, let's approximate $A$ with open sets $A_n \downarrow A$ ($A_n \supseteq A_{n+1} \supsetneq A$).
 Then $\{\tau_A < t\} = \bigcup_{n \in \mathbb{N}} \{\tau_{A_n} \leq t\} \in \mathcal{F}_t$.
 
 $\omega \in \{\tau_A < t\} \implies X_{\tau_A}(\omega) \in A^c \implies X_{\tau_A}(\omega) \in A_n^c$ for large $n$ (because $A^c$ is open and $\mathbb{X}$ continuous) $\implies \tau_{A_n}(\omega) \leq t$ for large $n$.
@@ -180,3 +177,7 @@ $\omega \in \{\tau_A < t\} \implies X_{\tau_A}(\omega) \in A^c \implies X_{\tau_
 $\omega \in \bigcup_{n \in \mathbb{N}} \{\tau_{A_n} \leq t\} \implies \exists n \in \mathbb{N}$ s.t. $\omega \in \{\tau_{A_n} \leq t\} \subseteq \{\tau_A < t\}$.
 
 Now: $\{\tau_A \leq t\} = \bigcap_{n \in \mathbb{N}} \underbrace{\{\tau_A < t + \frac{1}{n}\}}_{\in \mathcal{F}_{t + \frac{1}{n}}} \in \mathcal{F}_{t^+} = \mathcal{F}_t$. $\blacksquare$
+
+\begin{homework}
+    Fill in the details of this proof.
+\end{homework}
