@@ -3,7 +3,7 @@
 \begin{intermission}
     In this section we formalize the \vocab{Markov Property} in continuous time.
     In simple words, this property states that the future of a process 
-    depends only on its present state, not its past history. 
+    depends only on its present state, not on its past history. 
 
     We start by introducing the \vocab{Markov Transition Function} which
     governs how a process moves between states. Via the 
@@ -57,7 +57,7 @@ Taken from Chapter 6 of \cite{baldi2017stochastic}.
 \end{definition}
 
 \begin{remark}
-    In general $(\mathcal{F}_t)_{t \ge 0}$ is a filtration that contains $(\sigma(X_s, s \le t))_{t \ge 0}$ but w.l.o.g. we could just consider $\mathcal{F}_t = \sigma(X_s, s \le t)$.
+    In general $(\mathcal{F}_t)_{t \ge 0}$ is a filtration that contains $(\sigma(X_s, s \le t))_{t \ge 0}$ but without loss of generality we could just consider $\mathcal{F}_t = \sigma(X_s, s \le t)$.
 \end{remark}
 
 \begin{homework}
@@ -99,6 +99,57 @@ It's convenient to define MP on a "space of paths". The regularity of paths depe
     \item We introduce a shift-operator $(\theta_h)_{h \ge 0}$ that acts on paths $\theta_h: \Omega \to \Omega$ as $\theta_h \omega(\cdot) = \omega(h + \cdot)$.
     
     Notice that $\theta_h X_t(\omega) = X_t(\theta_h \omega) = \omega(h+t)$.
+
+\begin{tikzpicture}[scale=1.2]
+    % Custom colors matching the hand-drawn markers
+    \definecolor{axisgreen}{RGB}{125, 195, 75}
+    \definecolor{curvegreen}{RGB}{100, 180, 60}
+    \definecolor{textorange}{RGB}{245, 120, 0}
+    \definecolor{markred}{RGB}{210, 20, 20}
+    \definecolor{dashblue}{RGB}{30, 130, 240}
+
+    % Redefined base curve to explicitly pass through (0,0)
+    \def\basecurve{plot[smooth, tension=0.7] coordinates {(-0.3, 0.6) (0, 0) (1.0, -1.3) (2.4, -0.1) (4.2, 2.2)}}
+
+    % --- First Graph (Left) ---
+    \begin{scope}
+        % Axes
+        \draw[->, thick, axisgreen] (-0.5, 0) -- (4.5, 0) node[below right] {$t$};
+        \draw[->, thick, axisgreen] (0, -1.8) -- (0, 2.5) node[left] {$\mathbb{R}^d$};
+
+        % Curve
+        \draw[thick, curvegreen] \basecurve;
+
+        % Mark h (red dashed line)
+        \draw[thick, markred, dashed] (0.9, 0) node[above=2pt] {$h$} -- (0.9, -1.25);
+
+        % Label
+        \node[textorange, right] at (2.8, 1.2) {$t \mapsto \omega(t)$};
+    \end{scope}
+
+    % --- Second Graph (Right) ---
+    \begin{scope}[xshift=6.5cm]
+        % Axes
+        \draw[->, thick, axisgreen] (-0.5, 0) -- (4.5, 0) node[below right] {$t$};
+        \draw[->, thick, axisgreen] (0, -1.8) -- (0, 2.5) node[left] {$\mathbb{R}^d$};
+
+        % Shifted Curve (Solid Green)
+        \begin{scope}
+            \clip (-0.5, -1.8) rectangle (4.5, 2.8);
+            % Shifted left by the exact value of h (0.9)
+            \draw[thick, curvegreen, xshift=-0.9cm] \basecurve;
+        \end{scope}
+
+        % Original Curve Reference (Dashed Blue)
+        \draw[thick, dashblue, dashed] \basecurve;
+
+        % Mark h (blue tick)
+        \draw[thick, dashblue] (0.9, 0.1) node[above=2pt] {$h$} -- (0.9, -0.1);
+
+        % Label
+        \node[textorange, anchor=south west] at (2.0, 2.0) {$t \mapsto \theta_h \omega(t) = \omega(h+t)$};
+    \end{scope}
+\end{tikzpicture}
     
     \item The filtration is the canonical filtration $\mathcal{F}_t^s = \sigma(X_u, s \le u \le t)$.
     
@@ -159,9 +210,9 @@ Something with a flavour of the freezing lemma holds:
     $$\mathbb{E}_{s,x}[Y \circ \theta_\tau | \mathcal{F}_\tau^s] = \mathbb{E}_{\tau, X_\tau}[Y] := (\mathbb{E}_{t,z}[Y])|_{t=\tau(\omega), z=X_\tau(\omega)}.$$
 \end{proposition}
 
-\begin{proof}
-    (HW) using the same tricks as before.
-\end{proof}
+\begin{homework}
+    Prove the above result using the same tricks as before.
+\end{homework}
 
 Given a time-homogeneous MTF, the expectation is a linear operator that satisfies the semi-group property:
 $\forall$ bounded measurable $f: \mathbb{R}^d \to \mathbb{R}$
